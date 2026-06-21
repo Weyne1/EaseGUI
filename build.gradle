@@ -1,0 +1,101 @@
+plugins {
+	id 'dev.architectury.loom' version '1.11-SNAPSHOT' apply false
+	id 'architectury-plugin' version '3.4-SNAPSHOT'
+	id 'com.gradleup.shadow' version '8.3.6' apply false
+}
+
+architectury {
+	minecraft = project.minecraft_version
+}
+
+allprojects {
+	group = rootProject.maven_group
+	version = rootProject.mod_version
+
+	repositories {
+		maven {
+			name = 'ParchmentMC'
+			url = 'https://maven.parchmentmc.org'
+		}
+		maven {
+			name = 'TerraformersMC'
+			url = "https://maven.terraformersmc.com/releases/"
+		}
+		maven {
+			name = 'NeoForged'
+			url = 'https://maven.neoforged.net/releases'
+		}
+		mavenCentral()
+	}
+}
+
+subprojects {
+	apply plugin: 'dev.architectury.loom'
+	apply plugin: 'architectury-plugin'
+	apply plugin: 'maven-publish'
+
+	version = ""
+
+	base {
+		archivesName = "${rootProject.archives_name}-${rootProject.mod_version}-${project.name}-${rootProject.minecraft_version}"
+	}
+
+	tasks.withType(Jar).configureEach {
+		archiveVersion.set("")
+
+		if (name == "sourcesJar") {
+			archiveClassifier.set("sources")
+		}
+	}
+
+	tasks.named('remapJar') {
+		archiveVersion.set("")
+	}
+
+	loom {
+		silentMojangMappingsLicense()
+	}
+
+	dependencies {
+		minecraft "net.minecraft:minecraft:$rootProject.minecraft_version"
+		mappings loom.layered() {
+			officialMojangMappings()
+			parchment("org.parchmentmc.data:parchment-${rootProject.minecraft_version}:${rootProject.parchment_version}@zip")
+		}
+	}
+
+	java {
+		withSourcesJar()
+		sourceCompatibility = JavaVersion.VERSION_21
+		targetCompatibility = JavaVersion.VERSION_21
+	}
+
+	tasks.withType(JavaCompile).configureEach {
+		it.options.release = 21
+	}
+
+	processResources {
+		def replaceProperties = [
+				minecraft_version     : rootProject.minecraft_version,
+				mod_version           : rootProject.mod_version,
+				fabric_loader_version : rootProject.fabric_loader_version,
+				mod_menu_version      : rootProject.mod_menu_version,
+				neoforge_version      : rootProject.neoforge_version
+		]
+
+		inputs.properties replaceProperties
+
+		filesMatching(["fabric.mod.json", "META-INF/neoforge.mods.toml"]) {
+			expand replaceProperties
+		}
+	}
+
+	publishing {
+		publications {
+			mavenJava(MavenPublication) {
+				artifactId = base.archivesName.get()
+				from components.java
+			}
+		}
+	}
+}

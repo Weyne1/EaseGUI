@@ -1,0 +1,30 @@
+modLoader = "javafml"
+loaderVersion = "[2,)"
+license = "LGPLv3"
+issueTrackerURL = "https://github.com/Weyne1/EaseGUI/issues"
+
+[[mods]]
+modId = "easegui"
+version = "${mod_version}"
+displayName = "EaseGUI"
+authors = "Weyne1"
+description = "Smoothly animates all GUI screens!"
+displayURL = "https://modrinth.com/mod/easegui"
+logoFile = "icon.png"
+
+[[dependencies.easegui]]
+modId = "neoforge"
+type = "required"
+versionRange = "[${neoforge_version},)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.easegui]]
+modId = "minecraft"
+type = "required"
+versionRange = "[${minecraft_version},)"
+ordering = "NONE"
+side = "BOTH"
+
+[[mixins]]
+config = "easegui.mixins.json"

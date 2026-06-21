@@ -1,0 +1,40 @@
+{
+	"schemaVersion": 1,
+	"id": "easegui",
+	"version": "${mod_version}",
+	"name": "EaseGUI",
+	"description": "Smoothly animates all GUI screens! To customize, install the Mod Menu.",
+	"authors": [
+		"Weyne1"
+	],
+	"contact": {
+		"homepage": "https://modrinth.com/mod/easegui",
+		"sources": "https://github.com/Weyne1/EaseGUI",
+		"issues": "https://github.com/Weyne1/EaseGUI/issues"
+	},
+	"license": "LGPLv3",
+	"icon": "icon.png",
+	"environment": "client",
+	"entrypoints": {
+		"client": [
+			"net.weyne1.easegui.neoforge.client.EaseGUIFabricClient"
+		],
+		"modmenu": [
+			"net.weyne1.easegui.neoforge.client.ModMenuIntegration"
+		]
+	},
+	"mixins": [
+		{
+			"config": "easegui.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=${fabric_loader_version}",
+		"minecraft": "~${minecraft_version}",
+		"java": ">=21"
+	},
+	"suggests": {
+		"modmenu": ">=${mod_menu_version}"
+	}
+}

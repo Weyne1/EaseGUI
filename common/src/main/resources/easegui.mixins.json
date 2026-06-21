@@ -1,0 +1,28 @@
+{
+  "required": true,
+  "package": "net.weyne1.easegui.client.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "minVersion": "0.8",
+  "client": [
+    "AbstractSelectionListMixin",
+    "AbstractWidgetMixin",
+    "GameRendererMixin",
+    "GuiGraphicsMixin",
+    "blaze3d.RenderSystemMixin",
+    "ScreenLifecycleMixin",
+    "ScreenMixin",
+    "advancements.AdvancementsScreenMixin",
+    "advancements.AdvancementTabMixin",
+    "container.AbstractContainerScreenMixin",
+    "container.RecipeBookComponentMixin",
+    "title.LogoRendererMixin",
+    "title.SplashRendererMixin",
+    "title.TitleScreenMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+	}
+}
