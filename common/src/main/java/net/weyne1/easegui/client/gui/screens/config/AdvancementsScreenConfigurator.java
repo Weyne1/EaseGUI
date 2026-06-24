@@ -33,7 +33,7 @@ public class AdvancementsScreenConfigurator implements IScreenConfigurator {
         list.addHeader(Component.translatable("easegui.config.advancements.tabs.header").getString());
 
         list.addButton(Button.builder(Component.translatable("easegui.config.advancements.tabs.edit_anim"), btn ->
-                mc.setScreen(new EaseGUIProfileEditorScreen(parentScreen, adv.tabsProfile, EnumSet.of(ProfileFeature.SCALE, ProfileFeature.ALPHA, ProfileFeature.PIVOT, ProfileFeature.CASCADE), updated -> {
+                mc.setScreen(new EaseGUIProfileEditorScreen(parentScreen, adv.tabsProfile, EnumSet.of(ProfileFeature.ALPHA, ProfileFeature.CASCADE_DELAY), updated -> {
                     adv.tabsProfile = updated; ConfigManager.save();
                 }))
         ).build());

@@ -45,6 +45,8 @@
 
   "easegui.cascade.top_to_bottom": "Top to Bottom",
   "easegui.cascade.bottom_to_top": "Bottom to Top",
+  "easegui.cascade.left_to_right": "Left to Right",
+  "easegui.cascade.right_to_left": "Right to Left",
 
   "easegui.pivot.top_left": "Top Left",
   "easegui.pivot.top_center": "Top Center",

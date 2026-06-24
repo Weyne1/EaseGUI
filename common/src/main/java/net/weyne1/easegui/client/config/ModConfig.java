@@ -8,9 +8,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static net.weyne1.easegui.client.animation.AnimationProfile.CascadeDirection.BOTTOM_TO_TOP;
+import static net.weyne1.easegui.client.animation.AnimationProfile.CascadeDirection.LEFT_TO_RIGHT;
 import static net.weyne1.easegui.client.animation.AnimationProfile.EasingType.*;
 
 public class ModConfig {
+    public static final int CURRENT_SCHEMA_VERSION = 1;
+    public int schemaVersion = CURRENT_SCHEMA_VERSION;
 
     public final GlobalSettings global = new GlobalSettings();
     public Map<String, ScreenSettings> screens = new HashMap<>();
@@ -35,6 +38,11 @@ public class ModConfig {
      */
     public boolean mergeDefaults() {
         boolean changed = false;
+
+        if (this.schemaVersion < CURRENT_SCHEMA_VERSION) {
+            this.schemaVersion = CURRENT_SCHEMA_VERSION;
+            changed = true;
+        }
 
         if (this.screens == null) {
             this.screens = new HashMap<>();
@@ -129,7 +137,6 @@ public class ModConfig {
 
     public static class LogoSettings {
         public boolean animateWholeText = false;
-        public Direction direction = Direction.LEFT_TO_RIGHT;
 
         public AnimationProfile logoProfile = new AnimationProfile()
                 .duration(400L)
@@ -138,6 +145,7 @@ public class ModConfig {
                 .startScaleY(0.8f)
                 .startAlpha(0.0f)
                 .cascadeDelay(60L)
+                .cascadeDirection(LEFT_TO_RIGHT)
                 .easing(EASE_OUT_BACK)
                 .pivot(AnimationProfile.PivotPoint.CENTER);
 
@@ -149,11 +157,6 @@ public class ModConfig {
                 .startAlpha(0.0f)
                 .easing(EASE_OUT_QUAD)
                 .pivot(AnimationProfile.PivotPoint.CENTER);
-
-        public enum Direction {
-            LEFT_TO_RIGHT,
-            RIGHT_TO_LEFT
-        }
     }
 
     public static class SplashSettings {
@@ -177,6 +180,7 @@ public class ModConfig {
                 .offsetY(0f)
                 .startAlpha(0.0f)
                 .cascadeDelay(45L)
+                .cascadeDirection(LEFT_TO_RIGHT)
                 .easing(EASE_OUT_BACK);
     }
 

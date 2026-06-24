@@ -2,6 +2,7 @@ package net.weyne1.easegui.client.config;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.weyne1.easegui.client.animation.AnimationProfile;
@@ -29,14 +30,31 @@ public class ConfigManager {
 
         if (CONFIG_FILE.exists()) {
             try (FileReader reader = new FileReader(CONFIG_FILE)) {
-                currentConfig = GSON.fromJson(reader, ModConfig.class);
+                JsonObject jsonConfig = GSON.fromJson(reader, JsonObject.class);
+
+                if (jsonConfig == null) {
+                    jsonConfig = new JsonObject();
+                }
+
+                boolean migrated = false;
+                int version = jsonConfig.has("schemaVersion") ? jsonConfig.get("schemaVersion").getAsInt() : 0;
+
+                if (version < ModConfig.CURRENT_SCHEMA_VERSION) {
+                    if (version == 0) {
+                        migrated = ConfigMigrator.runMigrationV0toV1(jsonConfig);
+                    }
+                }
+
+                currentConfig = GSON.fromJson(jsonConfig, ModConfig.class);
 
                 if (currentConfig == null) {
                     currentConfig = new ModConfig();
                 }
 
-                if (currentConfig.mergeDefaults()) {
-                    LOGGER.info("[EaseGUI] Config schema updated.");
+                currentConfig.schemaVersion = ModConfig.CURRENT_SCHEMA_VERSION;
+
+                if (currentConfig.mergeDefaults() || migrated) {
+                    LOGGER.info("[EaseGUI] Config schema updated from version {} to {}.", version, ModConfig.CURRENT_SCHEMA_VERSION);
                     save();
                 }
 

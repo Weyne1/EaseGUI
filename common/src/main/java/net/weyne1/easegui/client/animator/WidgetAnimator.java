@@ -53,18 +53,28 @@ public class WidgetAnimator {
             state.startTime = now;
             state.baseAlpha = ((EaseGUIWidget) widget).easeGUI$getAlpha();
 
-            int y = widget.getY();
-            int h = Minecraft.getInstance().getWindow().getGuiScaledHeight();
-
-            float distance = switch (profile.cascadeDirection) {
-                case TOP_TO_BOTTOM -> y;
-                case BOTTOM_TO_TOP -> Math.max(0f, h - y);
-            };
+            float distance = getDistance(widget, profile);
 
             float delayMultiplier = profile.cascadeDelay / 100.0f;
             state.delay = (long) (distance * delayMultiplier);
         }
 
         state.lastRenderFrame = currentFrame;
+    }
+
+    private static float getDistance(AbstractWidget widget, AnimationProfile profile) {
+        var window = Minecraft.getInstance().getWindow();
+        int screenHeight = window.getGuiScaledHeight();
+        int screenWidth = window.getGuiScaledWidth();
+
+        int x = widget.getX();
+        int y = widget.getY();
+
+        return switch (profile.cascadeDirection) {
+            case TOP_TO_BOTTOM -> y;
+            case BOTTOM_TO_TOP -> Math.max(0f, screenHeight - y);
+            case LEFT_TO_RIGHT -> x;
+            case RIGHT_TO_LEFT -> Math.max(0f, screenWidth - x);
+        };
     }
 }

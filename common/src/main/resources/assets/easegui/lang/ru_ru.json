@@ -45,6 +45,8 @@
 
   "easegui.cascade.top_to_bottom": "Сверху вниз",
   "easegui.cascade.bottom_to_top": "Снизу вверх",
+  "easegui.cascade.left_to_right": "Слева направо",
+  "easegui.cascade.right_to_left": "Справа налево",
 
   "easegui.pivot.top_left": "Сверху слева",
   "easegui.pivot.top_center": "Сверху по центру",

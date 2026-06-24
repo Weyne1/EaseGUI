@@ -41,15 +41,6 @@ public class TitleScreenConfigurator implements IScreenConfigurator {
                 ConfigManager.save();
             }).build());
 
-            // Направление каскада
-            Component dirComp = Component.translatable(logo.direction == ModConfig.LogoSettings.Direction.LEFT_TO_RIGHT ? "easegui.config.title.logo.direction.ltr" : "easegui.config.title.logo.direction.rtl");
-            list.addButton(Button.builder(Component.translatable("easegui.config.title.logo.direction", dirComp), btn -> {
-                logo.direction = (logo.direction == ModConfig.LogoSettings.Direction.LEFT_TO_RIGHT) ? ModConfig.LogoSettings.Direction.RIGHT_TO_LEFT : ModConfig.LogoSettings.Direction.LEFT_TO_RIGHT;
-                Component updatedDir = Component.translatable(logo.direction == ModConfig.LogoSettings.Direction.LEFT_TO_RIGHT ? "easegui.config.title.logo.direction.ltr" : "easegui.config.title.logo.direction.rtl");
-                btn.setMessage(Component.translatable("easegui.config.title.logo.direction", updatedDir));
-                ConfigManager.save();
-            }).build());
-
             // Настройка профиля Edition
             list.addButton(Button.builder(Component.translatable("easegui.config.title.edition.edit_anim"), btn ->
                     mc.setScreen(new EaseGUIProfileEditorScreen(parentScreen, logo.editionProfile, EnumSet.of(ProfileFeature.OFFSET, ProfileFeature.SCALE, ProfileFeature.ALPHA, ProfileFeature.PIVOT), updated -> {

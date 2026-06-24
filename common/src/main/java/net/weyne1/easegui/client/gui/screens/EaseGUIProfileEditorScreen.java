@@ -85,11 +85,14 @@ public class EaseGUIProfileEditorScreen extends AbstractSplitScreen {
         }
 
         // --- 5. Каскадность (Лимит: от 0 до 1000 мс) ---
-        if (activeFeatures.contains(ProfileFeature.CASCADE)) {
+        if (activeFeatures.contains(ProfileFeature.CASCADE_DELAY)) {
             EditBox cascadeField = createTextField(String.valueOf(workingCopy.cascadeDelay));
             FieldValidationHelper.registerLongValidator(cascadeField, 0L, 1000L, workingCopy::cascadeDelay);
             leftScrollList.addField(Component.translatable("easegui.editor.field.cascade_delay").getString(), cascadeField);
+        }
 
+        // --- 5.1. Направление каскада
+        if (activeFeatures.contains(ProfileFeature.CASCADE_DIRECTION)) {
             Component dirComp = getCascadeDirectionComponent(workingCopy.cascadeDirection);
             leftScrollList.addButton(Button.builder(Component.translatable("easegui.editor.button.cascade_dir", dirComp), b -> {
                 AnimationProfile.CascadeDirection[] v = AnimationProfile.CascadeDirection.values();
@@ -136,7 +139,12 @@ public class EaseGUIProfileEditorScreen extends AbstractSplitScreen {
     }
 
     private Component getCascadeDirectionComponent(AnimationProfile.CascadeDirection dir) {
-        return Component.translatable(dir == AnimationProfile.CascadeDirection.TOP_TO_BOTTOM ? "easegui.cascade.top_to_bottom" : "easegui.cascade.bottom_to_top");
+        return Component.translatable(switch (dir) {
+            case TOP_TO_BOTTOM -> "easegui.cascade.top_to_bottom";
+            case BOTTOM_TO_TOP -> "easegui.cascade.bottom_to_top";
+            case LEFT_TO_RIGHT -> "easegui.cascade.left_to_right";
+            case RIGHT_TO_LEFT -> "easegui.cascade.right_to_left";
+        });
     }
 
     private void saveAndClose() {

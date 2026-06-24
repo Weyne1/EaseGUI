@@ -56,9 +56,7 @@ public class LogoAnimator {
         int startX = screenWidth / 2 - (LOGO_WIDTH / 2);
 
         renderLogoLetters(gg, logoTexture, logoConfig, startX, height, startTime, finalAlpha);
-
-        int totalElements = logoConfig.animateWholeText ? 1 : LETTER_TEXTURES.length;
-        renderEditionText(gg, logoConfig, totalElements, screenWidth, height, startTime, finalAlpha);
+        renderEditionText(gg, logoConfig, screenWidth, height, startTime, finalAlpha);
 
         return true;
     }
@@ -80,9 +78,11 @@ public class LogoAnimator {
                 int logicalIndex = LOGICAL_INDICES[i];
                 ResourceLocation texture = LETTER_TEXTURES[i];
 
-                long cascadeDelay = (config.direction == ModConfig.LogoSettings.Direction.LEFT_TO_RIGHT)
-                        ? logicalIndex * profile.cascadeDelay
-                        : (LETTER_TEXTURES.length - 1 - logicalIndex) * profile.cascadeDelay;
+                long cascadeDelay = switch (profile.cascadeDirection) {
+                    case LEFT_TO_RIGHT -> logicalIndex * profile.cascadeDelay;
+                    case RIGHT_TO_LEFT -> (LETTER_TEXTURES.length - 1 - logicalIndex) * profile.cascadeDelay;
+                    case TOP_TO_BOTTOM, BOTTOM_TO_TOP -> 0L;
+                };
 
                 long elapsed = now - startTime - cascadeDelay;
                 float progress = AnimationMathUtils.calculateProgress(elapsed, profile.duration, profile.easing);
@@ -94,7 +94,7 @@ public class LogoAnimator {
         }
     }
 
-    private static void renderEditionText(GuiGraphics gg, ModConfig.LogoSettings config, int elementsCount,
+    private static void renderEditionText(GuiGraphics gg, ModConfig.LogoSettings config,
                                           int screenWidth, int height, long startTime, float finalAlpha) {
         int x = screenWidth / 2 - (EDITION_WIDTH / 2);
         int y = height + LOGO_HEIGHT - 7;
@@ -102,10 +102,7 @@ public class LogoAnimator {
         var profile = config.editionProfile;
 
         if (profile != null && profile.enabled) {
-            long now = Util.getMillis();
-            long editionDelay = elementsCount * config.logoProfile.cascadeDelay;
-
-            long elapsed = now - startTime - editionDelay;
+            long elapsed = getElapsed(config, startTime);
             float progress = AnimationMathUtils.calculateProgress(elapsed, profile.duration, profile.easing);
 
             AnimationEngine.apply(gg, x, y, EDITION_WIDTH, EDITION_HEIGHT, profile, progress, finalAlpha);
@@ -115,5 +112,16 @@ public class LogoAnimator {
 
         gg.blit(LogoRenderer.MINECRAFT_EDITION, x, y, 0.0f, 0.0f, EDITION_WIDTH, EDITION_HEIGHT, EDITION_WIDTH, EDITION_TEXTURE_HEIGHT);
         AnimationEngine.cleanUp(gg);
+    }
+
+    private static long getElapsed(ModConfig.LogoSettings config, long startTime) {
+        long now = Util.getMillis();
+
+        long maxLogoDelay = config.animateWholeText ? 0L : switch (config.logoProfile.cascadeDirection) {
+            case LEFT_TO_RIGHT, RIGHT_TO_LEFT -> (LETTER_TEXTURES.length - 1) * config.logoProfile.cascadeDelay;
+            case TOP_TO_BOTTOM, BOTTOM_TO_TOP -> 0L;
+        };
+
+        return now - startTime - maxLogoDelay;
     }
 }
