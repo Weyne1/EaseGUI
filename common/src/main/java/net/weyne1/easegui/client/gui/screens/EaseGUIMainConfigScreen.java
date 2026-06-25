@@ -112,13 +112,17 @@ public class EaseGUIMainConfigScreen extends AbstractSplitScreen {
         ).bounds(halfWidth - 100, this.height - 30, 200, 20).build());
     }
 
-    private void addGlobalProfileButton(SettingsScrollList list, ModConfig config, Minecraft mc,
-                                        UIElementCategory category, String translationKey) {
+    private void addGlobalProfileButton(SettingsScrollList list, ModConfig config, Minecraft mc, UIElementCategory category, String translationKey) {
+        AnimationProfile cleanDefault = new ModConfig().global.elementProfiles.get(category);
+        if (cleanDefault == null) cleanDefault = new AnimationProfile();
+        AnimationProfile finalCleanDefault = cleanDefault;
+
         list.addButton(Button.builder(
                 Component.translatable(translationKey),
                 button -> mc.setScreen(new EaseGUIProfileEditorScreen(
                         this,
                         config.global.elementProfiles.getOrDefault(category, new AnimationProfile()),
+                        finalCleanDefault,
                         category.getAllowedFeatures(),
                         updated -> {
                             config.global.elementProfiles.put(category, updated);

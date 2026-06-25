@@ -138,10 +138,33 @@ public class ProfilePreviewRenderer {
         int x1 = centerX - halfW - 1; int x2 = centerX + halfW + 1;
         int y1 = targetY - halfH - 1; int y2 = targetY + halfH + 1;
 
-        gg.fill(x1, y1, x2, y1 + 1, color); // Top
-        gg.fill(x1, y2 - 1, x2, y2, color); // Bottom
-        gg.fill(x1, y1 + 1, x1 + 1, y2 - 1, color); // Left
-        gg.fill(x2 - 1, y1 + 1, x2, y2 - 1, color); // Right
+        int dashLength = 4;
+        int gapLength = 2;
+        int step = dashLength + gapLength;
+
+        // Upper face
+        for (int x = x1; x < x2; x += step) {
+            int endX = Math.min(x + dashLength, x2);
+            gg.fill(x, y1, endX, y1 + 1, color);
+        }
+
+        // Bottom face
+        for (int x = x1; x < x2; x += step) {
+            int endX = Math.min(x + dashLength, x2);
+            gg.fill(x, y2 - 1, endX, y2, color);
+        }
+
+        // Left face
+        for (int y = y1 + 1; y < y2 - 1; y += step) {
+            int endY = Math.min(y + dashLength, y2 - 1);
+            gg.fill(x1, y, x1 + 1, endY, color);
+        }
+
+        // Right face
+        for (int y = y1 + 1; y < y2 - 1; y += step) {
+            int endY = Math.min(y + dashLength, y2 - 1);
+            gg.fill(x2 - 1, y, x2, endY, color);
+        }
     }
 
     private static int calcAlphaColor(float startAlpha, float progress, boolean isFont) {

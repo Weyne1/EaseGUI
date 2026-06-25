@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.weyne1.easegui.client.animation.AnimationProfile;
 import net.weyne1.easegui.client.config.ConfigManager;
 import net.weyne1.easegui.client.config.ModConfig;
 import net.weyne1.easegui.client.config.ProfileFeature;
@@ -23,8 +24,10 @@ public class AdvancementsScreenConfigurator implements IScreenConfigurator {
         // --- ОКНО ДОСТИЖЕНИЙ ---
         list.addHeader(Component.translatable("easegui.config.advancements.window.header").getString());
 
+        AnimationProfile defaultWindow = new ModConfig.AdvancementsSettings().windowProfile;
+
         list.addButton(Button.builder(Component.translatable("easegui.config.advancements.window.edit_anim"), btn ->
-                mc.setScreen(new EaseGUIProfileEditorScreen(parentScreen, adv.windowProfile, EnumSet.of(ProfileFeature.SCALE, ProfileFeature.ALPHA, ProfileFeature.PIVOT), updated -> {
+                mc.setScreen(new EaseGUIProfileEditorScreen(parentScreen, adv.windowProfile, defaultWindow, EnumSet.of(ProfileFeature.SCALE, ProfileFeature.ALPHA, ProfileFeature.PIVOT), updated -> {
                     adv.windowProfile = updated; ConfigManager.save();
                 }))
         ).build());
@@ -32,8 +35,10 @@ public class AdvancementsScreenConfigurator implements IScreenConfigurator {
         // --- ВКЛАДКИ ДОСТИЖЕНИЙ ---
         list.addHeader(Component.translatable("easegui.config.advancements.tabs.header").getString());
 
+        AnimationProfile defaultTabs = new ModConfig.AdvancementsSettings().tabsProfile;
+
         list.addButton(Button.builder(Component.translatable("easegui.config.advancements.tabs.edit_anim"), btn ->
-                mc.setScreen(new EaseGUIProfileEditorScreen(parentScreen, adv.tabsProfile, EnumSet.of(ProfileFeature.ALPHA, ProfileFeature.CASCADE_DELAY), updated -> {
+                mc.setScreen(new EaseGUIProfileEditorScreen(parentScreen, adv.tabsProfile, defaultTabs, EnumSet.of(ProfileFeature.ALPHA, ProfileFeature.CASCADE_DELAY), updated -> {
                     adv.tabsProfile = updated; ConfigManager.save();
                 }))
         ).build());

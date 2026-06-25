@@ -4,7 +4,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.weyne1.easegui.client.StringUtils;
 import net.weyne1.easegui.client.animation.AnimationProfile;
@@ -17,13 +16,15 @@ import java.util.function.Consumer;
 
 public class EaseGUIProfileEditorScreen extends AbstractSplitScreen {
     private final AnimationProfile workingCopy;
+    private final AnimationProfile defaultProfile;
     private final Consumer<AnimationProfile> onSave;
     private final EnumSet<ProfileFeature> activeFeatures;
 
-    public EaseGUIProfileEditorScreen(Screen parent, AnimationProfile originalProfile, EnumSet<ProfileFeature> features, Consumer<AnimationProfile> onSave) {
+    public EaseGUIProfileEditorScreen(Screen parent, AnimationProfile originalProfile, AnimationProfile defaultProfile, EnumSet<ProfileFeature> features, Consumer<AnimationProfile> onSave) {
         super(Component.translatable("easegui.editor.title"), parent);
         this.onSave = onSave;
         this.activeFeatures = features;
+        this.defaultProfile = defaultProfile;
         this.workingCopy = cloneProfile(originalProfile);
     }
 
@@ -39,16 +40,28 @@ public class EaseGUIProfileEditorScreen extends AbstractSplitScreen {
         leftScrollList.setX(leftX);
         leftScrollList.setY(50);
 
-        // --- 0. Переключатель "Включено / Выключено" ---
-        Component statusComp = workingCopy.enabled ? CommonComponents.OPTION_ON : CommonComponents.OPTION_OFF;
-        leftScrollList.addButton(Button.builder(
+        // --- 0. Переключатель "Включено / Выключено" + кнопка "Reset" ---
+        Component statusComp = workingCopy.enabled ? Component.translatable("easegui.generic.on") : Component.translatable("easegui.generic.off");
+        Button toggleBtn = Button.builder(
                 Component.translatable("easegui.editor.button.enabled", statusComp),
                 button -> {
                     workingCopy.enabled(!workingCopy.enabled);
-                    Component newStatus = workingCopy.enabled ? CommonComponents.OPTION_ON : CommonComponents.OPTION_OFF;
+                    Component newStatus = workingCopy.enabled ? Component.translatable("easegui.generic.on") : Component.translatable("easegui.generic.off");
                     button.setMessage(Component.translatable("easegui.editor.button.enabled", newStatus));
                 }
-        ).build());
+        ).build();
+
+        Button resetBtn = Button.builder(
+                Component.translatable("easegui.generic.reset"),
+                button -> {
+                    applyProfileValues(this.workingCopy, this.defaultProfile);
+                    if (this.minecraft != null) {
+                        this.init(this.minecraft, this.width, this.height);
+                    }
+                }
+        ).build();
+
+        leftScrollList.addTwoButtons(toggleBtn, resetBtn, 0.70f);
 
         // --- 1. Длительность (Лимит: от 0 до 5000 мс) ---
         EditBox durationField = createTextField(String.valueOf(workingCopy.duration));
@@ -161,17 +174,21 @@ public class EaseGUIProfileEditorScreen extends AbstractSplitScreen {
         if (s == null) {
             return new AnimationProfile();
         }
-        return new AnimationProfile()
-                .enabled(s.enabled)
-                .duration(s.duration)
-                .offsetX(s.offsetX)
-                .offsetY(s.offsetY)
-                .startScaleX(s.startScaleX)
-                .startScaleY(s.startScaleY)
-                .startAlpha(s.startAlpha)
-                .cascadeDelay(s.cascadeDelay)
-                .easing(s.easing)
-                .pivot(s.pivot)
-                .cascadeDirection(s.cascadeDirection);
+        return applyProfileValues(new AnimationProfile(), s);
+    }
+
+    private AnimationProfile applyProfileValues(AnimationProfile target, AnimationProfile source) {
+        return target
+                .enabled(source.enabled)
+                .duration(source.duration)
+                .offsetX(source.offsetX)
+                .offsetY(source.offsetY)
+                .startScaleX(source.startScaleX)
+                .startScaleY(source.startScaleY)
+                .startAlpha(source.startAlpha)
+                .cascadeDelay(source.cascadeDelay)
+                .easing(source.easing)
+                .pivot(source.pivot)
+                .cascadeDirection(source.cascadeDirection);
     }
 }

@@ -1,8 +1,8 @@
 {
   "modmenu.descriptionTranslation.easegui": "Плавно анимирует экраны графического интерфейса с широкими возможностями настройки!",
 
-  "easegui.generic.on": "ВКЛ",
-  "easegui.generic.off": "ВЫКЛ",
+  "easegui.generic.on": "§aВКЛ§r",
+  "easegui.generic.off": "§cВЫКЛ§r",
   "easegui.generic.back": "Назад",
   "easegui.generic.configure": "Настроить...",
   "easegui.generic.global": "глоб.",
@@ -10,6 +10,7 @@
   "easegui.generic.save": "Сохранить",
   "easegui.generic.cancel": "Отмена",
   "easegui.generic.done": "Готово",
+  "easegui.generic.reset": "§cСбросить§r",
   "easegui.generic.toggle_format": "%s: %s",
 
   "easegui.main.title": "Конфигурация EaseGUI",

@@ -10,5 +10,4 @@ pluginManagement {
 rootProject.name = 'easegui'
 
 include 'common'
-include 'fabric'
-include 'neoforge'
+include(enabled_platforms.split(','))

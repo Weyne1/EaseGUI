@@ -1,8 +1,8 @@
 {
   "modmenu.descriptionTranslation.easegui": "Smoothly animates GUI screens with extensive customization!",
 
-  "easegui.generic.on": "ON",
-  "easegui.generic.off": "OFF",
+  "easegui.generic.on": "§aON§r",
+  "easegui.generic.off": "§cOFF§r",
   "easegui.generic.back": "Back",
   "easegui.generic.configure": "Configure...",
   "easegui.generic.global": "global",
@@ -10,6 +10,7 @@
   "easegui.generic.save": "Save",
   "easegui.generic.cancel": "Cancel",
   "easegui.generic.done": "Done",
+  "easegui.generic.reset": "§cReset§r",
   "easegui.generic.toggle_format": "%s: %s",
 
   "easegui.main.title": "EaseGUI Configuration",

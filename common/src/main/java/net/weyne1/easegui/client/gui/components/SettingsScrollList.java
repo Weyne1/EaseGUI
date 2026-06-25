@@ -21,6 +21,7 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
     private static final int WIDGET_HEIGHT = 20;
     private static final float LABEL_WIDTH_RATIO = 0.55f;
     private static final int COLOR_HEADER = 0xFFAAAAAA;
+    private static final int MAX_ROW_WIDTH = 310;
 
     public SettingsScrollList(Minecraft mc, int width, int height, int top, int itemHeight) {
         super(mc, width, height, top, itemHeight);
@@ -28,7 +29,7 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
 
     @Override
     public int getRowWidth() {
-        return this.width - 40;
+        return Math.min(this.width - 40, MAX_ROW_WIDTH);
     }
 
     @Override
@@ -79,7 +80,7 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
         public void render(GuiGraphics gg, int index, int top, int left, int width, int height,
                            int mouseX, int mouseY, boolean isHovered, float partialTick) {
             button.setWidth(width - SCROLLBAR_WIDTH_GAP);
-            button.setX(left);
+            button.setX(left + (SCROLLBAR_WIDTH_GAP / 2));
             button.setY(top);
             button.render(gg, mouseX, mouseY, partialTick);
         }
@@ -113,10 +114,10 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
         @Override
         public void render(GuiGraphics gg, int index, int top, int left, int width, int height,
                            int mouseX, int mouseY, boolean isHovered, float partialTick) {
-            button1.setX(left);
+            button1.setX(left + (SCROLLBAR_WIDTH_GAP / 2));
             button1.setY(top);
 
-            button2.setX(left + button1.getWidth() + ELEMENT_SPACING);
+            button2.setX(button1.getX() + button1.getWidth() + ELEMENT_SPACING);
             button2.setY(top);
 
             button1.render(gg, mouseX, mouseY, partialTick);
@@ -152,9 +153,9 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
         @Override
         public void render(GuiGraphics gg, int index, int top, int left, int width, int height,
                            int mouseX, int mouseY, boolean isHovered, float partialTick) {
-            label.setX(left);
+            label.setX(left + (SCROLLBAR_WIDTH_GAP / 2));
             label.setY(top);
-            field.setX(left + label.getWidth() + ELEMENT_SPACING);
+            field.setX(label.getX() + label.getWidth() + ELEMENT_SPACING);
             field.setY(top);
 
             label.render(gg, mouseX, mouseY, partialTick);
@@ -198,10 +199,10 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
         @Override
         public void render(GuiGraphics gg, int index, int top, int left, int width, int height,
                            int mouseX, int mouseY, boolean isHovered, float partialTick) {
-            label.setX(left);
+            label.setX(left + (SCROLLBAR_WIDTH_GAP / 2));
             label.setY(top);
 
-            field1.setX(left + label.getWidth() + ELEMENT_SPACING);
+            field1.setX(label.getX() + label.getWidth() + ELEMENT_SPACING);
             field1.setY(top);
 
             field2.setX(field1.getX() + field1.getWidth() + ELEMENT_SPACING);

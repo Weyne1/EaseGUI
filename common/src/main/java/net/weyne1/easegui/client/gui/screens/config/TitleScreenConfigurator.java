@@ -25,9 +25,12 @@ public class TitleScreenConfigurator implements IScreenConfigurator {
             var logo = settings.logo;
             list.addHeader(Component.translatable("easegui.config.title.logo.header").getString());
 
+            AnimationProfile defaultLogo = new ModConfig.LogoSettings().logoProfile;
+            AnimationProfile defaultEdition = new ModConfig.LogoSettings().editionProfile;
+
             // Настройка анимации букв
             list.addButton(Button.builder(Component.translatable("easegui.config.title.logo.edit_anim"), btn ->
-                    mc.setScreen(new EaseGUIProfileEditorScreen(parentScreen, logo.logoProfile, EnumSet.allOf(ProfileFeature.class), updated -> {
+                    mc.setScreen(new EaseGUIProfileEditorScreen(parentScreen, logo.logoProfile, defaultLogo, EnumSet.allOf(ProfileFeature.class), updated -> {
                         logo.logoProfile = updated; ConfigManager.save();
                     }))
             ).build());
@@ -43,7 +46,7 @@ public class TitleScreenConfigurator implements IScreenConfigurator {
 
             // Настройка профиля Edition
             list.addButton(Button.builder(Component.translatable("easegui.config.title.edition.edit_anim"), btn ->
-                    mc.setScreen(new EaseGUIProfileEditorScreen(parentScreen, logo.editionProfile, EnumSet.of(ProfileFeature.OFFSET, ProfileFeature.SCALE, ProfileFeature.ALPHA, ProfileFeature.PIVOT), updated -> {
+                    mc.setScreen(new EaseGUIProfileEditorScreen(parentScreen, logo.editionProfile, defaultEdition, EnumSet.of(ProfileFeature.OFFSET, ProfileFeature.SCALE, ProfileFeature.ALPHA, ProfileFeature.PIVOT), updated -> {
                         logo.editionProfile = updated; ConfigManager.save();
                     }))
             ).build());
