@@ -17,10 +17,10 @@
 	"environment": "client",
 	"entrypoints": {
 		"client": [
-			"net.weyne1.easegui.neoforge.client.EaseGUIFabricClient"
+          "net.weyne1.easegui.neoforge.client.EaseGUIFabricClient"
 		],
 		"modmenu": [
-			"net.weyne1.easegui.neoforge.client.ModMenuIntegration"
+          "net.weyne1.easegui.neoforge.client.ModMenuIntegration"
 		]
 	},
 	"mixins": [

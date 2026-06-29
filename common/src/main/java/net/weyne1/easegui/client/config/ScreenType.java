@@ -23,7 +23,7 @@ public final class ScreenType {
     private final Class<? extends Screen> screenClass;
     private final String translationKey;
     private final int priority;
-    private final ScreenCategory category;
+    private final ScreenGroup group;
     private final boolean enabledByDefault;
 
     /**
@@ -39,13 +39,13 @@ public final class ScreenType {
             String id,
             Class<? extends Screen> screenClass,
             int priority,
-            ScreenCategory category,
+            ScreenGroup group,
             boolean enabledByDefault
     ) {
         this.id = id;
         this.screenClass = screenClass;
         this.priority = priority;
-        this.category = category;
+        this.group = group;
         this.enabledByDefault = enabledByDefault;
 
         if (id.contains(":")) {
@@ -63,9 +63,9 @@ public final class ScreenType {
             String id,
             Class<? extends Screen> screenClass,
             int priority,
-            ScreenCategory category
+            ScreenGroup group
     ) {
-        this(id, screenClass, priority, category, true);
+        this(id, screenClass, priority, group, true);
     }
 
     public String getId() {
@@ -80,8 +80,8 @@ public final class ScreenType {
         return priority;
     }
 
-    public ScreenCategory getCategory() {
-        return category;
+    public ScreenGroup getGroup() {
+        return group;
     }
 
     public boolean isEnabledByDefault() {

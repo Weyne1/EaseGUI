@@ -4,25 +4,29 @@
   "compatibilityLevel": "JAVA_21",
   "minVersion": "0.8",
   "client": [
-    "AbstractSelectionListMixin",
-    "AbstractWidgetMixin",
     "GameRendererMixin",
-    "GuiGraphicsMixin",
-    "blaze3d.RenderSystemMixin",
-    "ScreenLifecycleMixin",
-    "ScreenMixin",
-    "advancements.AdvancementsScreenMixin",
-    "advancements.AdvancementTabMixin",
-    "container.AbstractContainerScreenMixin",
-    "container.RecipeBookComponentMixin",
-    "title.LogoRendererMixin",
-    "title.SplashRendererMixin",
-    "title.TitleScreenMixin"
+    "MinecraftMixin",
+    "accessor.AdvancementTabAccessor",
+    "blaze3d.VertexBufferMixin",
+    "gui.AbstractSelectionListMixin",
+    "gui.AbstractWidgetMixin",
+    "gui.AdvancementsScreenMixin",
+    "gui.GuiGraphicsMixin",
+    "gui.ScreenLifecycleMixin",
+    "gui.ScreenMixin",
+    "gui.container.AbstractContainerScreenMixin",
+    "gui.container.RecipeBookComponentMixin",
+    "gui.title.LogoRendererMixin",
+    "gui.title.SplashRendererMixin",
+    "gui.title.TitleScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 1
   },
   "overwrites": {
     "requireAnnotations": true
-	}
+  },
+  "mixins": [
+    "compat.EmiCompatMixin"
+  ]
 }

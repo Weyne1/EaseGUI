@@ -56,6 +56,7 @@ public class AnimationProfile {
             float c3 = c1 + 1f;
             return c3 * t * t * t - c1 * t * t;
         }),
+
         EASE_OUT_BACK(t -> {
             float c1 = 1.70158f;
             float c3 = c1 + 1f;

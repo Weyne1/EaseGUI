@@ -4,10 +4,12 @@ import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.LogoRenderer;
 import net.minecraft.resources.ResourceLocation;
-import net.weyne1.easegui.client.animation.AnimationEngine;
-import net.weyne1.easegui.client.animation.AnimationMathUtils;
+import net.weyne1.easegui.client.animation.AnimationMath;
+import net.weyne1.easegui.client.animation.AnimationProfile;
+import net.weyne1.easegui.client.animation.AnimationScope;
+import net.weyne1.easegui.client.animation.AnimationSystem;
 import net.weyne1.easegui.client.config.ConfigManager;
-import net.weyne1.easegui.client.config.ModConfig;
+import net.weyne1.easegui.client.config.EaseGUIConfig;
 import net.weyne1.easegui.client.state.ScreenStateTracker;
 
 /**
@@ -40,88 +42,139 @@ public class LogoAnimator {
      */
     private static final int[] LOGICAL_INDICES = new int[] { 0, 1, 2, 3, 8, 7, 6, 5, 4 };
 
-    public static boolean render(GuiGraphics gg, int screenWidth, float transparency, int height,
-                                 boolean showEasterEgg, boolean keepLogoThroughFade) {
+    private static long lastTrackedSessionTime = -1L;
+    private static long actualStartTime = -1L;
 
+    public static boolean render(GuiGraphics gg, int screenWidth, float transparency, int height, boolean showEasterEgg, boolean keepLogoThroughFade) {
         var titleSettings = ConfigManager.getConfig().screens.get("title");
         if (titleSettings == null || !titleSettings.enabled || titleSettings.logo == null) {
             return false;
         }
 
-        var logoConfig = titleSettings.logo;
-        long startTime = ScreenStateTracker.getScreenOpenTime();
-        float finalAlpha = keepLogoThroughFade ? 1.0f : transparency;
+        gg.flush();
+        trackSessionTime();
 
-        ResourceLocation logoTexture = showEasterEgg ? LogoRenderer.EASTER_EGG_LOGO : LogoRenderer.MINECRAFT_LOGO;
+        var logoConfig = titleSettings.logo;
+        float finalAlpha = keepLogoThroughFade ? 1.0f : transparency;
         int startX = screenWidth / 2 - (LOGO_WIDTH / 2);
 
-        renderLogoLetters(gg, logoTexture, logoConfig, startX, height, startTime, finalAlpha);
-        renderEditionText(gg, logoConfig, screenWidth, height, startTime, finalAlpha);
+        ResourceLocation logoTexture = showEasterEgg ? LogoRenderer.EASTER_EGG_LOGO : LogoRenderer.MINECRAFT_LOGO;
+        if (logoConfig.animateWholeText) {
+            renderWholeLogo(gg, logoTexture, logoConfig.logoProfile, startX, height, finalAlpha);
+        } else {
+            renderCascadedLetters(gg, logoConfig.logoProfile, startX, height, finalAlpha);
+        }
+
+        renderEditionText(gg, logoConfig, screenWidth, height, finalAlpha);
+
+        gg.flush();
+        gg.setColor(1.0f, 1.0f, 1.0f, transparency);
 
         return true;
     }
 
-    private static void renderLogoLetters(GuiGraphics gg, ResourceLocation vanillaTexture, ModConfig.LogoSettings config,
-                                          int startX, int height, long startTime, float finalAlpha) {
-        var profile = config.logoProfile;
+    private static void renderWholeLogo(GuiGraphics gg, ResourceLocation texture, AnimationProfile profile, int startX, int height, float finalAlpha) {
+        long elapsed = Util.getMillis() - actualStartTime;
+
+        if (elapsed >= profile.duration) {
+            drawLogoTexture(gg, texture, startX, height);
+            return;
+        }
+
+        float progress = elapsed <= 0 ? 0.0f : AnimationMath.calculateProgress(elapsed, profile.duration, profile.easing);
+        try (AnimationScope ignored = AnimationSystem.begin(gg, startX, height, LOGO_WIDTH, LOGO_HEIGHT, profile, progress, finalAlpha)) {
+            drawLogoTexture(gg, texture, startX, height);
+        }
+        gg.flush();
+    }
+
+    private static void renderCascadedLetters(GuiGraphics gg, AnimationProfile profile, int startX, int height, float finalAlpha) {
         long now = Util.getMillis();
+        long maxLogoDelay = (LETTER_TEXTURES.length - 1) * profile.cascadeDelay;
 
-        if (config.animateWholeText) {
-            long elapsed = now - startTime;
-            float progress = AnimationMathUtils.calculateProgress(elapsed, profile.duration, profile.easing);
-
-            AnimationEngine.apply(gg, startX, height, LOGO_WIDTH, LOGO_HEIGHT, profile, progress, finalAlpha);
-            gg.blit(vanillaTexture, startX, height, 0.0f, 0.0f, LOGO_WIDTH, LOGO_HEIGHT, LOGO_WIDTH, LOGO_TEXTURE_HEIGHT);
-            AnimationEngine.cleanUp(gg);
-        } else {
-            for (int i = 0; i < LETTER_TEXTURES.length; i++) {
-                int logicalIndex = LOGICAL_INDICES[i];
-                ResourceLocation texture = LETTER_TEXTURES[i];
-
-                long cascadeDelay = switch (profile.cascadeDirection) {
-                    case LEFT_TO_RIGHT -> logicalIndex * profile.cascadeDelay;
-                    case RIGHT_TO_LEFT -> (LETTER_TEXTURES.length - 1 - logicalIndex) * profile.cascadeDelay;
-                    case TOP_TO_BOTTOM, BOTTOM_TO_TOP -> 0L;
-                };
-
-                long elapsed = now - startTime - cascadeDelay;
-                float progress = AnimationMathUtils.calculateProgress(elapsed, profile.duration, profile.easing);
-
-                AnimationEngine.apply(gg, startX, height, LOGO_WIDTH, LOGO_HEIGHT, profile, progress, finalAlpha);
-                gg.blit(texture, startX, height, 0.0f, 0.0f, LOGO_WIDTH, LOGO_HEIGHT, LOGO_WIDTH, LOGO_TEXTURE_HEIGHT);
-                AnimationEngine.cleanUp(gg);
+        if (now - actualStartTime >= maxLogoDelay + profile.duration) {
+            for (ResourceLocation texture : LETTER_TEXTURES) {
+                drawLogoTexture(gg, texture, startX, height);
             }
+            gg.flush();
+            return;
+        }
+
+        for (int i = 0; i < LETTER_TEXTURES.length; i++) {
+            int logicalIndex = LOGICAL_INDICES[i];
+            ResourceLocation texture = LETTER_TEXTURES[i];
+
+            long cascadeDelay = calculateCascadeDelay(profile, logicalIndex);
+            long elapsed = now - actualStartTime - cascadeDelay;
+            float progress = elapsed <= 0 ? 0.0f : AnimationMath.calculateProgress(elapsed, profile.duration, profile.easing);
+
+            try (AnimationScope ignored = AnimationSystem.begin(gg, startX, height, LOGO_WIDTH, LOGO_HEIGHT, profile, progress, finalAlpha)) {
+                drawLogoTexture(gg, texture, startX, height);
+            }
+            gg.flush();
         }
     }
 
-    private static void renderEditionText(GuiGraphics gg, ModConfig.LogoSettings config,
-                                          int screenWidth, int height, long startTime, float finalAlpha) {
+    private static void renderEditionText(GuiGraphics gg, EaseGUIConfig.LogoSettings config, int screenWidth, int height, float finalAlpha) {
         int x = screenWidth / 2 - (EDITION_WIDTH / 2);
         int y = height + LOGO_HEIGHT - 7;
-
         var profile = config.editionProfile;
 
-        if (profile != null && profile.enabled) {
-            long elapsed = getElapsed(config, startTime);
-            float progress = AnimationMathUtils.calculateProgress(elapsed, profile.duration, profile.easing);
-
-            AnimationEngine.apply(gg, x, y, EDITION_WIDTH, EDITION_HEIGHT, profile, progress, finalAlpha);
-        } else {
-            AnimationEngine.applyAlphaOnly(gg, finalAlpha);
+        if (profile == null || !profile.enabled) {
+            drawStaticEdition(gg, x, y, finalAlpha);
+            return;
         }
 
-        gg.blit(LogoRenderer.MINECRAFT_EDITION, x, y, 0.0f, 0.0f, EDITION_WIDTH, EDITION_HEIGHT, EDITION_WIDTH, EDITION_TEXTURE_HEIGHT);
-        AnimationEngine.cleanUp(gg);
+        long elapsed = getEditionElapsed(config);
+
+        if (elapsed >= profile.duration) {
+            drawStaticEdition(gg, x, y, finalAlpha);
+            return;
+        }
+
+        float progress = elapsed <= 0 ? 0.0f : AnimationMath.calculateProgress(elapsed, profile.duration, profile.easing);
+        try (AnimationScope ignored = AnimationSystem.begin(gg, x, y, EDITION_WIDTH, EDITION_HEIGHT, profile, progress, finalAlpha)) {
+            drawEditionTexture(gg, x, y);
+        }
+        gg.flush();
     }
 
-    private static long getElapsed(ModConfig.LogoSettings config, long startTime) {
-        long now = Util.getMillis();
+    private static void drawStaticEdition(GuiGraphics gg, int x, int y, float finalAlpha) {
+        try (AnimationScope ignored = AnimationSystem.beginAlphaOnly(gg, finalAlpha)) {
+            drawEditionTexture(gg, x, y);
+        }
+        gg.flush();
+    }
 
+    private static long calculateCascadeDelay(AnimationProfile profile, int logicalIndex) {
+        return switch (profile.cascadeDirection) {
+            case LEFT_TO_RIGHT -> logicalIndex * profile.cascadeDelay;
+            case RIGHT_TO_LEFT -> (LETTER_TEXTURES.length - 1 - logicalIndex) * profile.cascadeDelay;
+            case TOP_TO_BOTTOM, BOTTOM_TO_TOP -> 0L;
+        };
+    }
+
+    private static long getEditionElapsed(EaseGUIConfig.LogoSettings config) {
         long maxLogoDelay = config.animateWholeText ? 0L : switch (config.logoProfile.cascadeDirection) {
             case LEFT_TO_RIGHT, RIGHT_TO_LEFT -> (LETTER_TEXTURES.length - 1) * config.logoProfile.cascadeDelay;
             case TOP_TO_BOTTOM, BOTTOM_TO_TOP -> 0L;
         };
+        return Util.getMillis() - actualStartTime - maxLogoDelay;
+    }
 
-        return now - startTime - maxLogoDelay;
+    private static void trackSessionTime() {
+        long currentSessionTime = ScreenStateTracker.getScreenOpenTime();
+        if (lastTrackedSessionTime != currentSessionTime) {
+            lastTrackedSessionTime = currentSessionTime;
+            actualStartTime = Util.getMillis();
+        }
+    }
+
+    private static void drawLogoTexture(GuiGraphics gg, ResourceLocation texture, int x, int y) {
+        gg.blit(texture, x, y, 0.0f, 0.0f, LOGO_WIDTH, LOGO_HEIGHT, LOGO_WIDTH, LOGO_TEXTURE_HEIGHT);
+    }
+
+    private static void drawEditionTexture(GuiGraphics gg, int x, int y) {
+        gg.blit(LogoRenderer.MINECRAFT_EDITION, x, y, 0.0f, 0.0f, EDITION_WIDTH, EDITION_HEIGHT, EDITION_WIDTH, EDITION_TEXTURE_HEIGHT);
     }
 }

@@ -19,11 +19,11 @@ public class ConfigManager {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
-    private static ModConfig currentConfig = new ModConfig();
+    private static EaseGUIConfig currentConfig = new EaseGUIConfig();
     private static boolean isLoaded = false;
 
     private static Screen cachedScreenInstance = null;
-    private static ScreenType cachedScreenType = ScreenRegistry.OTHER;
+    private static ScreenType cachedScreenType = EaseGUIScreenRegistry.OTHER;
 
     public static void load() {
         if (isLoaded) return;
@@ -39,29 +39,29 @@ public class ConfigManager {
                 boolean migrated = false;
                 int version = jsonConfig.has("schemaVersion") ? jsonConfig.get("schemaVersion").getAsInt() : 0;
 
-                if (version < ModConfig.CURRENT_SCHEMA_VERSION) {
+                if (version < EaseGUIConfig.CURRENT_SCHEMA_VERSION) {
                     if (version == 0) {
                         migrated = ConfigMigrator.runMigrationV0toV1(jsonConfig);
                     }
                 }
 
-                currentConfig = GSON.fromJson(jsonConfig, ModConfig.class);
+                currentConfig = GSON.fromJson(jsonConfig, EaseGUIConfig.class);
 
                 if (currentConfig == null) {
-                    currentConfig = new ModConfig();
+                    currentConfig = new EaseGUIConfig();
                 }
 
-                currentConfig.schemaVersion = ModConfig.CURRENT_SCHEMA_VERSION;
+                currentConfig.schemaVersion = EaseGUIConfig.CURRENT_SCHEMA_VERSION;
 
                 if (currentConfig.mergeDefaults() || migrated) {
-                    LOGGER.info("[EaseGUI] Config schema updated from version {} to {}.", version, ModConfig.CURRENT_SCHEMA_VERSION);
+                    LOGGER.info("[EaseGUI] Config schema updated from version {} to {}.", version, EaseGUIConfig.CURRENT_SCHEMA_VERSION);
                     save();
                 }
 
                 LOGGER.info("[EaseGUI] Config successfully loaded from disk.");
             } catch (Exception e) {
                 LOGGER.error("[EaseGUI] Failed to read config, creating default... Error: {}", e.getMessage());
-                currentConfig = new ModConfig();
+                currentConfig = new EaseGUIConfig();
                 save();
             }
         } else {
@@ -80,7 +80,7 @@ public class ConfigManager {
         }
     }
 
-    public static ModConfig getConfig() {
+    public static EaseGUIConfig getConfig() {
         if (!isLoaded) load();
         return currentConfig;
     }
@@ -93,10 +93,10 @@ public class ConfigManager {
 
         if (currentScreen != cachedScreenInstance) {
             cachedScreenInstance = currentScreen;
-            cachedScreenType = ScreenRegistry.from(currentScreen);
+            cachedScreenType = EaseGUIScreenRegistry.from(currentScreen);
         }
 
-        ModConfig.ScreenSettings screenSettings = currentConfig.screens.get(cachedScreenType.getId());
+        EaseGUIConfig.ScreenSettings screenSettings = currentConfig.screens.get(cachedScreenType.getId());
 
         if (screenSettings != null) {
             if (!screenSettings.enabled) return null;

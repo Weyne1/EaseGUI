@@ -2,17 +2,19 @@ package net.weyne1.easegui.client.gui.screens;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.MultiLineTextWidget;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.weyne1.easegui.client.animation.AnimationProfile;
-import net.weyne1.easegui.client.config.UIElementCategory;
 import net.weyne1.easegui.client.config.*;
-import net.weyne1.easegui.client.gui.screens.config.IScreenConfigurator;
 import net.weyne1.easegui.client.gui.components.SettingsScrollList;
+import net.weyne1.easegui.client.gui.configurator.IScreenConfigurator;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.EnumSet;
 
-public class ScreenSpecificConfigScreen extends AbstractSplitScreen {
+public class ScreenSpecificConfigScreen extends EaseGUIAbstractSplitScreen {
     private final ScreenType screenType;
 
     public ScreenSpecificConfigScreen(Screen parent, ScreenType type) {
@@ -28,8 +30,8 @@ public class ScreenSpecificConfigScreen extends AbstractSplitScreen {
 
     @Override
     protected void initScreen() {
-        ModConfig config = ConfigManager.getConfig();
-        ModConfig.ScreenSettings settings = config.screens.get(screenType.getId());
+        EaseGUIConfig config = ConfigManager.getConfig();
+        EaseGUIConfig.ScreenSettings settings = config.screens.get(screenType.getId());
 
         if (settings == null) {
             Minecraft.getInstance().setScreen(this.parent);
@@ -52,12 +54,22 @@ public class ScreenSpecificConfigScreen extends AbstractSplitScreen {
         this.addRenderableWidget(leftScrollList);
 
         if (!hasSpecificOptions) {
-            Component noOptionsText = Component.translatable("easegui.gui.no_unique_options");
-            StringWidget noOptionsWidget = new StringWidget(noOptionsText, this.font);
-            noOptionsWidget.setX((this.halfWidth / 2) - (noOptionsWidget.getWidth() / 2));
-            noOptionsWidget.setY(this.height / 2 - 4);
-            noOptionsWidget.setColor(0x55FFFFFF);
-            this.addRenderableWidget(noOptionsWidget);
+            if ("other".equals(screenType.getId())) {
+                Component warningText = Component.translatable("easegui.gui.warning.title")
+                        .append("\n\n")
+                        .append(Component.translatable("easegui.gui.warning.other_desc"));
+
+                MultiLineTextWidget warningWidget = addMultiLineTextWidget(warningText);
+
+                this.addRenderableWidget(warningWidget);
+            } else {
+                StringWidget noOptionsWidget = new StringWidget(Component.translatable("easegui.gui.no_unique_options"), this.font);
+                int leftBlockCenterX = leftX + (listWidth / 2);
+                noOptionsWidget.setX(leftBlockCenterX - (noOptionsWidget.getWidth() / 2));
+                noOptionsWidget.setY(this.height / 2 - 4);
+                noOptionsWidget.setColor(0x55FFFFFF);
+                this.addRenderableWidget(noOptionsWidget);
+            }
         }
 
         // ================= СПРАВА =================
@@ -81,7 +93,19 @@ public class ScreenSpecificConfigScreen extends AbstractSplitScreen {
                 .bounds(halfWidth - 100, this.height - 30, 200, 20).build());
     }
 
-    private void setupCategoryButtons(SettingsScrollList rightScrollList, ModConfig.ScreenSettings settings, ModConfig config) {
+    private @NotNull MultiLineTextWidget addMultiLineTextWidget(Component warningText) {
+        MultiLineTextWidget warningWidget = new MultiLineTextWidget(warningText, this.font);
+
+        int padding = 20;
+        warningWidget.setMaxWidth(listWidth - (padding * 2));
+        warningWidget.setCentered(true);
+        int leftBlockCenterX = leftX + (listWidth / 2);
+        warningWidget.setX(leftBlockCenterX - (warningWidget.getWidth() / 2));
+        warningWidget.setY((this.height / 2) - (warningWidget.getHeight() / 2));
+        return warningWidget;
+    }
+
+    private void setupCategoryButtons(SettingsScrollList rightScrollList, EaseGUIConfig.ScreenSettings settings, EaseGUIConfig config) {
         EnumSet<UIElementCategory> overridableCategories = EnumSet.complementOf(EnumSet.of(UIElementCategory.UNKNOWN));
 
         for (UIElementCategory category : overridableCategories) {
@@ -90,7 +114,7 @@ public class ScreenSpecificConfigScreen extends AbstractSplitScreen {
             Component categoryLabel = Component.translatable("easegui.category." + category.name().toLowerCase());
             Component modeLabel = Component.translatable(hasCustom ? "easegui.generic.custom" : "easegui.generic.global");
 
-            AnimationProfile cleanDefault = new ModConfig().global.elementProfiles.get(category);
+            AnimationProfile cleanDefault = new EaseGUIConfig().global.elementProfiles.get(category);
             if (cleanDefault == null) cleanDefault = new AnimationProfile();
             AnimationProfile finalCleanDefault = cleanDefault;
 
@@ -99,7 +123,7 @@ public class ScreenSpecificConfigScreen extends AbstractSplitScreen {
 
                 EnumSet<ProfileFeature> allowedFeatures = category.getAllowedFeatures();
 
-                Minecraft.getInstance().setScreen(new EaseGUIProfileEditorScreen(this, profile, finalCleanDefault, allowedFeatures, updated -> {
+                Minecraft.getInstance().setScreen(new ProfileEditorScreen(this, profile, finalCleanDefault, allowedFeatures, updated -> {
                     settings.customProfiles.put(category, updated);
                     ConfigManager.save();
                 }));

@@ -12,26 +12,26 @@ class AnimationMathUtilsTest {
 
     @Test
     void testClamp() {
-        assertEquals(0.5f, AnimationMathUtils.clamp(0.5f, 0.0f, 1.0f));
-        assertEquals(0.0f, AnimationMathUtils.clamp(-0.5f, 0.0f, 1.0f));
-        assertEquals(1.0f, AnimationMathUtils.clamp(1.5f, 0.0f, 1.0f));
+        assertEquals(0.5f, AnimationMath.clamp(0.5f, 0.0f, 1.0f));
+        assertEquals(0.0f, AnimationMath.clamp(-0.5f, 0.0f, 1.0f));
+        assertEquals(1.0f, AnimationMath.clamp(1.5f, 0.0f, 1.0f));
     }
 
     @Test
     void testLerp() {
         // Начальный масштаб 0.5f, конечный 1.0f. На половине пути должно быть 0.75f
-        float result = AnimationMathUtils.lerp(0.5f, 1.0f, 0.5f);
+        float result = AnimationMath.lerp(0.5f, 1.0f, 0.5f);
         assertEquals(0.75f, result, 0.0001f);
     }
 
     @Test
     void testCalculateCurrentOffset() {
         // Начальное смещение 100px. При прогрессе 0.25 (пройдено 25%) остаток смещения должен быть 75px
-        float remainingOffset = AnimationMathUtils.calculateCurrentOffset(100f, 0.25f);
+        float remainingOffset = AnimationMath.calculateCurrentOffset(100f, 0.25f);
         assertEquals(75f, remainingOffset, 0.0001f);
 
         // В конце анимации смещение строго 0
-        assertEquals(0f, AnimationMathUtils.calculateCurrentOffset(100f, 1.0f), 0.0001f);
+        assertEquals(0f, AnimationMath.calculateCurrentOffset(100f, 1.0f), 0.0001f);
     }
 
     @ParameterizedTest
@@ -42,7 +42,7 @@ class AnimationMathUtilsTest {
     })
     void testCalculatePivotX(PivotPoint pivot, float startX, float expectedPivotX) {
         float width = 100f;
-        float actualPivotX = AnimationMathUtils.calculatePivotX(pivot, startX, width);
+        float actualPivotX = AnimationMath.calculatePivotX(pivot, startX, width);
         assertEquals(expectedPivotX, actualPivotX, 0.0001f);
     }
 
@@ -54,7 +54,7 @@ class AnimationMathUtilsTest {
     })
     void testCalculatePivotY(PivotPoint pivot, float startY, float expectedPivotY) {
         float height = 50f;
-        float actualPivotY = AnimationMathUtils.calculatePivotY(pivot, startY, height);
+        float actualPivotY = AnimationMath.calculatePivotY(pivot, startY, height);
         assertEquals(expectedPivotY, actualPivotY, 0.0001f);
     }
 
@@ -66,7 +66,7 @@ class AnimationMathUtilsTest {
             "1.5,  1.0"    // Выше максимума -> ограничение до 1.0
     })
     void testClampFontAlpha(float inputAlpha, float expectedAlpha) {
-        float result = AnimationMathUtils.clampFontAlpha(inputAlpha);
+        float result = AnimationMath.clampFontAlpha(inputAlpha);
         assertEquals(expectedAlpha, result, 0.0001f);
     }
 
@@ -79,7 +79,7 @@ class AnimationMathUtilsTest {
             "500,  1000, 0.5f"   // В середине
     })
     void testAnimationProgress(long timePassed, long duration, float expectedProgress) {
-        float result = AnimationMathUtils.calculateProgress(timePassed, duration, AnimationProfile.EasingType.LINEAR);
+        float result = AnimationMath.calculateProgress(timePassed, duration, AnimationProfile.EasingType.LINEAR);
         assertEquals(expectedProgress, result, 0.0001f);
     }
 

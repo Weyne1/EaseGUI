@@ -1,33 +1,23 @@
 package net.weyne1.easegui.client.state;
 
-import net.minecraft.Util;
+import net.minecraft.util.Mth;
+import net.weyne1.easegui.client.animator.BackgroundAnimator;
 import net.weyne1.easegui.client.config.ConfigManager;
 
 public class ScreenAnimationTracker {
-    private static long blurStartTime = -1;
-    private static long lastRenderTime = 0;
 
     public static float getProgress() {
         var globalConfig = ConfigManager.getConfig().global;
-        if (!globalConfig.enableSmoothBlur) {
+
+        if (!globalConfig.enableSmoothDimming || BackgroundAnimator.skipBackgroundFade) {
             return 1.0f;
         }
 
-        long now = Util.getMillis();
+        long elapsed = ScreenStateTracker.getScreenElapsed();
+        long duration = globalConfig.dimmingDuration;
 
-        if (now - lastRenderTime > 200) {
-            blurStartTime = now;
-        }
-        lastRenderTime = now;
+        float t = (duration <= 0) ? 1f : Mth.clamp(elapsed / (float) duration, 0f, 1f);
 
-        long elapsed = now - blurStartTime;
-        long duration = globalConfig.blurDuration;
-
-        float t;
-        if (elapsed <= 0) t = 0f;
-        else if (elapsed >= duration) t = 1f;
-        else t = elapsed / (float) duration;
-
-        return globalConfig.blurEasing.ease(t);
+        return globalConfig.dimmingEasing.ease(t);
     }
 }

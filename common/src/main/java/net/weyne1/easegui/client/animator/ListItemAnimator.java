@@ -3,11 +3,12 @@ package net.weyne1.easegui.client.animator;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.weyne1.easegui.client.animation.AnimationEngine;
-import net.weyne1.easegui.client.animation.AnimationMathUtils;
+import net.weyne1.easegui.client.animation.AnimationMath;
 import net.weyne1.easegui.client.animation.AnimationProfile;
-import net.weyne1.easegui.client.config.UIElementCategory;
+import net.weyne1.easegui.client.animation.AnimationScope;
+import net.weyne1.easegui.client.animation.AnimationSystem;
 import net.weyne1.easegui.client.config.ConfigManager;
+import net.weyne1.easegui.client.config.UIElementCategory;
 import net.weyne1.easegui.client.state.ScreenStateTracker;
 
 /**
@@ -15,23 +16,28 @@ import net.weyne1.easegui.client.state.ScreenStateTracker;
  */
 public class ListItemAnimator {
 
-    public static boolean preRender(GuiGraphics gg, int top, int left, int width, int height) {
+    /**
+     * Starts the animation.
+     *
+     * @return an {@link AnimationScope} that must be closed, or {@code null} if no animation is needed
+     */
+    public static AnimationScope beginRender(GuiGraphics gg, int top, int left, int width, int height) {
         var profile = ConfigManager.getProfileForCurrentContext(UIElementCategory.LIST_ENTRY);
-        if (profile == null || !profile.enabled) return false;
+        if (profile == null || !profile.enabled) return null;
 
         long delay = getDelay(top, left, profile);
         long startTime = ScreenStateTracker.getScreenOpenTime();
 
         long elapsed = Util.getMillis() - startTime - delay;
-        float progress = AnimationMathUtils.calculateProgress(elapsed, profile.duration, profile.easing);
 
-        AnimationEngine.apply(gg, left, top, width, height, profile, progress, 1.0f);
+        if (elapsed >= profile.duration) return null;
 
-        return true;
-    }
+        float progress = 0.0f;
+        if (elapsed > 0) {
+            progress = AnimationMath.calculateProgress(elapsed, profile.duration, profile.easing);
+        }
 
-    public static void postRender(GuiGraphics gg) {
-        AnimationEngine.cleanUp(gg);
+        return AnimationSystem.begin(gg, left, top, width, height, profile, progress, 1.0f);
     }
 
     private static long getDelay(int top, int left, AnimationProfile profile) {

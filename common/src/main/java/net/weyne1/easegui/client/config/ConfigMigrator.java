@@ -7,11 +7,10 @@ public class ConfigMigrator {
     /**
      * Migrates the configuration schema from v0 (0.1.0) to v1 (0.2.0+).
      * <ul>
-     * <li>Moves the legacy {@code logo.direction} field into {@code logo.logoProfile.cascadeDirection}.</li>
-     * <li>Forces {@code advancements.tabsProfile.cascadeDirection} to {@code LEFT_TO_RIGHT} to fix legacy GUI layout softlocks.</li>
+     *     <li>Moves the legacy {@code logo.direction} field into {@code logo.logoProfile.cascadeDirection}.</li>
+     *     <li>Forces {@code advancements.tabsProfile.cascadeDirection} to {@code LEFT_TO_RIGHT}.</li>
+     *     <li>Disables animations for the experimental {@code other} screen category.</li>
      * </ul>
-     * @param jsonConfig the raw JSON configuration root
-     * @return {@code true} if the JSON structure was modified, {@code false} otherwise
      */
     static boolean runMigrationV0toV1(JsonObject jsonConfig) {
         boolean changed = false;
@@ -52,6 +51,13 @@ public class ConfigMigrator {
                     changed = true;
                 }
             }
+        }
+
+        if (screens.has("other") && screens.get("other").isJsonObject()) {
+            JsonObject other = screens.getAsJsonObject("other");
+
+            other.addProperty("enabled", false);
+            changed = true;
         }
 
         return changed;
