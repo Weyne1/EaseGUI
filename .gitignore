@@ -33,3 +33,6 @@ replay_*.log
 run/
 */run/
 .patchie/
+
+# Architectury transformer build artifacts
+.architectury-transformer/
