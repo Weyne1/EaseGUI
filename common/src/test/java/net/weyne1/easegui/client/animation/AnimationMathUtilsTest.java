@@ -58,18 +58,6 @@ class AnimationMathUtilsTest {
         assertEquals(expectedPivotY, actualPivotY, 0.0001f);
     }
 
-    @ParameterizedTest(name = "Входная альфа {0} -> ожидаемая {1}")
-    @CsvSource({
-            "0.0,  0.02",  // Ниже порога (0.0) -> безопасный минимум
-            "0.01, 0.02",  // Ниже порога (0.01) -> безопасный минимум
-            "0.5,  0.5",   // Внутри диапазона -> без изменений
-            "1.5,  1.0"    // Выше максимума -> ограничение до 1.0
-    })
-    void testClampFontAlpha(float inputAlpha, float expectedAlpha) {
-        float result = AnimationMath.clampFontAlpha(inputAlpha);
-        assertEquals(expectedAlpha, result, 0.0001f);
-    }
-
     @ParameterizedTest(name = "При времени {0} ms и длительности {1} ms прогресс должен быть {2}")
     @CsvSource({
             "-100, 1000, 0f",    // До начала

@@ -35,14 +35,6 @@ public final class AnimationMath {
         };
     }
 
-    /**
-     * Minecraft text rendering becomes unreliable below ~0.02 alpha,
-     * causing glyphs to appear abruptly instead of fading smoothly.
-     */
-    public static float clampFontAlpha(float letterAlpha) {
-        return clamp(letterAlpha, 0.02f, 1.0f);
-    }
-
     public static float calculateProgress(
             long elapsed,
             long duration,

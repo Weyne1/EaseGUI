@@ -34,7 +34,7 @@ public class SplashAnimator {
         float progress = AnimationMath.calculateProgress(elapsed, splashConfig.splashDuration, splashConfig.splashEasing);
 
         float baseAlpha = ((color >> 24) & 255) / 255.0f;
-        float finalAlpha = baseAlpha * AnimationMath.clampFontAlpha(progress);
+        float finalAlpha = baseAlpha * progress;
         AnimationScope scope = AnimationSystem.beginAlphaOnly(gg, finalAlpha);
 
         gg.pose().scale(progress, progress, 1.0f);

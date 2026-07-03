@@ -13,7 +13,7 @@ public final class AnimationSystem {
     ) {
         float alphaProgress = AnimationMath.clamp(progress, 0.0f, 1.0f);
         float lerpedAlpha = AnimationMath.lerp(profile.startAlpha, 1.0f, alphaProgress);
-        float finalAlpha = baseAlpha * AnimationMath.clampFontAlpha(lerpedAlpha);
+        float finalAlpha = AnimationMath.clamp(baseAlpha * lerpedAlpha, 0.0f, 1.0f);
 
         AnimationScope scope = new AnimationScope(gg, finalAlpha);
         scope.setTransformParams(

@@ -91,7 +91,7 @@ public class ProfilePreviewRenderer {
             int y = targetY - halfH;
 
             try (AnimationScope ignored = AnimationSystem.begin(gg, x, y, boxWidth, BOX_HEIGHT, profile, easedProgress, 1.0f)) {
-                int bgAlpha = calcAlphaColor(profile.startAlpha, easedProgress, false);
+                int bgAlpha = calcAlphaColor(profile.startAlpha, easedProgress);
                 int boxColor = isEnabled ? 0x353535 : 0x222222;
                 gg.fill(x, y, x + boxWidth, y + BOX_HEIGHT, (bgAlpha << 24) | boxColor);
 
@@ -99,7 +99,7 @@ public class ProfilePreviewRenderer {
                         ? (isHorizontal ? CASCADE_SHORT_LABELS[i] : CASCADE_LABELS[i])
                         : STATIC_LABEL;
 
-                int fontAlpha = calcAlphaColor(profile.startAlpha, easedProgress, true);
+                int fontAlpha = calcAlphaColor(profile.startAlpha, easedProgress);
                 int textColor = isEnabled ? 0xE0E0E0 : 0x888888;
 
                 gg.drawCenteredString(font, label, targetX, targetY - 4, (fontAlpha << 24) | textColor);
@@ -166,10 +166,9 @@ public class ProfilePreviewRenderer {
         }
     }
 
-    private static int calcAlphaColor(float startAlpha, float progress, boolean isFont) {
+    private static int calcAlphaColor(float startAlpha, float progress) {
         float lerp = AnimationMath.lerp(startAlpha, 1.0f, progress);
-        float value = isFont ? AnimationMath.clampFontAlpha(lerp) : lerp;
-        return Math.max(0, Math.min(255, (int) (value * 255)));
+        return Math.max(0, Math.min(255, (int) (lerp * 255)));
     }
 
     private static long calculateCascadeDelay(AnimationProfile profile, int i) {
