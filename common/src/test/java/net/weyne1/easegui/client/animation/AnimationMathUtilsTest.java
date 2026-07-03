@@ -34,30 +34,6 @@ class AnimationMathUtilsTest {
         assertEquals(0f, AnimationMath.calculateCurrentOffset(100f, 1.0f), 0.0001f);
     }
 
-    @ParameterizedTest
-    @CsvSource({
-            "TOP_LEFT,     10.0, 10.0",
-            "CENTER_RIGHT, 10.0, 110.0",
-            "CENTER,       10.0, 60.0"
-    })
-    void testCalculatePivotX(PivotPoint pivot, float startX, float expectedPivotX) {
-        float width = 100f;
-        float actualPivotX = AnimationMath.calculatePivotX(pivot, startX, width);
-        assertEquals(expectedPivotX, actualPivotX, 0.0001f);
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-            "TOP_CENTER,    20.0, 20.0",
-            "BOTTOM_CENTER, 20.0, 70.0",
-            "CENTER,        20.0, 45.0"
-    })
-    void testCalculatePivotY(PivotPoint pivot, float startY, float expectedPivotY) {
-        float height = 50f;
-        float actualPivotY = AnimationMath.calculatePivotY(pivot, startY, height);
-        assertEquals(expectedPivotY, actualPivotY, 0.0001f);
-    }
-
     @ParameterizedTest(name = "При времени {0} ms и длительности {1} ms прогресс должен быть {2}")
     @CsvSource({
             "-100, 1000, 0f",    // До начала

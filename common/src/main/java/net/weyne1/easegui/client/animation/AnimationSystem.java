@@ -21,8 +21,8 @@ public final class AnimationSystem {
                 AnimationMath.calculateCurrentOffset(profile.offsetY, progress),
                 AnimationMath.lerp(profile.startScaleX, 1.0f, progress),
                 AnimationMath.lerp(profile.startScaleY, 1.0f, progress),
-                AnimationMath.calculatePivotX(profile.pivot, x, width),
-                AnimationMath.calculatePivotY(profile.pivot, y, height)
+                profile.pivot.getX(x, width),
+                profile.pivot.getY(y, height)
         );
         return scope;
     }
