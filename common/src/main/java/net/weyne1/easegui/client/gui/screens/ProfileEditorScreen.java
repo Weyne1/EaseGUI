@@ -71,10 +71,10 @@ public class ProfileEditorScreen extends EaseGUIAbstractSplitScreen {
 
         // --- 2. Смещение (Лимит: от -1000 до 1000 пикселей) ---
         if (activeFeatures.contains(ProfileFeature.OFFSET)) {
-            EditBox ox = createTextField(String.valueOf(workingCopy.offsetX));
+            EditBox ox = createTextField(String.valueOf(workingCopy.offset.x));
             FieldValidator.registerFloatValidator(ox, -1000f, 1000f, workingCopy::offsetX);
 
-            EditBox oy = createTextField(String.valueOf(workingCopy.offsetY));
+            EditBox oy = createTextField(String.valueOf(workingCopy.offset.y));
             FieldValidator.registerFloatValidator(oy, -1000f, 1000f, workingCopy::offsetY);
 
             leftScrollList.addTwoFields(Component.translatable("easegui.editor.field.offset").getString(), ox, oy);
@@ -82,10 +82,10 @@ public class ProfileEditorScreen extends EaseGUIAbstractSplitScreen {
 
         // --- 3. Масштаб (Лимит: от 0.0 до 10.0 крат) ---
         if (activeFeatures.contains(ProfileFeature.SCALE)) {
-            EditBox sx = createTextField(String.valueOf(workingCopy.startScaleX));
+            EditBox sx = createTextField(String.valueOf(workingCopy.startScale.x));
             FieldValidator.registerFloatValidator(sx, 0.0f, 10.0f, workingCopy::startScaleX);
 
-            EditBox sy = createTextField(String.valueOf(workingCopy.startScaleY));
+            EditBox sy = createTextField(String.valueOf(workingCopy.startScale.y));
             FieldValidator.registerFloatValidator(sy, 0.0f, 10.0f, workingCopy::startScaleY);
 
             leftScrollList.addTwoFields(Component.translatable("easegui.editor.field.scale").getString(), sx, sy);
@@ -182,10 +182,8 @@ public class ProfileEditorScreen extends EaseGUIAbstractSplitScreen {
         return target
                 .enabled(source.enabled)
                 .duration(source.duration)
-                .offsetX(source.offsetX)
-                .offsetY(source.offsetY)
-                .startScaleX(source.startScaleX)
-                .startScaleY(source.startScaleY)
+                .offset(source.offset.x, source.offset.y)
+                .startScale(source.startScale.x, source.startScale.y)
                 .startAlpha(source.startAlpha)
                 .cascadeDelay(source.cascadeDelay)
                 .easing(source.easing)

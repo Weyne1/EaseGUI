@@ -158,10 +158,8 @@ public class ScreenSpecificConfigScreen extends EaseGUIAbstractSplitScreen {
         return dest
                 .enabled(src.enabled)
                 .duration(src.duration)
-                .offsetX(src.offsetX)
-                .offsetY(src.offsetY)
-                .startScaleX(src.startScaleX)
-                .startScaleY(src.startScaleY)
+                .offset(src.offset.x, src.offset.y)
+                .startScale(src.startScale.x, src.startScale.y)
                 .startAlpha(src.startAlpha)
                 .cascadeDelay(src.cascadeDelay)
                 .easing(src.easing)

@@ -12,7 +12,7 @@ import static net.weyne1.easegui.client.animation.AnimationProfile.CascadeDirect
 import static net.weyne1.easegui.client.animation.AnimationProfile.EasingType.*;
 
 public class EaseGUIConfig {
-    public static final int CURRENT_SCHEMA_VERSION = 1;
+    public static final int CURRENT_SCHEMA_VERSION = 2;
     public int schemaVersion = CURRENT_SCHEMA_VERSION;
 
     public final GlobalSettings global = new GlobalSettings();
@@ -140,8 +140,7 @@ public class EaseGUIConfig {
         public AnimationProfile logoProfile = new AnimationProfile()
                 .duration(400L)
                 .offsetY(10f)
-                .startScaleX(0.8f)
-                .startScaleY(0.8f)
+                .startScale(0.8f)
                 .startAlpha(0.0f)
                 .cascadeDelay(60L)
                 .cascadeDirection(LEFT_TO_RIGHT)
@@ -151,8 +150,7 @@ public class EaseGUIConfig {
         public AnimationProfile editionProfile = new AnimationProfile()
                 .duration(400L)
                 .offsetY(5f)
-                .startScaleX(0.9f)
-                .startScaleY(0.9f)
+                .startScale(0.9f)
                 .startAlpha(0.0f)
                 .easing(EASE_OUT_QUAD)
                 .pivot(AnimationProfile.PivotPoint.CENTER);
@@ -169,14 +167,12 @@ public class EaseGUIConfig {
         public AnimationProfile windowProfile = new AnimationProfile()
                 .duration(250)
                 .startAlpha(0.0f)
-                .startScaleX(0.8f)
-                .startScaleY(0.8f)
+                .startScale(0.8f)
                 .easing(EASE_OUT_CUBIC);
 
         public AnimationProfile tabsProfile = new AnimationProfile()
                 .duration(400L)
                 .offsetX(-40f)
-                .offsetY(0f)
                 .startAlpha(0.0f)
                 .cascadeDelay(45L)
                 .cascadeDirection(LEFT_TO_RIGHT)

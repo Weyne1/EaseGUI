@@ -17,10 +17,10 @@ public final class AnimationSystem {
 
         AnimationScope scope = new AnimationScope(gg, finalAlpha);
         scope.setTransformParams(
-                AnimationMath.calculateCurrentOffset(profile.offsetX, progress),
-                AnimationMath.calculateCurrentOffset(profile.offsetY, progress),
-                AnimationMath.lerp(profile.startScaleX, 1.0f, progress),
-                AnimationMath.lerp(profile.startScaleY, 1.0f, progress),
+                AnimationMath.calculateCurrentOffset(profile.offset.x, progress),
+                AnimationMath.calculateCurrentOffset(profile.offset.y, progress),
+                AnimationMath.lerp(profile.startScale.x, 1.0f, progress),
+                AnimationMath.lerp(profile.startScale.y, 1.0f, progress),
                 profile.pivot.getX(x, width),
                 profile.pivot.getY(y, height)
         );

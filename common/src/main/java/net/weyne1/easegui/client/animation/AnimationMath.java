@@ -1,7 +1,5 @@
 package net.weyne1.easegui.client.animation;
 
-import net.weyne1.easegui.client.animation.AnimationProfile.PivotPoint;
-
 public final class AnimationMath {
 
     private AnimationMath() { }

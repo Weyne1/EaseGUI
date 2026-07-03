@@ -39,9 +39,15 @@ public class ConfigManager {
                 boolean migrated = false;
                 int version = jsonConfig.has("schemaVersion") ? jsonConfig.get("schemaVersion").getAsInt() : 0;
 
-                if (version < EaseGUIConfig.CURRENT_SCHEMA_VERSION) {
+                while (version < EaseGUIConfig.CURRENT_SCHEMA_VERSION) {
                     if (version == 0) {
                         migrated = ConfigMigrator.runMigrationV0toV1(jsonConfig);
+                        version = 1;
+                    } else if (version == 1) {
+                        migrated |= ConfigMigrator.runMigrationV1toV2(jsonConfig);
+                        version = 2;
+                    } else {
+                        break;
                     }
                 }
 

@@ -1,11 +1,12 @@
 package net.weyne1.easegui.client.config;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 public class ConfigMigrator {
 
     /**
-     * Migrates the configuration schema from v0 (0.1.0) to v1 (0.2.0+).
+     * Migrates the configuration schema from v0 (0.1.0) to v1 (0.2.0).
      * <ul>
      *     <li>Moves the legacy {@code logo.direction} field into {@code logo.logoProfile.cascadeDirection}.</li>
      *     <li>Forces {@code advancements.tabsProfile.cascadeDirection} to {@code LEFT_TO_RIGHT}.</li>
@@ -58,6 +59,55 @@ public class ConfigMigrator {
 
             other.addProperty("enabled", false);
             changed = true;
+        }
+
+        return changed;
+    }
+
+    /**
+     * Migrates the configuration schema from v1 (0.2.0) to v2 (0.3.0+).
+     * <ul>
+     * <li>Collapses flat {@code offsetX/Y} fields into a unified {@code offset} object.</li>
+     * <li>Collapses flat {@code startScaleX/Y} fields into a unified {@code startScale} object.</li>
+     * </ul>
+     */
+    static boolean runMigrationV1toV2(JsonObject jsonConfig) {
+        return migrateProfilesRecursive(jsonConfig);
+    }
+
+    private static boolean migrateProfilesRecursive(JsonObject jsonObject) {
+        boolean changed = false;
+
+        if (jsonObject.has("offsetX") || jsonObject.has("offsetY")) {
+            JsonObject offsetObj = new JsonObject();
+            offsetObj.addProperty("x", jsonObject.has("offsetX") ? jsonObject.get("offsetX").getAsFloat() : 0f);
+            offsetObj.addProperty("y", jsonObject.has("offsetY") ? jsonObject.get("offsetY").getAsFloat() : 0f);
+
+            jsonObject.add("offset", offsetObj);
+            jsonObject.remove("offsetX");
+            jsonObject.remove("offsetY");
+            changed = true;
+        }
+
+        if (jsonObject.has("startScaleX") || jsonObject.has("startScaleY")) {
+            JsonObject scaleObj = new JsonObject();
+            scaleObj.addProperty("x", jsonObject.has("startScaleX") ? jsonObject.get("startScaleX").getAsFloat() : 1f);
+            scaleObj.addProperty("y", jsonObject.has("startScaleY") ? jsonObject.get("startScaleY").getAsFloat() : 1f);
+
+            jsonObject.add("startScale", scaleObj);
+            jsonObject.remove("startScaleX");
+            jsonObject.remove("startScaleY");
+            changed = true;
+        }
+
+        String[] keys = jsonObject.keySet().toArray(new String[0]);
+        for (String key : keys) {
+            JsonElement element = jsonObject.get(key);
+            if (element != null && element.isJsonObject()) {
+                if (migrateProfilesRecursive(element.getAsJsonObject())) {
+                    changed = true;
+                }
+            }
         }
 
         return changed;
