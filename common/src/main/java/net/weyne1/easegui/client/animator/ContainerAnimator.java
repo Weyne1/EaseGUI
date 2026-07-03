@@ -3,6 +3,8 @@ package net.weyne1.easegui.client.animator;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
+import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
 import net.weyne1.easegui.client.accessor.ContainerScreenAccessor;
 import net.weyne1.easegui.client.accessor.RecipeBookAccessor;
 import net.weyne1.easegui.client.animation.AnimationContext;
@@ -13,21 +15,7 @@ import net.weyne1.easegui.client.config.ConfigManager;
 import net.weyne1.easegui.client.config.UIElementCategory;
 import net.weyne1.easegui.client.state.ScreenStateTracker;
 
-import java.util.Map;
-import java.util.WeakHashMap;
-
 public class ContainerAnimator {
-    private static final Map<Object, java.lang.ref.WeakReference<Object>> BOOK_REGISTRY = new WeakHashMap<>();
-
-    public static void registerBook(Object screen, Object book) {
-        BOOK_REGISTRY.put(screen, new java.lang.ref.WeakReference<>(book));
-    }
-
-    public static Object getBook(Object screen) {
-        var ref = BOOK_REGISTRY.get(screen);
-        return ref != null ? ref.get() : null;
-    }
-
     /**
      * Evaluates container bounds (integrating the Recipe Book if open) and instantiates
      * a localized context-aware AnimationScope.
@@ -44,19 +32,23 @@ public class ContainerAnimator {
         int maxX = minX + container.easeGUI$getImageWidth();
         int maxY = minY + container.easeGUI$getImageHeight();
 
-        // Dynamically compute layout bounds including the Recipe Book if visible
-        Object bookObj = getBook(screen);
-        if (bookObj instanceof RecipeBookAccessor book && book.easeGUI$isVisible()) {
-            int scrW = book.easeGUI$getScreenWidth();
-            int scrH = book.easeGUI$getScreenHeight();
+        if (screen instanceof RecipeUpdateListener listener) {
+            RecipeBookComponent book = listener.getRecipeBookComponent();
 
-            int bookX = (scrW - 147) / 2 - book.easeGUI$getXOffset();
-            int bookY = (scrH - 166) / 2;
+            if (((RecipeBookAccessor) book).easeGUI$isVisible()) {
+                RecipeBookAccessor accessor = (RecipeBookAccessor) book;
 
-            minX = Math.min(minX, bookX);
-            minY = Math.min(minY, bookY);
-            maxX = Math.max(maxX, bookX + 147);
-            maxY = Math.max(maxY, bookY + 166);
+                int bookWidth = accessor.easeGUI$getBookWidth();
+                int bookHeight = accessor.easeGUI$getBookHeight();
+
+                int bookX = (screen.width - bookWidth) / 2 - accessor.easeGUI$getXOffset();
+                int bookY = (screen.height - bookHeight) / 2;
+
+                minX = Math.min(minX, bookX);
+                minY = Math.min(minY, bookY);
+                maxX = Math.max(maxX, bookX + bookWidth);
+                maxY = Math.max(maxY, bookY + bookHeight);
+            }
         }
 
         AnimationScope scope = beginAnimation(gg, minX, minY, maxX - minX, maxY - minY);
