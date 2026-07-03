@@ -14,47 +14,48 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(VertexBuffer.class)
 public class VertexBufferMixin {
-    @Unique private float[] easeGUI$savedShaderColor;
+    @Unique private float easeGUI$savedR;
+    @Unique private float easeGUI$savedG;
+    @Unique private float easeGUI$savedB;
+    @Unique private float easeGUI$savedA;
+    @Unique private boolean easeGUI$hasSavedColor = false;
     @Unique private boolean easeGUI$wasBlendEnabled;
 
     @Inject(method = "_drawWithShader", at = @At("HEAD"))
     private void easeGUI$injectAlphaBeforeShader(Matrix4f modelViewMatrix, Matrix4f projectionMatrix, ShaderInstance shader, CallbackInfo ci) {
         if (AnimationContext.isAnimating()) {
             float[] currentColor = RenderSystem.getShaderColor();
-            this.easeGUI$savedShaderColor = currentColor.clone();
+
+            this.easeGUI$savedR = currentColor[0];
+            this.easeGUI$savedG = currentColor[1];
+            this.easeGUI$savedB = currentColor[2];
+            this.easeGUI$savedA = currentColor[3];
+            this.easeGUI$hasSavedColor = true;
+
             this.easeGUI$wasBlendEnabled = GL11.glIsEnabled(GL11.GL_BLEND);
 
-            String shaderName = shader.getName();
             float animationAlpha = AnimationContext.getCurrentAlpha();
+            float finalAlpha = this.easeGUI$savedA * animationAlpha;
 
-            if (shaderName.toLowerCase().contains("glint")) {
-                RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, currentColor[3] * animationAlpha);
-            } else {
-                float finalAlpha = currentColor[3] * animationAlpha;
-
-                if (!this.easeGUI$wasBlendEnabled && finalAlpha < 1.0f) {
-                    RenderSystem.enableBlend();
-                    RenderSystem.defaultBlendFunc();
-                }
-                RenderSystem.setShaderColor(currentColor[0], currentColor[1], currentColor[2], finalAlpha);
+            if (!this.easeGUI$wasBlendEnabled && finalAlpha < 1.0f) {
+                RenderSystem.enableBlend();
+                RenderSystem.defaultBlendFunc();
             }
+
+            RenderSystem.setShaderColor(this.easeGUI$savedR, this.easeGUI$savedG, this.easeGUI$savedB, finalAlpha);
         }
     }
 
     @Inject(method = "_drawWithShader", at = @At("TAIL"))
     private void easeGUI$restoreAlphaAfterShader(Matrix4f modelViewMatrix, Matrix4f projectionMatrix, ShaderInstance shader, CallbackInfo ci) {
-        if (this.easeGUI$savedShaderColor != null) {
-            RenderSystem.setShaderColor(
-                    this.easeGUI$savedShaderColor[0],
-                    this.easeGUI$savedShaderColor[1],
-                    this.easeGUI$savedShaderColor[2],
-                    this.easeGUI$savedShaderColor[3]
-            );
+        if (this.easeGUI$hasSavedColor) {
+            RenderSystem.setShaderColor(this.easeGUI$savedR, this.easeGUI$savedG, this.easeGUI$savedB, this.easeGUI$savedA);
 
             if (!this.easeGUI$wasBlendEnabled) {
                 RenderSystem.disableBlend();
             }
-            this.easeGUI$savedShaderColor = null;
+
+            this.easeGUI$hasSavedColor = false;
         }
     }
 }
