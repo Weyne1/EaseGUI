@@ -3,6 +3,7 @@ package net.weyne1.easegui.client.mixin;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.renderer.GameRenderer;
 import net.weyne1.easegui.client.animation.AnimationContext;
+import net.weyne1.easegui.client.animator.BackgroundAnimator;
 import net.weyne1.easegui.client.state.ScreenAnimationTracker;
 import net.weyne1.easegui.client.state.ScreenStateTracker;
 import org.spongepowered.asm.mixin.Mixin;
@@ -20,6 +21,9 @@ public class GameRendererMixin {
             index = 1
     )
     private float easeGUI$animateBlurRadiusArg(float originalRadius) {
+        if (BackgroundAnimator.skipBackgroundFade) {
+            return originalRadius;
+        }
         return originalRadius * ScreenAnimationTracker.getProgress();
     }
 

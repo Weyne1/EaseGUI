@@ -28,7 +28,11 @@ public class BackgroundAnimator {
     }
 
     public static boolean isScreenBlurred(Screen screen) {
-        if (screen == null || isLoadingScreen(screen)) return false;
+        if (screen == null
+                || screen instanceof TitleScreen
+                || isLoadingScreen(screen)) {
+            return false;
+        }
 
         EaseGUIConfig config = ConfigManager.getConfig();
         if (!config.global.enableSmoothDimming) return false;
