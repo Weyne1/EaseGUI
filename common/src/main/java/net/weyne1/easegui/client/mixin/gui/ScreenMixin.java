@@ -42,7 +42,7 @@ public class ScreenMixin implements ScreenAnimationAccessor {
      * Initializes the container animation scope at the absolute beginning of the screen
      * rendering pipeline, ensuring both widgets and late-rendered tooltips are captured.
      */
-    @Inject(method = "renderWithTooltip(Lnet/minecraft/client/gui/GuiGraphics;IIF)V", at = @At("HEAD"))
+    @Inject(method = "renderWithTooltip", at = @At("HEAD"))
     private void easeGUI$beforeScreenRenderWithTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
         if (RenderSystem.isOnRenderThread() && this instanceof ContainerScreenAccessor) {
             if (this.easeGUI$containerScreenScope != null) {
@@ -57,8 +57,8 @@ public class ScreenMixin implements ScreenAnimationAccessor {
      * Safely collapses and closes the container animation scope at the end of the rendering
      * pipeline to prevent matrix stack underflows.
      */
-    @Inject(method = "renderWithTooltip(Lnet/minecraft/client/gui/GuiGraphics;IIF)V", at = @At("RETURN"))
-    private void easeGUI$afterScreenRenderWithTooltip(CallbackInfo ci) {
+    @Inject(method = "renderWithTooltip", at = @At("RETURN"))
+    private void easeGUI$afterScreenRenderWithTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
         if (RenderSystem.isOnRenderThread() && this.easeGUI$containerScreenScope != null) {
             ContainerAnimator.closeScope(this.easeGUI$containerScreenScope);
             this.easeGUI$containerScreenScope = null;
@@ -71,8 +71,8 @@ public class ScreenMixin implements ScreenAnimationAccessor {
      * Suspends active container scaling/translation right before the transparent background
      * gradient is drawn, keeping the background tint absolute and static.
      */
-    @Inject(method = "renderTransparentBackground(Lnet/minecraft/client/gui/GuiGraphics;)V", at = @At("HEAD"))
-    private void easeGUI$suspendBeforeTransparentBackground(CallbackInfo ci) {
+    @Inject(method = "renderTransparentBackground", at = @At("HEAD"))
+    private void easeGUI$suspendBeforeTransparentBackground(GuiGraphics guiGraphics, CallbackInfo ci) {
         if (this.easeGUI$containerScreenScope != null) {
             this.easeGUI$containerScreenScope.suspend();
         }
@@ -82,8 +82,8 @@ public class ScreenMixin implements ScreenAnimationAccessor {
      * Resumes the container animation transformations immediately after the transparent
      * background gradient has finished rendering.
      */
-    @Inject(method = "renderTransparentBackground(Lnet/minecraft/client/gui/GuiGraphics;)V", at = @At("RETURN"))
-    private void easeGUI$resumeAfterTransparentBackground(CallbackInfo ci) {
+    @Inject(method = "renderTransparentBackground", at = @At("RETURN"))
+    private void easeGUI$resumeAfterTransparentBackground(GuiGraphics guiGraphics, CallbackInfo ci) {
         if (this.easeGUI$containerScreenScope != null) {
             this.easeGUI$containerScreenScope.resume();
         }
@@ -94,7 +94,7 @@ public class ScreenMixin implements ScreenAnimationAccessor {
      * handles standalone main-menu background animations.
      */
     @Inject(method = "renderMenuBackground(Lnet/minecraft/client/gui/GuiGraphics;)V", at = @At("HEAD"))
-    private void easeGUI$preRenderMenuBackground(GuiGraphics partialTick, CallbackInfo ci) {
+    private void easeGUI$preRenderMenuBackground(GuiGraphics guiGraphics, CallbackInfo ci) {
         if (this.easeGUI$containerScreenScope != null) {
             this.easeGUI$containerScreenScope.suspend();
         }
@@ -104,7 +104,7 @@ public class ScreenMixin implements ScreenAnimationAccessor {
         }
 
         if (!easeGUI$isWorldLoadingScreen() && BackgroundAnimator.shouldAnimate()) {
-            this.easeGUI$menuBackgroundScope = BackgroundAnimator.beginRenderMenu(partialTick);
+            this.easeGUI$menuBackgroundScope = BackgroundAnimator.beginRenderMenu(guiGraphics);
         }
     }
 
@@ -113,7 +113,7 @@ public class ScreenMixin implements ScreenAnimationAccessor {
      * for subsequent interface elements.
      */
     @Inject(method = "renderMenuBackground(Lnet/minecraft/client/gui/GuiGraphics;)V", at = @At("RETURN"))
-    private void easeGUI$postRenderMenuBackground(CallbackInfo ci) {
+    private void easeGUI$postRenderMenuBackground(GuiGraphics guiGraphics, CallbackInfo ci) {
         if (this.easeGUI$menuBackgroundScope != null) {
             this.easeGUI$menuBackgroundScope.close();
             this.easeGUI$menuBackgroundScope = null;

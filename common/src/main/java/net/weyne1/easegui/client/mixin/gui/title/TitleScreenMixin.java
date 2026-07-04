@@ -16,7 +16,7 @@ public class TitleScreenMixin {
      * while preserving vanilla transitions if the screen animation is disabled.
      */
     @Inject(method = "fadeWidgets", at = @At("HEAD"), cancellable = true)
-    private void easeGUI$cancelFade(CallbackInfo ci) {
+    private void easeGUI$cancelFade(float alpha, CallbackInfo ci) {
         var titleSettings = ConfigManager.getConfig().screens.get("title");
 
         if (titleSettings == null || !titleSettings.enabled) {

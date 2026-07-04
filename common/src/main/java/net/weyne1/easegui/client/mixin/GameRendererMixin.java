@@ -1,5 +1,6 @@
 package net.weyne1.easegui.client.mixin;
 
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.renderer.GameRenderer;
 import net.weyne1.easegui.client.animation.AnimationContext;
 import net.weyne1.easegui.client.state.ScreenAnimationTracker;
@@ -23,7 +24,7 @@ public class GameRendererMixin {
     }
 
     @Inject(method = "render", at = @At("HEAD"))
-    private void easeGUI$onFrameStart(CallbackInfo ci) {
+    private void easeGUI$onFrameStart(DeltaTracker deltaTracker, boolean renderLevel, CallbackInfo ci) {
         ScreenStateTracker.incrementFrame();
         AnimationContext.resetFrameState();
     }
