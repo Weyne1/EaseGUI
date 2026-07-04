@@ -4,6 +4,7 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.renderer.GameRenderer;
 import net.weyne1.easegui.client.animation.AnimationContext;
 import net.weyne1.easegui.client.animator.BackgroundAnimator;
+import net.weyne1.easegui.client.config.ConfigManager;
 import net.weyne1.easegui.client.state.ScreenAnimationTracker;
 import net.weyne1.easegui.client.state.ScreenStateTracker;
 import org.spongepowered.asm.mixin.Mixin;
@@ -21,9 +22,12 @@ public class GameRendererMixin {
             index = 1
     )
     private float easeGUI$animateBlurRadiusArg(float originalRadius) {
-        if (BackgroundAnimator.skipBackgroundFade) {
+        boolean enableSmoothBlur = ConfigManager.getConfig().global.enableSmoothBlur;
+
+        if (!enableSmoothBlur || BackgroundAnimator.skipBackgroundFade) {
             return originalRadius;
         }
+
         return originalRadius * ScreenAnimationTracker.getProgress();
     }
 

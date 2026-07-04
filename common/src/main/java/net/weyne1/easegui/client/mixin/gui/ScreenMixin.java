@@ -1,6 +1,7 @@
 package net.weyne1.easegui.client.mixin.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.weyne1.easegui.client.accessor.ContainerScreenAccessor;
@@ -8,7 +9,11 @@ import net.weyne1.easegui.client.accessor.ScreenAnimationAccessor;
 import net.weyne1.easegui.client.animation.AnimationScope;
 import net.weyne1.easegui.client.animator.BackgroundAnimator;
 import net.weyne1.easegui.client.animator.ContainerAnimator;
+import net.weyne1.easegui.client.config.ConfigManager;
+import net.weyne1.easegui.client.config.EaseGUIConfig;
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -20,10 +25,13 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
  * Manages container transition lifecycles, menu textures, and background dimming.
  */
 @Mixin(Screen.class)
-public class ScreenMixin implements ScreenAnimationAccessor {
+public abstract class ScreenMixin implements ScreenAnimationAccessor {
 
     @Unique private AnimationScope easeGUI$containerScreenScope = null;
     @Unique private AnimationScope easeGUI$menuBackgroundScope = null;
+
+    @Shadow @Nullable protected Minecraft minecraft;
+    @Shadow protected abstract void renderBlurredBackground(float partialTick);
 
     @Override
     @Unique
@@ -75,6 +83,13 @@ public class ScreenMixin implements ScreenAnimationAccessor {
     private void easeGUI$suspendBeforeTransparentBackground(GuiGraphics guiGraphics, CallbackInfo ci) {
         if (this.easeGUI$containerScreenScope != null) {
             this.easeGUI$containerScreenScope.suspend();
+        }
+
+        boolean blurContainers = ConfigManager.getConfig().global.blurContainers;
+
+        if (this.minecraft != null && this.minecraft.level != null && blurContainers) {
+            float partialTick = this.minecraft.getTimer().getGameTimeDeltaTicks();
+            this.renderBlurredBackground(partialTick);
         }
     }
 

@@ -9,12 +9,12 @@ public class ScreenAnimationTracker {
     public static float getProgress() {
         var globalConfig = ConfigManager.getConfig().global;
 
-        if (!globalConfig.enableSmoothDimming || BackgroundAnimator.skipBackgroundFade) {
+        if (!globalConfig.enableSmoothBlur || BackgroundAnimator.skipBackgroundFade) {
             return 1.0f;
         }
 
         long elapsed = ScreenStateTracker.getScreenElapsed();
-        long duration = globalConfig.dimmingDuration;
+        long duration = globalConfig.blurDuration;
 
         float t = (duration <= 0) ? 1f : Mth.clamp(elapsed / (float) duration, 0f, 1f);
 

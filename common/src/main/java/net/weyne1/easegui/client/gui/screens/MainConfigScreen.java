@@ -39,29 +39,41 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
         leftList.setX(leftX);
         leftList.setY(50);
 
-        leftList.addHeader(Component.translatable("easegui.config.title.dimming").getString());
+        leftList.addHeader(Component.translatable("easegui.config.title.blur").getString());
 
-        EditBox blurDurationField = createTextField(String.valueOf(config.global.dimmingDuration));
+        EditBox blurDurationField = createTextField(String.valueOf(config.global.blurDuration));
         FieldValidator.registerLongValidator(blurDurationField, 0L, 5000L, val -> {
-            config.global.dimmingDuration = val;
+            config.global.blurDuration = val;
             ConfigManager.save();
         });
-        blurDurationField.setEditable(config.global.enableSmoothDimming);
+        blurDurationField.setEditable(config.global.enableSmoothBlur);
 
-        Component blurState = Component.translatable(config.global.enableSmoothDimming ? "easegui.generic.on" : "easegui.generic.off");
+        Component blurState = Component.translatable(config.global.enableSmoothBlur ? "easegui.generic.on" : "easegui.generic.off");
         leftList.addButton(Button.builder(
-                Component.translatable("easegui.main.smooth_dimming", blurState),
+                Component.translatable("easegui.main.smooth_blur", blurState),
                 button -> {
-                    config.global.enableSmoothDimming = !config.global.enableSmoothDimming;
-                    Component updatedState = Component.translatable(config.global.enableSmoothDimming ? "easegui.generic.on" : "easegui.generic.off");
-                    button.setMessage(Component.translatable("easegui.main.smooth_dimming", updatedState));
+                    config.global.enableSmoothBlur = !config.global.enableSmoothBlur;
+                    Component updatedState = Component.translatable(config.global.enableSmoothBlur ? "easegui.generic.on" : "easegui.generic.off");
+                    button.setMessage(Component.translatable("easegui.main.smooth_blur", updatedState));
 
-                    blurDurationField.setEditable(config.global.enableSmoothDimming);
+                    blurDurationField.setEditable(config.global.enableSmoothBlur);
                     ConfigManager.save();
                 }
         ).build());
 
-        leftList.addField(Component.translatable("easegui.main.dimming_duration").getString(), blurDurationField);
+        leftList.addField(Component.translatable("easegui.main.blur_duration").getString(), blurDurationField);
+
+        Component containersBlurState = Component.translatable(config.global.blurContainers ? "easegui.generic.on" : "easegui.generic.off");
+        leftList.addButton(Button.builder(
+                Component.translatable("easegui.main.blur_containers", containersBlurState),
+                button -> {
+                    config.global.blurContainers = !config.global.blurContainers;
+                    Component updatedContainersState = Component.translatable(config.global.blurContainers ? "easegui.generic.on" : "easegui.generic.off");
+                    button.setMessage(Component.translatable("easegui.main.blur_containers", updatedContainersState));
+
+                    ConfigManager.save();
+                }
+        ).build());
 
         leftList.addHeader(Component.translatable("easegui.config.title.elements").getString());
 

@@ -35,7 +35,7 @@ public class BackgroundAnimator {
         }
 
         EaseGUIConfig config = ConfigManager.getConfig();
-        if (!config.global.enableSmoothDimming) return false;
+        if (!config.global.enableSmoothBlur) return false;
 
         try {
             ScreenType screenType = EaseGUIScreenRegistry.from(screen);
@@ -61,7 +61,7 @@ public class BackgroundAnimator {
         }
 
         long elapsed = ScreenStateTracker.getScreenElapsed();
-        long duration = ConfigManager.getConfig().global.dimmingDuration;
+        long duration = ConfigManager.getConfig().global.blurDuration;
         if (elapsed >= duration) {
             return originalColor;
         }
@@ -82,7 +82,7 @@ public class BackgroundAnimator {
         if (!shouldAnimate() || skipBackgroundFade) return null;
 
         long elapsed = ScreenStateTracker.getScreenElapsed();
-        long duration = ConfigManager.getConfig().global.dimmingDuration;
+        long duration = ConfigManager.getConfig().global.blurDuration;
         if (elapsed >= duration) {
             return null;
         }

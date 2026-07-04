@@ -118,8 +118,9 @@ public class EaseGUIConfig {
     }
 
     public static class GlobalSettings {
-        public boolean enableSmoothDimming = true;
-        public long dimmingDuration = 300L;
+        public boolean enableSmoothBlur = true;
+        public long blurDuration = 300L;
+        public boolean blurContainers = true;
         public EasingType dimmingEasing = EASE_OUT_CUBIC;
         public final Map<UIElementCategory, AnimationProfile> elementProfiles = new EnumMap<>(UIElementCategory.class);
     }
