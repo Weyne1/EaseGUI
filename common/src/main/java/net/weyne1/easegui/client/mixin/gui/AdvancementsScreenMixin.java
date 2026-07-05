@@ -23,7 +23,7 @@ public class AdvancementsScreenMixin {
     // === АНИМАЦИЯ ГЛАВНОГО ОКНА ===
     @Inject(
             method = "render",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/advancements/AdvancementsScreen;renderInside(Lnet/minecraft/client/gui/GuiGraphics;IIII)V")
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/advancements/AdvancementsScreen;renderInside(Lnet/minecraft/client/gui/GuiGraphics;II)V")
     )
     private void easeGUI$preRenderWindow(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
         if (this.easeGUI$windowScope != null) {
@@ -44,19 +44,19 @@ public class AdvancementsScreenMixin {
     // === АНИМАЦИЯ ВКЛАДОК (ФОН) ===
     @WrapOperation(
             method = "renderWindow",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/advancements/AdvancementTab;drawTab(Lnet/minecraft/client/gui/GuiGraphics;IIZ)V")
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/advancements/AdvancementTab;drawTab(Lnet/minecraft/client/gui/GuiGraphics;IIIIZ)V")
     )
-    private void easeGUI$wrapDrawTab(AdvancementTab tab, GuiGraphics guiGraphics, int offsetX, int offsetY, boolean isSelected, Operation<Void> original) {
+    private void easeGUI$wrapDrawTab(AdvancementTab tab, GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, boolean selected, Operation<Void> original) {
         AdvancementsScreen screen = (AdvancementsScreen) (Object) this;
         int index = ((AdvancementTabAccessor) tab).easeGUI$getIndex();
 
         AnimationScope scope = AdvancementsAnimator.beginRenderTab(screen, guiGraphics, index);
         if (scope != null) {
             try (scope) {
-                original.call(tab, guiGraphics, offsetX, offsetY, isSelected);
+                original.call(tab, guiGraphics, x, y, mouseX, mouseY, selected);
             }
         } else {
-            original.call(tab, guiGraphics, offsetX, offsetY, isSelected);
+            original.call(tab, guiGraphics, x, y, mouseX, mouseY, selected);
         }
     }
 
