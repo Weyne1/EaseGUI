@@ -4,6 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.weyne1.easegui.client.accessor.ScreenAnimationAccessor;
 import net.weyne1.easegui.client.animation.AnimationScope;
+import org.spongepowered.asm.mixin.Dynamic;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.Unique;
@@ -28,6 +29,7 @@ public class EmiCompatMixin {
         return null;
     }
 
+    @Dynamic
     @Inject(method = {"render", "drawBackground", "drawForeground"}, at = @At("HEAD"), require = 0)
     private static void easeGUI$onEmiRenderStart(CallbackInfo ci) {
         AnimationScope scope = easeGUI$getCurrentScope();
@@ -36,6 +38,7 @@ public class EmiCompatMixin {
         }
     }
 
+    @Dynamic
     @Inject(method = {"render", "drawBackground", "drawForeground"}, at = @At("TAIL"), require = 0)
     private static void easeGUI$onEmiRenderEnd(CallbackInfo ci) {
         AnimationScope scope = easeGUI$getCurrentScope();
