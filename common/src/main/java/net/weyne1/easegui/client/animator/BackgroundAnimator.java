@@ -22,7 +22,6 @@ public class BackgroundAnimator {
         return screen instanceof LevelLoadingScreen
                 || screen instanceof ProgressScreen
                 || screen instanceof ConnectScreen
-                || screen instanceof ReceivingLevelScreen
                 || screen instanceof GenericWaitingScreen
                 || screen instanceof BackupConfirmScreen;
     }

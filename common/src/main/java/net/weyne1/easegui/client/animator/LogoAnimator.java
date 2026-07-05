@@ -1,9 +1,9 @@
 package net.weyne1.easegui.client.animator;
 
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.LogoRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.weyne1.easegui.client.animation.AnimationMath;
 import net.weyne1.easegui.client.animation.AnimationProfile;
 import net.weyne1.easegui.client.animation.AnimationScope;
@@ -18,16 +18,16 @@ import net.weyne1.easegui.client.state.ScreenStateTracker;
  */
 public class LogoAnimator {
 
-    private static final ResourceLocation[] LETTER_TEXTURES = new ResourceLocation[] {
-            ResourceLocation.fromNamespaceAndPath("easegui", "textures/gui/title/letters/m.png"),
-            ResourceLocation.fromNamespaceAndPath("easegui", "textures/gui/title/letters/i.png"),
-            ResourceLocation.fromNamespaceAndPath("easegui", "textures/gui/title/letters/n.png"),
-            ResourceLocation.fromNamespaceAndPath("easegui", "textures/gui/title/letters/e.png"),
-            ResourceLocation.fromNamespaceAndPath("easegui", "textures/gui/title/letters/t.png"),
-            ResourceLocation.fromNamespaceAndPath("easegui", "textures/gui/title/letters/f.png"),
-            ResourceLocation.fromNamespaceAndPath("easegui", "textures/gui/title/letters/a.png"),
-            ResourceLocation.fromNamespaceAndPath("easegui", "textures/gui/title/letters/r.png"),
-            ResourceLocation.fromNamespaceAndPath("easegui", "textures/gui/title/letters/c.png")
+    private static final Identifier[] LETTER_TEXTURES = new Identifier[] {
+            Identifier.fromNamespaceAndPath("easegui", "textures/gui/title/letters/m.png"),
+            Identifier.fromNamespaceAndPath("easegui", "textures/gui/title/letters/i.png"),
+            Identifier.fromNamespaceAndPath("easegui", "textures/gui/title/letters/n.png"),
+            Identifier.fromNamespaceAndPath("easegui", "textures/gui/title/letters/e.png"),
+            Identifier.fromNamespaceAndPath("easegui", "textures/gui/title/letters/t.png"),
+            Identifier.fromNamespaceAndPath("easegui", "textures/gui/title/letters/f.png"),
+            Identifier.fromNamespaceAndPath("easegui", "textures/gui/title/letters/a.png"),
+            Identifier.fromNamespaceAndPath("easegui", "textures/gui/title/letters/r.png"),
+            Identifier.fromNamespaceAndPath("easegui", "textures/gui/title/letters/c.png")
     };
 
     /**
@@ -51,7 +51,7 @@ public class LogoAnimator {
         float finalAlpha = keepLogoThroughFade ? 1.0f : transparency;
         int startX = screenWidth / 2 - (LogoRendererAccessor.easeGUI$getLogoWidth() / 2);
 
-        ResourceLocation logoTexture = showEasterEgg ? LogoRenderer.EASTER_EGG_LOGO : LogoRenderer.MINECRAFT_LOGO;
+        Identifier logoTexture = showEasterEgg ? LogoRenderer.EASTER_EGG_LOGO : LogoRenderer.MINECRAFT_LOGO;
         if (logoConfig.animateWholeText) {
             renderWholeLogo(gg, logoTexture, logoConfig.logoProfile, startX, height, finalAlpha);
         } else {
@@ -63,7 +63,7 @@ public class LogoAnimator {
         return true;
     }
 
-    private static void renderWholeLogo(GuiGraphics gg, ResourceLocation texture, AnimationProfile profile, int startX, int height, float finalAlpha) {
+    private static void renderWholeLogo(GuiGraphics gg, Identifier texture, AnimationProfile profile, int startX, int height, float finalAlpha) {
         long elapsed = Util.getMillis() - actualStartTime;
         int logoWidth = LogoRendererAccessor.easeGUI$getLogoWidth();
         int logoHeight = LogoRendererAccessor.easeGUI$getLogoHeight();
@@ -91,7 +91,7 @@ public class LogoAnimator {
 
         if (now - actualStartTime >= maxLogoDelay + profile.duration) {
             try (AnimationScope ignored = AnimationSystem.beginAlphaOnly(gg, finalAlpha)) {
-                for (ResourceLocation texture : LETTER_TEXTURES) {
+                for (Identifier texture : LETTER_TEXTURES) {
                     drawLogoTexture(gg, texture, startX, height);
                 }
                 gg.flush();
@@ -101,7 +101,7 @@ public class LogoAnimator {
 
         for (int i = 0; i < LETTER_TEXTURES.length; i++) {
             int logicalIndex = LOGICAL_INDICES[i];
-            ResourceLocation texture = LETTER_TEXTURES[i];
+            Identifier texture = LETTER_TEXTURES[i];
 
             long cascadeDelay = calculateCascadeDelay(profile, logicalIndex);
             long elapsed = now - actualStartTime - cascadeDelay;
@@ -172,7 +172,7 @@ public class LogoAnimator {
         }
     }
 
-    private static void drawLogoTexture(GuiGraphics gg, ResourceLocation texture, int x, int y) {
+    private static void drawLogoTexture(GuiGraphics gg, Identifier texture, int x, int y) {
         gg.blit(texture, x, y, 0.0f, 0.0f,
                 LogoRendererAccessor.easeGUI$getLogoWidth(),
                 LogoRendererAccessor.easeGUI$getLogoHeight(),

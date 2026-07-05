@@ -71,7 +71,7 @@ public final class EaseGUIScreenRegistry {
         register("create_flat_world", CreateFlatWorldScreen.class, 1000, ScreenGroup.WORLDS);
         register("direct_join_server", DirectJoinServerScreen.class, 1000, ScreenGroup.WORLDS);
         register("edit_world", EditWorldScreen.class, 1000, ScreenGroup.WORLDS);
-        register("edit_server", EditServerScreen.class, 1000, ScreenGroup.WORLDS);
+        register("edit_server", ManageServerScreen.class, 1000, ScreenGroup.WORLDS);
         register("edit_game_rules", EditGameRulesScreen.class, 1000, ScreenGroup.WORLDS);
         register("experiments", ExperimentsScreen.class, 1000, ScreenGroup.WORLDS);
         register("connecting", ConnectScreen.class, 1000, ScreenGroup.WORLDS);

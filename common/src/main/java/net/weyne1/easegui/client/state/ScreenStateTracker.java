@@ -1,6 +1,6 @@
 package net.weyne1.easegui.client.state;
 
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.client.gui.screens.Screen;
 
 import java.lang.ref.WeakReference;

@@ -11,11 +11,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class TitleScreenMixin {
 
     /**
-     * Cancels the vanilla TitleScreen fadeWidgets animation if EaseGUI is enabled for this screen.
+     * Cancels the vanilla TitleScreen setWidgetAlpha animation if EaseGUI is enabled for this screen.
      * This allows EaseGUI to fully control widget fade-in animation,
      * while preserving vanilla transitions if the screen animation is disabled.
      */
-    @Inject(method = "fadeWidgets", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "setWidgetAlpha", at = @At("HEAD"), cancellable = true)
     private void easeGUI$cancelFade(float alpha, CallbackInfo ci) {
         var titleSettings = ConfigManager.getConfig().screens.get("title");
 
