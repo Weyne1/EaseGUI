@@ -10,8 +10,7 @@ import net.weyne1.easegui.client.animation.AnimationScope;
 import net.weyne1.easegui.client.animator.BackgroundAnimator;
 import net.weyne1.easegui.client.animator.ContainerAnimator;
 import net.weyne1.easegui.client.config.ConfigManager;
-import net.weyne1.easegui.client.config.EaseGUIConfig;
-import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -30,8 +29,8 @@ public abstract class ScreenMixin implements ScreenAnimationAccessor {
     @Unique private AnimationScope easeGUI$containerScreenScope = null;
     @Unique private AnimationScope easeGUI$menuBackgroundScope = null;
 
-    @Shadow @Nullable protected Minecraft minecraft;
-    @Shadow protected abstract void renderBlurredBackground(float partialTick);
+    @Final @Shadow protected Minecraft minecraft;
+    @Shadow protected abstract void renderBlurredBackground(GuiGraphics guiGraphics);
 
     @Override
     @Unique
@@ -50,8 +49,8 @@ public abstract class ScreenMixin implements ScreenAnimationAccessor {
      * Initializes the container animation scope at the absolute beginning of the screen
      * rendering pipeline, ensuring both widgets and late-rendered tooltips are captured.
      */
-    @Inject(method = "renderWithTooltip", at = @At("HEAD"))
-    private void easeGUI$beforeScreenRenderWithTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
+    @Inject(method = "render(Lnet/minecraft/client/gui/GuiGraphics;IIF)V", at = @At("HEAD"))
+    private void easeGUI$beforeScreenRender(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
         if (RenderSystem.isOnRenderThread() && this instanceof ContainerScreenAccessor) {
             if (this.easeGUI$containerScreenScope != null) {
                 ContainerAnimator.closeScope(this.easeGUI$containerScreenScope);
@@ -65,8 +64,8 @@ public abstract class ScreenMixin implements ScreenAnimationAccessor {
      * Safely collapses and closes the container animation scope at the end of the rendering
      * pipeline to prevent matrix stack underflows.
      */
-    @Inject(method = "renderWithTooltip", at = @At("RETURN"))
-    private void easeGUI$afterScreenRenderWithTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
+    @Inject(method = "render(Lnet/minecraft/client/gui/GuiGraphics;IIF)V", at = @At("RETURN"))
+    private void easeGUI$afterScreenRender(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
         if (RenderSystem.isOnRenderThread() && this.easeGUI$containerScreenScope != null) {
             ContainerAnimator.closeScope(this.easeGUI$containerScreenScope);
             this.easeGUI$containerScreenScope = null;
@@ -88,8 +87,7 @@ public abstract class ScreenMixin implements ScreenAnimationAccessor {
         boolean blurContainers = ConfigManager.getConfig().global.blurContainers;
 
         if (this.minecraft != null && this.minecraft.level != null && blurContainers) {
-            float partialTick = this.minecraft.getTimer().getGameTimeDeltaTicks();
-            this.renderBlurredBackground(partialTick);
+            this.renderBlurredBackground(guiGraphics);
         }
     }
 
