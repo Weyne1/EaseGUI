@@ -127,6 +127,9 @@ public abstract class ScreenMixin implements ScreenAnimationAccessor {
 
     // BACKGROUND GRADIENT COLOR MODIFICATIONS
 
+    /**
+     * Applies animated alpha to the top color of the Screen background gradient.
+     */
     @ModifyArg(
             method = "renderTransparentBackground(Lnet/minecraft/client/gui/GuiGraphics;)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;fillGradient(IIIIII)V"),
