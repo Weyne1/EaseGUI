@@ -1,5 +1,6 @@
 package net.weyne1.easegui.client.animator;
 
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.util.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.LogoRenderer;
@@ -71,7 +72,6 @@ public class LogoAnimator {
         if (elapsed >= profile.duration) {
             try (AnimationScope ignored = AnimationSystem.beginAlphaOnly(gg, finalAlpha)) {
                 drawLogoTexture(gg, texture, startX, height);
-                gg.flush();
             }
             return;
         }
@@ -79,7 +79,6 @@ public class LogoAnimator {
         float progress = elapsed <= 0 ? 0.0f : AnimationMath.calculateProgress(elapsed, profile.duration, profile.easing);
         try (AnimationScope ignored = AnimationSystem.begin(gg, startX, height, logoWidth, logoHeight, profile, progress, finalAlpha)) {
             drawLogoTexture(gg, texture, startX, height);
-            gg.flush();
         }
     }
 
@@ -94,7 +93,6 @@ public class LogoAnimator {
                 for (Identifier texture : LETTER_TEXTURES) {
                     drawLogoTexture(gg, texture, startX, height);
                 }
-                gg.flush();
             }
             return;
         }
@@ -109,7 +107,6 @@ public class LogoAnimator {
 
             try (AnimationScope ignored = AnimationSystem.begin(gg, startX, height, logoWidth, logoHeight, profile, progress, finalAlpha)) {
                 drawLogoTexture(gg, texture, startX, height);
-                gg.flush();
             }
         }
     }
@@ -137,14 +134,12 @@ public class LogoAnimator {
         float progress = elapsed <= 0 ? 0.0f : AnimationMath.calculateProgress(elapsed, profile.duration, profile.easing);
         try (AnimationScope ignored = AnimationSystem.begin(gg, x, y, editionWidth, editionHeight, profile, progress, finalAlpha)) {
             drawEditionTexture(gg, x, y);
-            gg.flush();
         }
     }
 
     private static void drawStaticEdition(GuiGraphics gg, int x, int y, float finalAlpha) {
         try (AnimationScope ignored = AnimationSystem.beginAlphaOnly(gg, finalAlpha)) {
             drawEditionTexture(gg, x, y);
-            gg.flush();
         }
     }
 
@@ -173,7 +168,7 @@ public class LogoAnimator {
     }
 
     private static void drawLogoTexture(GuiGraphics gg, Identifier texture, int x, int y) {
-        gg.blit(texture, x, y, 0.0f, 0.0f,
+        gg.blit(RenderPipelines.GUI_TEXTURED, texture, x, y, 0.0f, 0.0f,
                 LogoRendererAccessor.easeGUI$getLogoWidth(),
                 LogoRendererAccessor.easeGUI$getLogoHeight(),
                 LogoRendererAccessor.easeGUI$getLogoWidth(),
@@ -181,7 +176,7 @@ public class LogoAnimator {
     }
 
     private static void drawEditionTexture(GuiGraphics gg, int x, int y) {
-        gg.blit(LogoRenderer.MINECRAFT_EDITION, x, y, 0.0f, 0.0f,
+        gg.blit(RenderPipelines.GUI_TEXTURED, LogoRenderer.MINECRAFT_EDITION, x, y, 0.0f, 0.0f,
                 LogoRendererAccessor.easeGUI$getEditionWidth(),
                 LogoRendererAccessor.easeGUI$getEditionHeight(),
                 LogoRendererAccessor.easeGUI$getEditionWidth(),

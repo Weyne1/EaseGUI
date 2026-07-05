@@ -2,6 +2,7 @@ package net.weyne1.easegui.client.animation;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.weyne1.easegui.client.EaseGUIDebug;
+import org.joml.Matrix3x2fStack;
 
 public final class AnimationScope implements AutoCloseable {
     private static final float MIN_SCALE = 0.001f;
@@ -17,9 +18,8 @@ public final class AnimationScope implements AutoCloseable {
 
     public AnimationScope(GuiGraphics guiGraphics, float alpha) {
         this.guiGraphics = guiGraphics;
-        this.guiGraphics.flush();
         AnimationContext.pushAnimation(alpha);
-        this.guiGraphics.pose().pushPose();
+        this.guiGraphics.pose().pushMatrix();
     }
 
     public void setTransformParams(float offsetX, float offsetY, float scaleX, float scaleY, float pivotX, float pivotY) {
@@ -30,29 +30,30 @@ public final class AnimationScope implements AutoCloseable {
         this.pivotX = pivotX;
         this.pivotY = pivotY;
 
+        Matrix3x2fStack poseStack = guiGraphics.pose();
+
         if (this.scaleX != 1.0f || this.scaleY != 1.0f) {
-            guiGraphics.pose().translate(offsetX + pivotX, offsetY + pivotY, 0.0f);
-            guiGraphics.pose().scale(this.scaleX, this.scaleY, 1.0f);
-            guiGraphics.pose().translate(-pivotX, -pivotY, 0.0f);
+            poseStack.translate(offsetX + pivotX, offsetY + pivotY);
+            poseStack.scale(this.scaleX, this.scaleY);
+            poseStack.translate(-pivotX, -pivotY);
         } else {
-            guiGraphics.pose().translate(offsetX, offsetY, 0.0f);
+            poseStack.translate(offsetX, offsetY);
         }
     }
 
     public void suspend() {
         if (isClosed || isSuspended) return;
 
-        this.guiGraphics.flush();
         AnimationContext.suspend();
-
-        guiGraphics.pose().pushPose();
+        Matrix3x2fStack poseStack = guiGraphics.pose();
+        poseStack.pushMatrix();
 
         if (scaleX != 1.0f || scaleY != 1.0f) {
-            guiGraphics.pose().translate(pivotX, pivotY, 0.0f);
-            guiGraphics.pose().scale(1.0f / scaleX, 1.0f / scaleY, 1.0f);
-            guiGraphics.pose().translate(-(offsetX + pivotX), -(offsetY + pivotY), 0.0f);
+            poseStack.translate(pivotX, pivotY);
+            poseStack.scale(1.0f / scaleX, 1.0f / scaleY);
+            poseStack.translate(-(offsetX + pivotX), -(offsetY + pivotY));
         } else {
-            guiGraphics.pose().translate(-offsetX, -offsetY, 0.0f);
+            poseStack.translate(-offsetX, -offsetY);
         }
 
         isSuspended = true;
@@ -61,8 +62,7 @@ public final class AnimationScope implements AutoCloseable {
     public void resume() {
         if (isClosed || !isSuspended) return;
 
-        this.guiGraphics.flush();
-        guiGraphics.pose().popPose();
+        guiGraphics.pose().popMatrix();
         AnimationContext.resume();
 
         isSuspended = false;
@@ -73,16 +73,14 @@ public final class AnimationScope implements AutoCloseable {
         if (isClosed) return;
         isClosed = true;
 
-        this.guiGraphics.flush();
-
         if (isSuspended) {
-            guiGraphics.pose().popPose();
+            guiGraphics.pose().popMatrix();
             AnimationContext.resume();
             isSuspended = false;
         }
 
         try {
-            guiGraphics.pose().popPose();
+            guiGraphics.pose().popMatrix();
         } catch (IllegalStateException e) {
             EaseGUIDebug.reportError("pose_stack_underflow", () -> "PoseStack underflow inside AnimationScope close!");
         }

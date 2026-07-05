@@ -37,7 +37,7 @@ public class SplashAnimator {
         float finalAlpha = baseAlpha * progress;
         AnimationScope scope = AnimationSystem.beginAlphaOnly(gg, finalAlpha);
 
-        gg.pose().scale(progress, progress, 1.0f);
+        gg.pose().scale(progress, progress);
 
         return scope;
     }
