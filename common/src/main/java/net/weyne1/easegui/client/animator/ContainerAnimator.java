@@ -4,9 +4,9 @@ import net.minecraft.util.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
-import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
 import net.weyne1.easegui.client.accessor.ContainerScreenAccessor;
-import net.weyne1.easegui.client.accessor.RecipeBookAccessor;
+import net.weyne1.easegui.client.accessor.RecipeBookComponentAccessor;
+import net.weyne1.easegui.client.accessor.RecipeBookScreenAccessor;
 import net.weyne1.easegui.client.animation.AnimationContext;
 import net.weyne1.easegui.client.animation.AnimationMath;
 import net.weyne1.easegui.client.animation.AnimationScope;
@@ -32,17 +32,16 @@ public class ContainerAnimator {
         int maxX = minX + container.easeGUI$getImageWidth();
         int maxY = minY + container.easeGUI$getImageHeight();
 
-        if (screen instanceof RecipeUpdateListener listener) {
-            RecipeBookComponent book = listener.getRecipeBookComponent();
+        if (screen instanceof RecipeBookScreenAccessor recipeScreen) {
+            RecipeBookComponent<?> book = recipeScreen.easeGUI$getRecipeBookComponent();
+            if (book != null && ((RecipeBookComponentAccessor) book).easeGUI$isVisible()) {
+                RecipeBookComponentAccessor accessor = (RecipeBookComponentAccessor) book;
 
-            if (((RecipeBookAccessor) book).easeGUI$isVisible()) {
-                RecipeBookAccessor accessor = (RecipeBookAccessor) book;
+                int bookX = accessor.easeGUI$getXOrigin();
+                int bookY = accessor.easeGUI$getYOrigin();
 
-                int bookWidth = accessor.easeGUI$getBookWidth();
-                int bookHeight = accessor.easeGUI$getBookHeight();
-
-                int bookX = (screen.width - bookWidth) / 2 - accessor.easeGUI$getXOffset();
-                int bookY = (screen.height - bookHeight) / 2;
+                int bookWidth = RecipeBookComponent.IMAGE_WIDTH;
+                int bookHeight = RecipeBookComponent.IMAGE_HEIGHT;
 
                 minX = Math.min(minX, bookX);
                 minY = Math.min(minY, bookY);

@@ -17,6 +17,7 @@
     "gui.ScreenMixin",
     "gui.container.AbstractContainerScreenMixin",
     "gui.container.RecipeBookComponentMixin",
+    "gui.container.AbstractRecipeBookScreen",
     "gui.title.LogoRendererMixin",
     "gui.title.SplashRendererMixin",
     "gui.title.TitleScreenMixin"
