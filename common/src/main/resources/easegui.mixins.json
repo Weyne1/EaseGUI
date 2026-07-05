@@ -13,11 +13,12 @@
     "gui.AbstractWidgetMixin",
     "gui.AdvancementsScreenMixin",
     "gui.GuiGraphicsMixin",
+    "OptionsMixin",
     "gui.ScreenLifecycleMixin",
     "gui.ScreenMixin",
     "gui.container.AbstractContainerScreenMixin",
-    "gui.container.RecipeBookComponentMixin",
     "gui.container.AbstractRecipeBookScreen",
+    "gui.container.RecipeBookComponentMixin",
     "gui.title.LogoRendererMixin",
     "gui.title.SplashRendererMixin",
     "gui.title.TitleScreenMixin"
