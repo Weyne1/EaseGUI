@@ -9,8 +9,8 @@ public class FieldValidator {
     public static final String REGEX_INT = "\\d*";
     public static final String REGEX_FLOAT = "-?\\d*\\.?\\d*";
 
-    private static final int COLOR_VALID = 0xE0E0E0;
-    private static final int COLOR_INVALID = 0xFF5555;
+    private static final int COLOR_VALID = 0xFFE0E0E0;
+    private static final int COLOR_INVALID = 0xFFFF5555;
 
     public static void registerLongValidator(EditBox editBox, long min, long max, Consumer<Long> onSuccess) {
         editBox.setFilter(s -> s.matches(REGEX_INT));

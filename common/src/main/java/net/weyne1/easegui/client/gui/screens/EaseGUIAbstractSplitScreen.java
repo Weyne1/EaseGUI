@@ -1,10 +1,12 @@
 package net.weyne1.easegui.client.gui.screens;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import org.jspecify.annotations.NonNull;
 
 public abstract class EaseGUIAbstractSplitScreen extends Screen {
     protected final Screen parent;
@@ -13,7 +15,6 @@ public abstract class EaseGUIAbstractSplitScreen extends Screen {
     protected int listHeight;
     protected int leftX;
     protected int rightX;
-    protected int stringColor;
 
     private static final int LINE_COLOR = 0x33FFFFFF;
 
@@ -32,34 +33,35 @@ public abstract class EaseGUIAbstractSplitScreen extends Screen {
         this.leftX = 0;
         this.rightX = halfWidth;
 
-        this.stringColor = 0xAAAAAA;
-
         initScreen();
 
         // Главный заголовок экрана (в самом верху по центру)
-        StringWidget titleWidget = new StringWidget(this.title, this.font);
+        Component titleColored = this.title.copy().withStyle(ChatFormatting.WHITE);
+        StringWidget titleWidget = new StringWidget(titleColored, this.font);
+
         titleWidget.setX(this.halfWidth - titleWidget.getWidth() / 2);
         titleWidget.setY(15);
-        titleWidget.setColor(0xFFFFFF);
         this.addRenderableWidget(titleWidget);
 
         // Левый подзаголовок
         Component leftSub = getLeftSubtitle();
         if (leftSub != null) {
-            StringWidget leftSubWidget = new StringWidget(leftSub, this.font);
+            Component leftSubColored = leftSub.copy().withStyle(ChatFormatting.GRAY);
+            StringWidget leftSubWidget = new StringWidget(leftSubColored, this.font);
+
             leftSubWidget.setX((this.halfWidth / 2) - (leftSubWidget.getWidth() / 2));
             leftSubWidget.setY(35);
-            leftSubWidget.setColor(this.stringColor);
             this.addRenderableWidget(leftSubWidget);
         }
 
         // Правый подзаголовок
         Component rightSub = getRightSubtitle();
         if (rightSub != null) {
-            StringWidget rightSubWidget = new StringWidget(rightSub, this.font);
+            Component rightSubColored = rightSub.copy().withStyle(ChatFormatting.GRAY);
+            StringWidget rightSubWidget = new StringWidget(rightSubColored, this.font);
+
             rightSubWidget.setX((this.halfWidth + (this.halfWidth / 2)) - (rightSubWidget.getWidth() / 2));
             rightSubWidget.setY(35);
-            rightSubWidget.setColor(this.stringColor);
             this.addRenderableWidget(rightSubWidget);
         }
     }
@@ -73,7 +75,7 @@ public abstract class EaseGUIAbstractSplitScreen extends Screen {
     protected void renderOverlay(GuiGraphics gg, int mouseX, int mouseY, float partialTick) {}
 
     @Override
-    public void render(GuiGraphics gg, int mouseX, int mouseY, float partialTick) {
+    public void render(@NonNull GuiGraphics gg, int mouseX, int mouseY, float partialTick) {
         super.render(gg, mouseX, mouseY, partialTick);
 
         // Вертикальный разделитель по центру экрана

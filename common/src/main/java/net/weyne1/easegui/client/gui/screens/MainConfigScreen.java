@@ -145,7 +145,6 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
     }
 
     private EditBox createTextField(String value) {
-        assert this.minecraft != null;
         EditBox editBox = new EditBox(this.minecraft.font, 0, 0, 60, 16, Component.empty());
         editBox.setValue(value);
         return editBox;

@@ -63,11 +63,12 @@ public class ScreenSpecificConfigScreen extends EaseGUIAbstractSplitScreen {
 
                 this.addRenderableWidget(warningWidget);
             } else {
-                StringWidget noOptionsWidget = new StringWidget(Component.translatable("easegui.gui.no_unique_options"), this.font);
+                Component noOptionsText = Component.translatable("easegui.gui.no_unique_options")
+                        .withStyle(style -> style.withColor(0x55FFFFFF));
+                StringWidget noOptionsWidget = new StringWidget(noOptionsText, this.font);
                 int leftBlockCenterX = leftX + (listWidth / 2);
                 noOptionsWidget.setX(leftBlockCenterX - (noOptionsWidget.getWidth() / 2));
                 noOptionsWidget.setY(this.height / 2 - 4);
-                noOptionsWidget.setColor(0x55FFFFFF);
                 this.addRenderableWidget(noOptionsWidget);
             }
         }

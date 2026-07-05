@@ -1,6 +1,5 @@
 package net.weyne1.easegui.client.gui.components;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -11,6 +10,7 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 
@@ -32,20 +32,12 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
         return Math.min(this.width - 40, MAX_ROW_WIDTH);
     }
 
-    @Override
-    protected int getScrollbarPosition() {
-        return this.getX() + this.width - 6;
-    }
-
     public void addHeader(String text) { this.addEntry(new HeaderEntry(text)); }
-
-    public void addButton(Button btn) { this.addEntry(new ButtonEntry(btn)); }
-    public void addTwoButtons(Button btn1, Button btn2) {this.addTwoButtons(btn1, btn2, 0.60f); }
+    public void addButton(Button btn) { this.addEntry(new ButtonEntry(this.getRowWidth(), btn)); }
+    public void addTwoButtons(Button btn1, Button btn2) { this.addTwoButtons(btn1, btn2, 0.60f); }
     public void addTwoButtons(Button btn1, Button btn2, float firstButtonRatio) { this.addEntry(new TwoButtonsEntry(this.getRowWidth(), btn1, btn2, firstButtonRatio)); }
-
     public void addField(String label, EditBox box) { this.addEntry(new FieldEntry(this.getRowWidth(), label, box)); }
     public void addTwoFields(String label, EditBox box1, EditBox box2) { this.addEntry(new TwoFieldsEntry(this.getRowWidth(), label, box1, box2)); }
-
 
     public abstract static class Entry extends ContainerObjectSelectionList.Entry<Entry> { }
 
@@ -57,10 +49,9 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
         }
 
         @Override
-        public void render(GuiGraphics gg, int index, int top, int left, int width, int height,
-                           int mouseX, int mouseY, boolean isHovered, float partialTick) {
+        public void renderContent(GuiGraphics gg, int mouseX, int mouseY, boolean isHovered, float partialTick) {
             Font font = Minecraft.getInstance().font;
-            gg.drawCenteredString(font, this.text, left + width / 2, top + (height - 9) / 2, COLOR_HEADER);
+            gg.drawCenteredString(font, this.text, this.getContentXMiddle(), this.getContentYMiddle() - 4, COLOR_HEADER);
         }
 
         @Override
@@ -72,16 +63,16 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
     public static class ButtonEntry extends Entry {
         private final Button button;
 
-        public ButtonEntry(Button button) {
+        public ButtonEntry(int listWidth, Button button) {
             this.button = button;
+            this.button.setWidth(listWidth - SCROLLBAR_WIDTH_GAP);
+            this.button.setHeight(WIDGET_HEIGHT);
         }
 
         @Override
-        public void render(GuiGraphics gg, int index, int top, int left, int width, int height,
-                           int mouseX, int mouseY, boolean isHovered, float partialTick) {
-            button.setWidth(width - SCROLLBAR_WIDTH_GAP);
-            button.setX(left + (SCROLLBAR_WIDTH_GAP / 2));
-            button.setY(top);
+        public void renderContent(@NonNull GuiGraphics gg, int mouseX, int mouseY, boolean isHovered, float partialTick) {
+            button.setX(this.getContentX() + SCROLLBAR_WIDTH_GAP / 2);
+            button.setY(this.getContentY());
             button.render(gg, mouseX, mouseY, partialTick);
         }
 
@@ -112,13 +103,12 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
         }
 
         @Override
-        public void render(GuiGraphics gg, int index, int top, int left, int width, int height,
-                           int mouseX, int mouseY, boolean isHovered, float partialTick) {
-            button1.setX(left + (SCROLLBAR_WIDTH_GAP / 2));
-            button1.setY(top);
+        public void renderContent(@NonNull GuiGraphics gg, int mouseX, int mouseY, boolean isHovered, float partialTick) {
+            button1.setX(this.getContentX() + SCROLLBAR_WIDTH_GAP / 2);
+            button1.setY(this.getContentY());
 
             button2.setX(button1.getX() + button1.getWidth() + ELEMENT_SPACING);
-            button2.setY(top);
+            button2.setY(this.getContentY());
 
             button1.render(gg, mouseX, mouseY, partialTick);
             button2.render(gg, mouseX, mouseY, partialTick);
@@ -151,15 +141,13 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
         }
 
         @Override
-        public void render(GuiGraphics gg, int index, int top, int left, int width, int height,
-                           int mouseX, int mouseY, boolean isHovered, float partialTick) {
-            label.setX(left + (SCROLLBAR_WIDTH_GAP / 2));
-            label.setY(top);
+        public void renderContent(@NonNull GuiGraphics gg, int mouseX, int mouseY, boolean isHovered, float partialTick) {
+            label.setX(this.getContentX() + SCROLLBAR_WIDTH_GAP / 2);
+            label.setY(this.getContentY());
             field.setX(label.getX() + label.getWidth() + ELEMENT_SPACING);
-            field.setY(top);
+            field.setY(this.getContentY());
 
             label.render(gg, mouseX, mouseY, partialTick);
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             field.render(gg, mouseX, mouseY, partialTick);
         }
 
@@ -197,19 +185,17 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
         }
 
         @Override
-        public void render(GuiGraphics gg, int index, int top, int left, int width, int height,
-                           int mouseX, int mouseY, boolean isHovered, float partialTick) {
-            label.setX(left + (SCROLLBAR_WIDTH_GAP / 2));
-            label.setY(top);
+        public void renderContent(@NonNull GuiGraphics gg, int mouseX, int mouseY, boolean isHovered, float partialTick) {
+            label.setX(this.getContentX() + SCROLLBAR_WIDTH_GAP / 2);
+            label.setY(this.getContentY());
 
             field1.setX(label.getX() + label.getWidth() + ELEMENT_SPACING);
-            field1.setY(top);
+            field1.setY(this.getContentY());
 
             field2.setX(field1.getX() + field1.getWidth() + ELEMENT_SPACING);
-            field2.setY(top);
+            field2.setY(this.getContentY());
 
             label.render(gg, mouseX, mouseY, partialTick);
-            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             field1.render(gg, mouseX, mouseY, partialTick);
             field2.render(gg, mouseX, mouseY, partialTick);
         }

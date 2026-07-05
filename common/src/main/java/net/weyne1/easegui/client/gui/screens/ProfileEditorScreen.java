@@ -56,9 +56,7 @@ public class ProfileEditorScreen extends EaseGUIAbstractSplitScreen {
                 Component.translatable("easegui.generic.reset"),
                 button -> {
                     applyProfileValues(this.workingCopy, this.defaultProfile);
-                    if (this.minecraft != null) {
-                        this.init(this.minecraft, this.width, this.height);
-                    }
+                    this.init(this.width, this.height);
                 }
         ).build();
 
@@ -146,7 +144,6 @@ public class ProfileEditorScreen extends EaseGUIAbstractSplitScreen {
     }
 
     private EditBox createTextField(String value) {
-        assert this.minecraft != null;
         EditBox editBox = new EditBox(this.minecraft.font, 0, 0, 60, 16, Component.empty());
         editBox.setValue(value);
         return editBox;
