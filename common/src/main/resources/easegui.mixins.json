@@ -6,21 +6,21 @@
   "client": [
     "GameRendererMixin",
     "MinecraftMixin",
+    "OptionsMixin",
     "accessor.AdvancementTabAccessor",
     "accessor.LogoRendererAccessor",
+    "accessor.SplashRendererAccessor",
     "blaze3d.VertexBufferMixin",
     "gui.AbstractSelectionListMixin",
     "gui.AbstractWidgetMixin",
     "gui.AdvancementsScreenMixin",
     "gui.GuiGraphicsMixin",
-    "OptionsMixin",
     "gui.ScreenLifecycleMixin",
     "gui.ScreenMixin",
     "gui.container.AbstractContainerScreenMixin",
     "gui.container.AbstractRecipeBookScreen",
     "gui.container.RecipeBookComponentMixin",
     "gui.title.LogoRendererMixin",
-    "gui.title.SplashRendererMixin",
     "gui.title.TitleScreenMixin"
   ],
   "injectors": {
