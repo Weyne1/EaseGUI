@@ -13,6 +13,7 @@
     "gui.AbstractSelectionListMixin",
     "gui.AbstractWidgetMixin",
     "gui.AdvancementsScreenMixin",
+    "gui.GuiGraphicsMixin",
     "gui.ScreenLifecycleMixin",
     "gui.ScreenMixin",
     "gui.container.AbstractContainerScreenMixin",
