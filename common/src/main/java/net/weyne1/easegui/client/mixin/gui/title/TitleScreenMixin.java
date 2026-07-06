@@ -4,10 +4,9 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.LogoRenderer;
 import net.minecraft.client.gui.components.SplashRenderer;
 import net.minecraft.client.gui.screens.TitleScreen;
-import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextColor;
 import net.weyne1.easegui.client.animation.AnimationScope;
 import net.weyne1.easegui.client.animator.SplashAnimator;
 import net.weyne1.easegui.client.config.ConfigManager;
@@ -38,6 +37,24 @@ public class TitleScreenMixin {
         }
 
         original.call(instance, v);
+    }
+
+    @WrapOperation(
+            method = "render",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/gui/components/LogoRenderer;renderLogo(Lnet/minecraft/client/gui/GuiGraphics;IF)V"
+            )
+    )
+    private void easeGUI$conditionallyFadeLogo(LogoRenderer instance, GuiGraphics guiGraphics, int screenWidth, float transparency, Operation<Void> original) {
+        var titleSettings = ConfigManager.getConfig().screens.get("title");
+
+        if (titleSettings != null && titleSettings.enabled) {
+            original.call(instance, guiGraphics, screenWidth, 1.0F);
+            return;
+        }
+
+        original.call(instance, guiGraphics, screenWidth, transparency);
     }
 
     @WrapOperation(
