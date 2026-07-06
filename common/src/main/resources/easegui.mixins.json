@@ -10,7 +10,6 @@
     "accessor.AdvancementTabAccessor",
     "accessor.LogoRendererAccessor",
     "accessor.SplashRendererAccessor",
-    "blaze3d.VertexBufferMixin",
     "gui.AbstractSelectionListMixin",
     "gui.AbstractWidgetMixin",
     "gui.AdvancementsScreenMixin",
