@@ -12,19 +12,7 @@ public class GuiTextRenderStateMixin {
 
     @ModifyVariable(method = "<init>", at = @At("HEAD"), argsOnly = true, ordinal = 2)
     private static int easeGUI$modifyTextStateColor(int color) {
-        if (!AnimationContext.isAnimating()) {
-            return color;
-        }
-
-        int originalAlpha = (color >> 24) & 0xFF;
-
-        if (originalAlpha == 0 && (color & 0x00FFFFFF) != 0) {
-            originalAlpha = 255;
-        }
-
-        float animationAlpha = AnimationContext.getCurrentAlpha();
-        int finalAlpha = Math.round(originalAlpha * animationAlpha);
-
-        return (color & 0x00FFFFFF) | (finalAlpha << 24);
+        if (!AnimationContext.isAnimating()) return color;
+        return net.weyne1.easegui.client.util.ColorUtils.getAnimatedColor(color);
     }
 }
