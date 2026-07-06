@@ -14,6 +14,7 @@
     "gui.AbstractWidgetMixin",
     "gui.AdvancementsScreenMixin",
     "gui.GuiGraphicsMixin",
+    "gui.GuiTextRenderStateMixin",
     "gui.ScreenLifecycleMixin",
     "gui.ScreenMixin",
     "gui.container.AbstractContainerScreenMixin",
