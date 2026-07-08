@@ -22,7 +22,7 @@ public abstract class AbstractWidgetMixin implements EaseGUIWidget {
     @Shadow protected float alpha;
     @Shadow protected boolean isHovered;
 
-    @Unique private final AnimationState.AnimationData easeGUI$animationData = new AnimationState.AnimationData();
+    @Unique private final AnimationState easeGUI$animationState = new AnimationState();
     @Unique private UIElementCategory easeGUI$cachedCategory = null;
     @Unique private AnimationScope easeGUI$widgetScope = null;
 
@@ -55,11 +55,11 @@ public abstract class AbstractWidgetMixin implements EaseGUIWidget {
         var category = this.easeGUI$getCategory();
         if (category == null || category == UIElementCategory.UNKNOWN) return;
 
-        this.easeGUI$widgetScope = WidgetAnimator.beginRender(widget, guiGraphics, category, this.easeGUI$animationData);
+        this.easeGUI$widgetScope = WidgetAnimator.beginRender(widget, guiGraphics, category, this.easeGUI$animationState);
 
         var profile = ConfigManager.getProfileForCurrentContext(category);
-        if (profile != null && profile.enabled && this.easeGUI$animationData.init) {
-            long elapsed = Util.getMillis() - this.easeGUI$animationData.startTime - this.easeGUI$animationData.delay;
+        if (profile != null && profile.enabled && this.easeGUI$animationState.init) {
+            long elapsed = Util.getMillis() - this.easeGUI$animationState.startTime - this.easeGUI$animationState.delay;
             if (elapsed < profile.duration) {
                 this.isHovered = false;
             }

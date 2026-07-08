@@ -21,7 +21,7 @@ public class WidgetAnimator {
      *
      * @return an {@link AnimationScope} that must be closed, or {@code null} if no animation is needed
      */
-    public static AnimationScope beginRender(AbstractWidget widget, GuiGraphics gg, UIElementCategory category, AnimationState.AnimationData state) {
+    public static AnimationScope beginRender(AbstractWidget widget, GuiGraphics gg, UIElementCategory category, AnimationState state) {
         if (Minecraft.getInstance().screen instanceof AbstractContainerScreen) {
             return null;
         }
@@ -63,7 +63,7 @@ public class WidgetAnimator {
      * Initializes animation state when a widget appears and
      * recalculates cascade timing if needed.
      */
-    private static void updateAnimationState(AbstractWidget widget, AnimationState.AnimationData state, long now, AnimationProfile profile) {
+    private static void updateAnimationState(AbstractWidget widget, AnimationState state, long now, AnimationProfile profile) {
         int currentFrame = ScreenStateTracker.getCurrentFrameId();
 
         if (state.init && currentFrame > state.lastRenderFrame + 1) {
@@ -84,8 +84,8 @@ public class WidgetAnimator {
     }
 
     /**
-     * Вычисляет расстояние до виджета в виртуальной шкале координат,
-     * делая скорость каскада независимой от GUI Scale и разрешения монитора.
+     * Calculates the distance to the widget in a virtual coordinate scale,
+     * making the cascade speed independent of the GUI scale and monitor resolution.
      */
     private static float getDistance(AbstractWidget widget, AnimationProfile profile) {
         var window = Minecraft.getInstance().getWindow();
