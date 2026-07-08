@@ -1,44 +1,60 @@
 package net.weyne1.easegui.client.animator;
 
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import net.minecraft.client.gui.ActiveTextCollector;
+import net.minecraft.client.gui.TextAlignment;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Util;
-import net.minecraft.client.gui.GuiGraphics;
 import net.weyne1.easegui.client.animation.AnimationMath;
-import net.weyne1.easegui.client.animation.AnimationScope;
-import net.weyne1.easegui.client.animation.AnimationSystem;
 import net.weyne1.easegui.client.config.ConfigManager;
 import net.weyne1.easegui.client.state.ScreenStateTracker;
 
-/**
- * Animates the title screen splash text.
- */
 public class SplashAnimator {
-    /**
-     * Starts the animation.
-     *
-     * @return an {@link AnimationScope} that must be closed, or {@code null} if no animation is needed
-     */
-    public static AnimationScope beginRender(GuiGraphics gg, int color) {
+    private static long lastTrackedSessionTime = -1L;
+    private static long actualStartTime = -1L;
+
+    public static void animate(
+            ActiveTextCollector collector,
+            TextAlignment textAlignment,
+            int x,
+            int y,
+            ActiveTextCollector.Parameters parameters,
+            Component text,
+            Operation<Void> original
+    ) {
+        trackSessionTime();
+
         var screenConfig = ConfigManager.getConfig().screens.get("title");
+
         if (screenConfig == null || !screenConfig.enabled || screenConfig.splash == null || !screenConfig.splash.enabled) {
-            return null;
+            original.call(collector, textAlignment, x, y, parameters, text);
+            return;
         }
 
         var splashConfig = screenConfig.splash;
-        long startTime = ScreenStateTracker.getScreenOpenTime();
-        long elapsed = Util.getMillis() - startTime - splashConfig.splashDelay;
+        long elapsed = Util.getMillis() - actualStartTime - splashConfig.splashDelay;
+
+        if (elapsed <= 0) {
+            return;
+        }
 
         if (elapsed >= splashConfig.splashDuration) {
-            return null;
+            original.call(collector, textAlignment, x, y, parameters.withOpacity(1.0f), text);
+            return;
         }
 
         float progress = AnimationMath.calculateProgress(elapsed, splashConfig.splashDuration, splashConfig.splashEasing);
 
-        float baseAlpha = ((color >> 24) & 255) / 255.0f;
-        float finalAlpha = baseAlpha * progress;
-        AnimationScope scope = AnimationSystem.beginAlphaOnly(gg, finalAlpha);
+        ActiveTextCollector.Parameters animatedParams = parameters.withOpacity(AnimationMath.clamp(progress, 0f, 1f)).withScale(progress);
 
-        gg.pose().scale(progress, progress);
+        original.call(collector, textAlignment, x, y, animatedParams, text);
+    }
 
-        return scope;
+    private static void trackSessionTime() {
+        long currentSessionTime = ScreenStateTracker.getScreenOpenTime();
+        if (lastTrackedSessionTime != currentSessionTime) {
+            lastTrackedSessionTime = currentSessionTime;
+            actualStartTime = Util.getMillis();
+        }
     }
 }

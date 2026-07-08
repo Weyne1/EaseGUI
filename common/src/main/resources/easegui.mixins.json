@@ -21,6 +21,7 @@
     "gui.container.AbstractRecipeBookScreenMixin",
     "gui.container.RecipeBookComponentMixin",
     "gui.title.LogoRendererMixin",
+    "gui.title.SplashRendererMixin",
     "gui.title.TitleScreenMixin"
   ],
   "injectors": {
