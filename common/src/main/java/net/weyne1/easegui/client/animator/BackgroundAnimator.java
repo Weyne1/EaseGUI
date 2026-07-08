@@ -1,6 +1,5 @@
 package net.weyne1.easegui.client.animator;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.*;
 import net.weyne1.easegui.client.animation.AnimationScope;
@@ -12,9 +11,6 @@ import net.weyne1.easegui.client.config.ScreenType;
 import net.weyne1.easegui.client.state.ScreenAnimationTracker;
 import net.weyne1.easegui.client.state.ScreenStateTracker;
 
-/**
- * Handles background fade animations.
- */
 public class BackgroundAnimator {
     public static boolean skipBackgroundFade = false;
 
@@ -26,10 +22,8 @@ public class BackgroundAnimator {
                 || screen instanceof BackupConfirmScreen;
     }
 
-    public static boolean isScreenBlurred(Screen screen) {
-        if (screen == null
-                || screen instanceof TitleScreen
-                || isLoadingScreen(screen)) {
+    public static boolean shouldAnimateBackground(Screen screen) {
+        if (screen == null || screen instanceof TitleScreen || isLoadingScreen(screen)) {
             return false;
         }
 
@@ -47,15 +41,8 @@ public class BackgroundAnimator {
         }
     }
 
-    public static boolean shouldAnimate() {
-        return isScreenBlurred(Minecraft.getInstance().screen);
-    }
-
-    /**
-     * Returns whether background animations are enabled.
-     */
-    public static int getAnimatedColor(int originalColor) {
-        if (!shouldAnimate() || skipBackgroundFade) {
+    public static int getAnimatedColor(Screen screen, int originalColor) {
+        if (!shouldAnimateBackground(screen) || skipBackgroundFade) {
             return originalColor;
         }
 
@@ -72,13 +59,10 @@ public class BackgroundAnimator {
         return (originalColor & 0x00FFFFFF) | (finalAlpha << 24);
     }
 
-    /**
-     * Starts the animation.
-     *
-     * @return an {@link AnimationScope} that must be closed, or {@code null} if no animation is needed
-     */
-    public static AnimationScope beginRenderMenu(GuiGraphics gg) {
-        if (!shouldAnimate() || skipBackgroundFade) return null;
+    public static AnimationScope beginRenderMenu(Screen screen, GuiGraphics gg) {
+        if (isLoadingScreen(screen) || !shouldAnimateBackground(screen) || skipBackgroundFade) {
+            return null;
+        }
 
         long elapsed = ScreenStateTracker.getScreenElapsed();
         long duration = ConfigManager.getConfig().global.blurDuration;

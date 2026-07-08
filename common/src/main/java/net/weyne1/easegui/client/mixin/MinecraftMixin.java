@@ -23,8 +23,8 @@ public class MinecraftMixin {
             return;
         }
 
-        boolean wasBlurred = BackgroundAnimator.isScreenBlurred(oldScreen);
-        boolean willBeBlurred = BackgroundAnimator.isScreenBlurred(guiScreen);
+        boolean wasBlurred = BackgroundAnimator.shouldAnimateBackground(oldScreen);
+        boolean willBeBlurred = BackgroundAnimator.shouldAnimateBackground(guiScreen);
 
         BackgroundAnimator.skipBackgroundFade = wasBlurred && willBeBlurred;
     }
