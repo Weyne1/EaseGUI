@@ -41,7 +41,7 @@ public abstract class AbstractWidgetMixin implements EaseGUIWidget {
             else if (AbstractSelectionList.class.isAssignableFrom(clazz)) {
                 this.easeGUI$cachedCategory = UIElementCategory.SCROLLABLE;
             }
-            else if (StringWidget.class.isAssignableFrom(clazz) || MultiLineTextWidget.class.isAssignableFrom(clazz)) {
+            else if (AbstractStringWidget.class.isAssignableFrom(clazz)) {
                 this.easeGUI$cachedCategory = UIElementCategory.TEXT;
             }
             else {
