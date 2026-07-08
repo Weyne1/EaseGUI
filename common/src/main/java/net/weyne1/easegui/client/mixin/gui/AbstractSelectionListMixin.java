@@ -39,12 +39,17 @@ public abstract class AbstractSelectionListMixin {
 
         if (scope != null) {
             try (scope) {
-                original.call(instance, guiGraphics, mouseX, mouseY, partialTick, item);
+                AnimationContext.pushParentAnimation();
+                try {
+                    original.call(instance, guiGraphics, mouseX, mouseY, partialTick, item);
+                } finally {
+                    if (AnimationContext.hasParentAnimation()) {
+                        AnimationContext.popParentAnimation();
+                    }
+                }
             }
         } else {
             original.call(instance, guiGraphics, mouseX, mouseY, partialTick, item);
         }
-
-        AnimationContext.popParentAnimation();
     }
 }
