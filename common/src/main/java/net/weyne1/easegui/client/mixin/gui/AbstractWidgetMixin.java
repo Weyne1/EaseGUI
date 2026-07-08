@@ -34,19 +34,7 @@ public abstract class AbstractWidgetMixin implements EaseGUIWidget {
     @Override
     public UIElementCategory easeGUI$getCategory() {
         if (this.easeGUI$cachedCategory == null) {
-            Class<?> clazz = this.getClass();
-            if (AbstractButton.class.isAssignableFrom(clazz) || AbstractSliderButton.class.isAssignableFrom(clazz) || EditBox.class.isAssignableFrom(clazz)) {
-                this.easeGUI$cachedCategory = UIElementCategory.BUTTON_LIKE;
-            }
-            else if (AbstractSelectionList.class.isAssignableFrom(clazz)) {
-                this.easeGUI$cachedCategory = UIElementCategory.SCROLLABLE;
-            }
-            else if (StringWidget.class.isAssignableFrom(clazz) || MultiLineTextWidget.class.isAssignableFrom(clazz)) {
-                this.easeGUI$cachedCategory = UIElementCategory.TEXT;
-            }
-            else {
-                this.easeGUI$cachedCategory = UIElementCategory.UNKNOWN;
-            }
+            this.easeGUI$cachedCategory = UIElementCategory.fromClass(this.getClass());
         }
         return this.easeGUI$cachedCategory;
     }

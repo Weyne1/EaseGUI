@@ -1,5 +1,9 @@
 package net.weyne1.easegui.client.config;
 
+import net.minecraft.client.gui.components.*;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import org.jetbrains.annotations.NotNull;
+
 import java.util.EnumSet;
 
 public enum UIElementCategory {
@@ -18,5 +22,21 @@ public enum UIElementCategory {
 
     public EnumSet<ProfileFeature> getAllowedFeatures() {
         return EnumSet.copyOf(this.allowedFeatures);
+    }
+
+    @NotNull public static UIElementCategory fromClass(Class<?> clazz) {
+        if (AbstractButton.class.isAssignableFrom(clazz) || AbstractSliderButton.class.isAssignableFrom(clazz) || EditBox.class.isAssignableFrom(clazz)) {
+            return BUTTON_LIKE;
+        }
+        if (AbstractStringWidget.class.isAssignableFrom(clazz)) {
+            return TEXT;
+        }
+        if (AbstractSelectionList.class.isAssignableFrom(clazz)) {
+            return SCROLLABLE;
+        }
+        if (AbstractContainerScreen.class.isAssignableFrom(clazz)) {
+            return CONTAINERS;
+        }
+        return UNKNOWN;
     }
 }
