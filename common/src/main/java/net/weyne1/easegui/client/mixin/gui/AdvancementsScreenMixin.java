@@ -5,6 +5,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.advancements.AdvancementTab;
 import net.minecraft.client.gui.screens.advancements.AdvancementsScreen;
+import net.weyne1.easegui.client.animation.AnimationContext;
 import net.weyne1.easegui.client.animation.AnimationScope;
 import net.weyne1.easegui.client.animator.AdvancementsAnimator;
 import net.weyne1.easegui.client.mixin.accessor.AdvancementTabAccessor;
@@ -17,10 +18,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(AdvancementsScreen.class)
 public class AdvancementsScreenMixin {
 
-    @Unique
-    private AnimationScope easeGUI$windowScope = null;
+    @Unique private AnimationScope easeGUI$windowScope = null;
 
-    // === АНИМАЦИЯ ГЛАВНОГО ОКНА ===
+    // Main window animation
     @Inject(
             method = "render",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/advancements/AdvancementsScreen;renderInside(Lnet/minecraft/client/gui/GuiGraphics;II)V")
@@ -28,9 +28,14 @@ public class AdvancementsScreenMixin {
     private void easeGUI$preRenderWindow(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
         if (this.easeGUI$windowScope != null) {
             this.easeGUI$windowScope.close();
+            AnimationContext.popParentAnimation();
         }
 
         this.easeGUI$windowScope = AdvancementsAnimator.beginRenderWindow((AdvancementsScreen) (Object) this, guiGraphics);
+
+        if (this.easeGUI$windowScope != null) {
+            AnimationContext.pushParentAnimation();
+        }
     }
 
     @Inject(method = "render", at = @At("RETURN"))
@@ -38,10 +43,11 @@ public class AdvancementsScreenMixin {
         if (this.easeGUI$windowScope != null) {
             this.easeGUI$windowScope.close();
             this.easeGUI$windowScope = null;
+            AnimationContext.popParentAnimation();
         }
     }
 
-    // === АНИМАЦИЯ ВКЛАДОК (ФОН) ===
+    // Tab animation (bg)
     @WrapOperation(
             method = "renderWindow",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/advancements/AdvancementTab;drawTab(Lnet/minecraft/client/gui/GuiGraphics;IIIIZ)V")
@@ -50,17 +56,12 @@ public class AdvancementsScreenMixin {
         AdvancementsScreen screen = (AdvancementsScreen) (Object) this;
         int index = ((AdvancementTabAccessor) tab).easeGUI$getIndex();
 
-        AnimationScope scope = AdvancementsAnimator.beginRenderTab(screen, guiGraphics, index);
-        if (scope != null) {
-            try (scope) {
-                original.call(tab, guiGraphics, x, y, mouseX, mouseY, selected);
-            }
-        } else {
+        try (AnimationScope ignored = AdvancementsAnimator.beginRenderTab(screen, guiGraphics, index)) {
             original.call(tab, guiGraphics, x, y, mouseX, mouseY, selected);
         }
     }
 
-    // === АНИМАЦИЯ ВКЛАДОК (ИКОНКИ) ===
+    // Tab animation (fg/icons)
     @WrapOperation(
             method = "renderWindow",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/advancements/AdvancementTab;drawIcon(Lnet/minecraft/client/gui/GuiGraphics;II)V")
@@ -69,12 +70,7 @@ public class AdvancementsScreenMixin {
         AdvancementsScreen screen = (AdvancementsScreen) (Object) this;
         int index = ((AdvancementTabAccessor) tab).easeGUI$getIndex();
 
-        AnimationScope scope = AdvancementsAnimator.beginRenderTab(screen, guiGraphics, index);
-        if (scope != null) {
-            try (scope) {
-                original.call(tab, guiGraphics, offsetX, offsetY);
-            }
-        } else {
+        try (AnimationScope ignored = AdvancementsAnimator.beginRenderTab(screen, guiGraphics, index)) {
             original.call(tab, guiGraphics, offsetX, offsetY);
         }
     }

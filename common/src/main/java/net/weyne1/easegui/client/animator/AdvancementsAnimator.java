@@ -15,11 +15,6 @@ import net.weyne1.easegui.client.state.ScreenStateTracker;
 
 public class AdvancementsAnimator {
 
-    /**
-     * Starts the animation.
-     *
-     * @return an {@link AnimationScope} that must be closed, or {@code null} if no animation is needed
-     */
     public static AnimationScope beginRenderWindow(AdvancementsScreen screen, GuiGraphics gg) {
         ScreenType type = EaseGUIScreenRegistry.from(screen);
         var titleSettings = ConfigManager.getConfig().screens.get(type.getId());
@@ -39,11 +34,6 @@ public class AdvancementsAnimator {
         return AnimationSystem.begin(gg, 0, 0, screen.width, screen.height, profile, progress, 1.0f);
     }
 
-    /**
-     * Starts the animation.
-     *
-     * @return an {@link AnimationScope} that must be closed, or {@code null} if no animation is needed
-     */
     public static AnimationScope beginRenderTab(Screen screen, GuiGraphics gg, int tabIndex) {
         ScreenType type = EaseGUIScreenRegistry.from(screen);
         var titleSettings = ConfigManager.getConfig().screens.get(type.getId());
