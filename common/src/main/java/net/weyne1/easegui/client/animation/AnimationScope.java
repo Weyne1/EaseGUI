@@ -7,6 +7,7 @@ public final class AnimationScope implements AutoCloseable {
     private static final float MIN_SCALE = 0.001f;
 
     private final GuiGraphics guiGraphics;
+    private final float alpha;
 
     private boolean isClosed = false;
     private boolean isSuspended = false;
@@ -17,8 +18,10 @@ public final class AnimationScope implements AutoCloseable {
 
     public AnimationScope(GuiGraphics guiGraphics, float alpha) {
         this.guiGraphics = guiGraphics;
+        this.alpha = alpha;
+
         this.guiGraphics.flush();
-        AnimationContext.pushAnimation(alpha);
+        AnimationContext.pushScope(this);
         this.guiGraphics.pose().pushPose();
     }
 
@@ -43,8 +46,6 @@ public final class AnimationScope implements AutoCloseable {
         if (isClosed || isSuspended) return;
 
         this.guiGraphics.flush();
-        AnimationContext.suspend();
-
         guiGraphics.pose().pushPose();
 
         if (scaleX != 1.0f || scaleY != 1.0f) {
@@ -63,7 +64,6 @@ public final class AnimationScope implements AutoCloseable {
 
         this.guiGraphics.flush();
         guiGraphics.pose().popPose();
-        AnimationContext.resume();
 
         isSuspended = false;
     }
@@ -77,7 +77,6 @@ public final class AnimationScope implements AutoCloseable {
 
         if (isSuspended) {
             guiGraphics.pose().popPose();
-            AnimationContext.resume();
             isSuspended = false;
         }
 
@@ -87,11 +86,19 @@ public final class AnimationScope implements AutoCloseable {
             EaseGUIDebug.reportError("pose_stack_underflow", () -> "PoseStack underflow inside AnimationScope close!");
         }
 
-        AnimationContext.popAnimation();
+        AnimationContext.popScope(this);
     }
 
     public boolean isClosed() {
         return isClosed;
+    }
+
+    public boolean isSuspended() {
+        return isSuspended;
+    }
+
+    public float getAlpha() {
+        return alpha;
     }
 
     private static float clampScale(float scale) {

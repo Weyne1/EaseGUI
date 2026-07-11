@@ -23,7 +23,7 @@ public class VertexBufferMixin {
 
     @Inject(method = "_drawWithShader", at = @At("HEAD"))
     private void easeGUI$injectAlphaBeforeShader(Matrix4f modelViewMatrix, Matrix4f projectionMatrix, ShaderInstance shader, CallbackInfo ci) {
-        if (AnimationContext.isAnimating()) {
+        if (AnimationContext.isActive()) {
             float[] currentColor = RenderSystem.getShaderColor();
 
             this.easeGUI$savedR = currentColor[0];
