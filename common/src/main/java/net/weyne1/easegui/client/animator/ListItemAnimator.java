@@ -11,16 +11,8 @@ import net.weyne1.easegui.client.config.ConfigManager;
 import net.weyne1.easegui.client.config.UIElementCategory;
 import net.weyne1.easegui.client.state.ScreenStateTracker;
 
-/**
- * Animates list entries using cascade timing.
- */
 public class ListItemAnimator {
 
-    /**
-     * Starts the animation.
-     *
-     * @return an {@link AnimationScope} that must be closed, or {@code null} if no animation is needed
-     */
     public static AnimationScope beginRender(GuiGraphics gg, int top, int left, int width, int height) {
         var profile = ConfigManager.getProfileForCurrentContext(UIElementCategory.LIST_ENTRY);
         if (profile == null || !profile.enabled) return null;
