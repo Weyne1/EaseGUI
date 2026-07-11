@@ -27,29 +27,23 @@ public abstract class AbstractSelectionListMixin {
             )
     )
     private void easeGUI$wrapRenderItem(AbstractSelectionList<?> instance, GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, @Coerce Object item, Operation<Void> original) {
-        AnimationContext.pushParentAnimation();
-
         LayoutElement element = (LayoutElement) item;
         int left = this.getRowLeft();
         int width = this.getRowWidth();
         int top = element.getY();
         int height = element.getHeight();
 
-        AnimationScope scope = ListItemAnimator.beginRender(guiGraphics, top, left, width, height);
+        try (AnimationScope scope = ListItemAnimator.beginRender(guiGraphics, top, left, width, height)) {
 
-        if (scope != null) {
-            try (scope) {
+            if (scope != null) {
                 AnimationContext.pushParentAnimation();
-                try {
-                    original.call(instance, guiGraphics, mouseX, mouseY, partialTick, item);
-                } finally {
-                    if (AnimationContext.hasParentAnimation()) {
-                        AnimationContext.popParentAnimation();
-                    }
-                }
             }
-        } else {
+
             original.call(instance, guiGraphics, mouseX, mouseY, partialTick, item);
+
+            if (scope != null) {
+                AnimationContext.popParentAnimation();
+            }
         }
     }
 }
