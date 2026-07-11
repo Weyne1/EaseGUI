@@ -1,5 +1,7 @@
 package net.weyne1.easegui.client.mixin.gui;
 
+import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import net.minecraft.util.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.*;
@@ -12,9 +14,6 @@ import net.weyne1.easegui.client.config.UIElementCategory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(AbstractWidget.class)
 public abstract class AbstractWidgetMixin implements EaseGUIWidget {
@@ -24,7 +23,6 @@ public abstract class AbstractWidgetMixin implements EaseGUIWidget {
 
     @Unique private final AnimationState easeGUI$animationState = new AnimationState();
     @Unique private UIElementCategory easeGUI$cachedCategory = null;
-    @Unique private AnimationScope easeGUI$widgetScope = null;
 
     @Override
     public float easeGUI$getAlpha() {
@@ -39,38 +37,43 @@ public abstract class AbstractWidgetMixin implements EaseGUIWidget {
         return this.easeGUI$cachedCategory;
     }
 
-    @Inject(method = "render", at = @At("HEAD"))
-    private void easeGUI$onPreRender(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
-        if (this.easeGUI$widgetScope != null) {
-            this.easeGUI$widgetScope.close();
-            this.easeGUI$widgetScope = null;
-        }
-
+    @WrapMethod(method = "render")
+    private void easeGUI$wrapWidgetRender(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, Operation<Void> original) {
         AbstractWidget widget = (AbstractWidget) (Object) this;
 
         if (!widget.visible) {
+            original.call(guiGraphics, mouseX, mouseY, partialTick);
             return;
         }
 
         var category = this.easeGUI$getCategory();
-        if (category == null || category == UIElementCategory.UNKNOWN) return;
-
-        this.easeGUI$widgetScope = WidgetAnimator.beginRender(widget, guiGraphics, category, this.easeGUI$animationState);
-
-        var profile = ConfigManager.getProfileForCurrentContext(category);
-        if (profile != null && profile.enabled && this.easeGUI$animationState.init) {
-            long elapsed = Util.getMillis() - this.easeGUI$animationState.startTime - this.easeGUI$animationState.delay;
-            if (elapsed < profile.duration) {
-                this.isHovered = false;
-            }
+        if (category == null || category == UIElementCategory.UNKNOWN) {
+            original.call(guiGraphics, mouseX, mouseY, partialTick);
+            return;
         }
-    }
 
-    @Inject(method = "render", at = @At("RETURN"))
-    private void easeGUI$onPostRender(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
-        if (this.easeGUI$widgetScope != null) {
-            this.easeGUI$widgetScope.close();
-            this.easeGUI$widgetScope = null;
+        try (AnimationScope ignored = WidgetAnimator.beginRender(widget, guiGraphics, category, this.easeGUI$animationState)) {
+
+            var profile = ConfigManager.getProfileForCurrentContext(category);
+            boolean shouldBypassHover = false;
+
+            if (profile != null && profile.enabled && this.easeGUI$animationState.init) {
+                long elapsed = Util.getMillis() - this.easeGUI$animationState.startTime - this.easeGUI$animationState.delay;
+                if (elapsed < profile.duration) {
+                    shouldBypassHover = true;
+                }
+            }
+
+            if (shouldBypassHover) {
+                boolean savedHover = this.isHovered;
+                this.isHovered = false;
+
+                original.call(guiGraphics, mouseX, mouseY, partialTick);
+
+                this.isHovered = savedHover;
+            } else {
+                original.call(guiGraphics, mouseX, mouseY, partialTick);
+            }
         }
     }
 }
