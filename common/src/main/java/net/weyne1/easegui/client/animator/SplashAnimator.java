@@ -1,10 +1,8 @@
 package net.weyne1.easegui.client.animator;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import net.minecraft.client.gui.ActiveTextCollector;
-import net.minecraft.client.gui.TextAlignment;
-import net.minecraft.network.chat.Component;
 import net.minecraft.util.Util;
+import net.weyne1.easegui.client.animation.AnimationContext;
 import net.weyne1.easegui.client.animation.AnimationMath;
 import net.weyne1.easegui.client.config.ConfigManager;
 import net.weyne1.easegui.client.state.ScreenStateTracker;
@@ -13,41 +11,33 @@ public class SplashAnimator {
     private static long lastTrackedSessionTime = -1L;
     private static long actualStartTime = -1L;
 
-    public static void animate(
-            ActiveTextCollector collector,
-            TextAlignment textAlignment,
-            int x,
-            int y,
-            ActiveTextCollector.Parameters parameters,
-            Component text,
-            Operation<Void> original
-    ) {
+    public static ActiveTextCollector.Parameters getAnimatedParameters(ActiveTextCollector.Parameters parameters) {
         trackSessionTime();
 
         var screenConfig = ConfigManager.getConfig().screens.get("title");
 
         if (screenConfig == null || !screenConfig.enabled || screenConfig.splash == null || !screenConfig.splash.enabled) {
-            original.call(collector, textAlignment, x, y, parameters, text);
-            return;
+            return parameters.withOpacity(AnimationContext.getCurrentAlpha());
         }
 
         var splashConfig = screenConfig.splash;
         long elapsed = Util.getMillis() - actualStartTime - splashConfig.splashDelay;
+        float parentAlpha = AnimationContext.getCurrentAlpha();
 
         if (elapsed <= 0) {
-            return;
+            return null;
         }
 
         if (elapsed >= splashConfig.splashDuration) {
-            original.call(collector, textAlignment, x, y, parameters.withOpacity(1.0f), text);
-            return;
+            return parameters.withOpacity(parentAlpha);
         }
 
         float progress = AnimationMath.calculateProgress(elapsed, splashConfig.splashDuration, splashConfig.splashEasing);
+        float finalAlpha = AnimationMath.clamp(progress * parentAlpha, 0f, 1f);
 
-        ActiveTextCollector.Parameters animatedParams = parameters.withOpacity(AnimationMath.clamp(progress, 0f, 1f)).withScale(progress);
-
-        original.call(collector, textAlignment, x, y, animatedParams, text);
+        return parameters
+                .withOpacity(finalAlpha)
+                .withScale(progress);
     }
 
     private static void trackSessionTime() {
