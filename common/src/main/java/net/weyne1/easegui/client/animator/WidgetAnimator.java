@@ -11,16 +11,8 @@ import net.weyne1.easegui.client.config.ConfigManager;
 import net.weyne1.easegui.client.config.UIElementCategory;
 import net.weyne1.easegui.client.state.ScreenStateTracker;
 
-/**
- * Animates GUI widgets.
- */
 public class WidgetAnimator {
 
-    /**
-     * Starts the animation.
-     *
-     * @return an {@link AnimationScope} that must be closed, or {@code null} if no animation is needed
-     */
     public static AnimationScope beginRender(AbstractWidget widget, GuiGraphics gg, UIElementCategory category, AnimationState state) {
         if (Minecraft.getInstance().screen instanceof AbstractContainerScreen) {
             return null;
@@ -59,10 +51,6 @@ public class WidgetAnimator {
         );
     }
 
-    /**
-     * Initializes animation state when a widget appears and
-     * recalculates cascade timing if needed.
-     */
     private static void updateAnimationState(AbstractWidget widget, AnimationState state, long now, AnimationProfile profile) {
         int currentFrame = ScreenStateTracker.getCurrentFrameId();
 
@@ -83,10 +71,6 @@ public class WidgetAnimator {
         state.lastRenderFrame = currentFrame;
     }
 
-    /**
-     * Calculates the distance to the widget in a virtual coordinate scale,
-     * making the cascade speed independent of the GUI scale and monitor resolution.
-     */
     private static float getDistance(AbstractWidget widget, AnimationProfile profile) {
         var window = Minecraft.getInstance().getWindow();
         int screenHeight = window.getGuiScaledHeight();
