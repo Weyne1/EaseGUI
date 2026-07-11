@@ -15,11 +15,7 @@ import net.weyne1.easegui.client.config.UIElementCategory;
 import net.weyne1.easegui.client.state.ScreenStateTracker;
 
 public class ContainerAnimator {
-    /**
-     * Starts the animation.
-     *
-     * @return an {@link AnimationScope} that must be closed, or {@code null} if no animation is needed
-     */
+
     public static AnimationScope beginAnimation(Screen screen, GuiGraphics gg) {
         if (!(screen instanceof ContainerScreenAccessor container)) {
             return null;

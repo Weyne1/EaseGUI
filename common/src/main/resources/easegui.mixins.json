@@ -9,7 +9,6 @@
     "OptionsMixin",
     "accessor.AdvancementTabAccessor",
     "accessor.LogoRendererAccessor",
-    "accessor.SplashRendererAccessor",
     "gui.AbstractSelectionListMixin",
     "gui.AbstractWidgetMixin",
     "gui.AdvancementsScreenMixin",
