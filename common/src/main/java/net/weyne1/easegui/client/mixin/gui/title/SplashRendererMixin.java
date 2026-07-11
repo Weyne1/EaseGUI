@@ -23,7 +23,7 @@ public class SplashRendererMixin {
             return;
         }
 
-        AnimationScope scope = SplashAnimator.beginRender(gg, color);
+        AnimationScope scope = SplashAnimator.beginRender(gg, x, y, color);
 
         if (scope != null) {
             try (scope) {
