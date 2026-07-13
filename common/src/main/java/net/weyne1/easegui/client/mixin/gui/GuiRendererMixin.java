@@ -8,7 +8,7 @@ import net.minecraft.client.gui.render.TextureSetup;
 import net.minecraft.client.gui.render.state.BlitRenderState;
 import net.minecraft.client.gui.render.state.GuiItemRenderState;
 import net.minecraft.client.gui.render.GuiRenderer;
-import net.weyne1.easegui.client.extension.EaseGuiItemExtension;
+import net.weyne1.easegui.client.extension.ItemExtension;
 import org.joml.Matrix3x2f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -27,7 +27,7 @@ public class GuiRendererMixin {
             ScreenRectangle scissorArea, ScreenRectangle bounds,
             Operation<BlitRenderState> original,
             GuiItemRenderState renderState, float x, float y, int itemSize, int atlasSize) {
-        float alpha = ((EaseGuiItemExtension) (Object) renderState).easegui$getAlpha();
+        float alpha = ((ItemExtension) (Object) renderState).easegui$getAlpha();
 
         if (alpha >= 1.0f) {
             return original.call(pipeline, textureSetup, pose, x0, y0, x1, y1, u0, u1, v0, v1, color, scissorArea, bounds);

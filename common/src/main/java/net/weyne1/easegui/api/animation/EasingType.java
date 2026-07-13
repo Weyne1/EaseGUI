@@ -1,4 +1,6 @@
-package net.weyne1.easegui.client.animation;
+package net.weyne1.easegui.api.animation;
+
+import net.weyne1.easegui.client.animation.EasingFunction;
 
 public enum EasingType {
     LINEAR(t -> t),

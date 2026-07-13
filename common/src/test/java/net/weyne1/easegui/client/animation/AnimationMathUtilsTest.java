@@ -1,5 +1,6 @@
 package net.weyne1.easegui.client.animation;
 
+import net.weyne1.easegui.api.animation.EasingType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;

@@ -1,13 +1,14 @@
 package net.weyne1.easegui.client.config;
 
-import net.weyne1.easegui.client.animation.AnimationProfile;
-import net.weyne1.easegui.client.animation.EasingType;
+import net.weyne1.easegui.api.WidgetCategory;
+import net.weyne1.easegui.api.animation.AnimationProfile;
+import net.weyne1.easegui.api.animation.EasingType;
 
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
-import static net.weyne1.easegui.client.animation.EasingType.EASE_OUT_CUBIC;
+import static net.weyne1.easegui.api.animation.EasingType.EASE_OUT_CUBIC;
 
 public class EaseGUIConfig {
     public static final int CURRENT_SCHEMA_VERSION = 2;
@@ -21,12 +22,12 @@ public class EaseGUIConfig {
         public long blurDuration = 300L;
         public boolean blurContainers = true;
         public EasingType dimmingEasing = EASE_OUT_CUBIC;
-        public final Map<EaseGUIElementCategory, AnimationProfile> elementProfiles = new EnumMap<>(EaseGUIElementCategory.class);
+        public final Map<WidgetCategory, AnimationProfile> elementProfiles = new EnumMap<>(WidgetCategory.class);
     }
 
     public static class ScreenSettings {
         public boolean enabled = true;
-        public Map<EaseGUIElementCategory, AnimationProfile> customProfiles = new EnumMap<>(EaseGUIElementCategory.class);
+        public Map<WidgetCategory, AnimationProfile> customProfiles = new EnumMap<>(WidgetCategory.class);
 
         public LogoSettings logo = null;
         public SplashSettings splash = null;
