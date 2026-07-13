@@ -11,19 +11,30 @@ import net.weyne1.easegui.client.config.ScreenType;
 import net.weyne1.easegui.client.state.ScreenAnimationTracker;
 import net.weyne1.easegui.client.state.ScreenStateTracker;
 
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
 public class BackgroundAnimator {
     public static boolean skipBackgroundFade = false;
 
-    public static boolean isLoadingScreen(Screen screen) {
-        return screen instanceof LevelLoadingScreen
-                || screen instanceof ProgressScreen
-                || screen instanceof ConnectScreen
-                || screen instanceof GenericWaitingScreen
-                || screen instanceof BackupConfirmScreen;
+    private static final Set<Class<? extends Screen>> IGNORED_SCREEN_CLASSES = ConcurrentHashMap.newKeySet();
+
+    static {
+        IGNORED_SCREEN_CLASSES.add(TitleScreen.class);
+        IGNORED_SCREEN_CLASSES.add(LevelLoadingScreen.class);
+        IGNORED_SCREEN_CLASSES.add(ProgressScreen.class);
+        IGNORED_SCREEN_CLASSES.add(ConnectScreen.class);
+        IGNORED_SCREEN_CLASSES.add(GenericWaitingScreen.class);
+        IGNORED_SCREEN_CLASSES.add(BackupConfirmScreen.class);
+    }
+
+    @SuppressWarnings("unused")
+    public static void registerIgnoredScreen(Class<? extends Screen> screenClass) {
+        IGNORED_SCREEN_CLASSES.add(screenClass);
     }
 
     public static boolean shouldAnimateBackground(Screen screen) {
-        if (screen == null || screen instanceof TitleScreen || isLoadingScreen(screen)) {
+        if (screen == null || isIgnoredScreen(screen)) {
             return false;
         }
 
@@ -60,7 +71,7 @@ public class BackgroundAnimator {
     }
 
     public static AnimationScope beginRenderMenu(Screen screen, GuiGraphics gg) {
-        if (isLoadingScreen(screen) || !shouldAnimateBackground(screen) || skipBackgroundFade) {
+        if (!shouldAnimateBackground(screen) || skipBackgroundFade) {
             return null;
         }
 
@@ -72,5 +83,15 @@ public class BackgroundAnimator {
 
         float progress = Math.max(0.0f, Math.min(1.0f, ScreenAnimationTracker.getProgress()));
         return AnimationSystem.beginAlphaOnly(gg, progress);
+    }
+
+    private static boolean isIgnoredScreen(Screen screen) {
+        Class<? extends Screen> screenClass = screen.getClass();
+        for (Class<? extends Screen> ignored : IGNORED_SCREEN_CLASSES) {
+            if (ignored.isAssignableFrom(screenClass)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

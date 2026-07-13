@@ -88,7 +88,7 @@ public abstract class ScreenMixin {
     )
     private void easeGUI$modifyTransparentBgColors(Args args) {
         Screen currentScreen = (Screen) (Object) this;
-        if (BackgroundAnimator.isLoadingScreen(currentScreen)) {
+        if (!BackgroundAnimator.shouldAnimateBackground(currentScreen)) {
             return;
         }
 

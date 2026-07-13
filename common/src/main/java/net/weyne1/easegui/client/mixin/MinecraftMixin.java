@@ -18,7 +18,7 @@ public class MinecraftMixin {
     private void easeGUI$onScreenTransition(Screen guiScreen, CallbackInfo ci) {
         Screen oldScreen = this.screen;
 
-        if (BackgroundAnimator.isLoadingScreen(guiScreen)) {
+        if (!BackgroundAnimator.shouldAnimateBackground(guiScreen)) {
             BackgroundAnimator.skipBackgroundFade = true;
             return;
         }
