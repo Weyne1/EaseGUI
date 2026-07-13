@@ -33,25 +33,8 @@ public class WidgetAnimator {
             return null;
         }
 
-        long elapsed = now - state.startTime - state.delay;
-
-        if (elapsed >= profile.duration) return null;
-
-        float progress = 0.0f;
-        if (elapsed > 0) {
-            progress = AnimationMath.calculateProgress(elapsed, profile.duration, profile.easing);
-        }
-
-        return AnimationSystem.begin(
-                gg,
-                widget.getX(),
-                widget.getY(),
-                widget.getWidth(),
-                widget.getHeight(),
-                profile,
-                progress,
-                ((EaseGUIWidgetExtension) widget).easeGUI$getAlpha()
-        );
+        return AnimationSystem.begin(gg, widget.getX(), widget.getY(), widget.getWidth(), widget.getHeight(), profile,
+                state.startTime, state.delay, ((EaseGUIWidgetExtension) widget).easeGUI$getAlpha());
     }
 
     /**

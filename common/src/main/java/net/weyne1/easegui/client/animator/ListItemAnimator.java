@@ -1,9 +1,7 @@
 package net.weyne1.easegui.client.animator;
 
-import net.minecraft.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.weyne1.easegui.client.animation.AnimationMath;
 import net.weyne1.easegui.client.animation.AnimationProfile;
 import net.weyne1.easegui.client.animation.AnimationScope;
 import net.weyne1.easegui.client.animation.AnimationSystem;
@@ -20,16 +18,7 @@ public class ListItemAnimator {
         long delay = getDelay(top, left, profile);
         long startTime = ScreenStateTracker.getScreenOpenTime();
 
-        long elapsed = Util.getMillis() - startTime - delay;
-
-        if (elapsed >= profile.duration) return null;
-
-        float progress = 0.0f;
-        if (elapsed > 0) {
-            progress = AnimationMath.calculateProgress(elapsed, profile.duration, profile.easing);
-        }
-
-        return AnimationSystem.begin(gg, left, top, width, height, profile, progress, 1.0f);
+        return AnimationSystem.begin(gg, left, top, width, height, profile, startTime, delay, 1.0f);
     }
 
     private static long getDelay(int top, int left, AnimationProfile profile) {
