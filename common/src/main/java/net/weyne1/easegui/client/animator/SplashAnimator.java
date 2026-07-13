@@ -8,12 +8,8 @@ import net.weyne1.easegui.client.config.ConfigManager;
 import net.weyne1.easegui.client.state.ScreenStateTracker;
 
 public class SplashAnimator {
-    private static long lastTrackedSessionTime = -1L;
-    private static long actualStartTime = -1L;
 
     public static ActiveTextCollector.Parameters getAnimatedParameters(ActiveTextCollector.Parameters parameters) {
-        trackSessionTime();
-
         var screenConfig = ConfigManager.getConfig().screens.get("title");
 
         if (screenConfig == null || !screenConfig.enabled || screenConfig.splash == null || !screenConfig.splash.enabled) {
@@ -21,6 +17,7 @@ public class SplashAnimator {
         }
 
         var splashConfig = screenConfig.splash;
+        long actualStartTime = ScreenStateTracker.getTitleActualStartTime();
         long elapsed = Util.getMillis() - actualStartTime - splashConfig.splashDelay;
         float parentAlpha = AnimationContext.getCurrentAlpha();
 
@@ -38,13 +35,5 @@ public class SplashAnimator {
         return parameters
                 .withOpacity(finalAlpha)
                 .withScale(progress);
-    }
-
-    private static void trackSessionTime() {
-        long currentSessionTime = ScreenStateTracker.getScreenOpenTime();
-        if (lastTrackedSessionTime != currentSessionTime) {
-            lastTrackedSessionTime = currentSessionTime;
-            actualStartTime = Util.getMillis();
-        }
     }
 }
