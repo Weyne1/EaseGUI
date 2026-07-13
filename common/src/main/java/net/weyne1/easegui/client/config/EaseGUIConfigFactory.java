@@ -18,11 +18,11 @@ public final class EaseGUIConfigFactory {
     public static EaseGUIConfig createDefaultConfig() {
         EaseGUIConfig config = new EaseGUIConfig();
 
-        config.global.elementProfiles.put(UIElementCategory.BUTTON_LIKE, createButtonProfile());
-        config.global.elementProfiles.put(UIElementCategory.TEXT, createTextProfile());
-        config.global.elementProfiles.put(UIElementCategory.SCROLLABLE, createScrollableProfile());
-        config.global.elementProfiles.put(UIElementCategory.LIST_ENTRY, createListEntryProfile());
-        config.global.elementProfiles.put(UIElementCategory.CONTAINERS, createContainerProfile());
+        config.global.elementProfiles.put(EaseGUIElementCategory.BUTTON_LIKE, createButtonProfile());
+        config.global.elementProfiles.put(EaseGUIElementCategory.TEXT, createTextProfile());
+        config.global.elementProfiles.put(EaseGUIElementCategory.SCROLLABLE, createScrollableProfile());
+        config.global.elementProfiles.put(EaseGUIElementCategory.LIST_ENTRY, createListEntryProfile());
+        config.global.elementProfiles.put(EaseGUIElementCategory.CONTAINERS, createContainerProfile());
 
         for (ScreenType type : EaseGUIScreenRegistry.getRegisteredTypes()) {
             config.screens.put(type.getId(), createDefaultSettingsFor(type));
@@ -93,9 +93,12 @@ public final class EaseGUIConfigFactory {
         }
 
         if (settings.customProfiles == null) {
-            settings.customProfiles = new EnumMap<>(UIElementCategory.class);
+            settings.customProfiles = new EnumMap<>(EaseGUIElementCategory.class);
             changed = true;
         }
+
+        // Apply external developer animation defaults over user settings
+        changed |= EaseGUIScreenRegistry.patchDefaults(type.getId(), settings);
 
         return changed;
     }
@@ -111,6 +114,9 @@ public final class EaseGUIConfigFactory {
             }
             case "advancements" -> settings.advancements = createAdvancementsSettings();
         }
+
+        // Allow external mods to apply their default profile configurations on screen creation
+        EaseGUIScreenRegistry.configureDefaults(type.getId(), settings);
 
         return settings;
     }

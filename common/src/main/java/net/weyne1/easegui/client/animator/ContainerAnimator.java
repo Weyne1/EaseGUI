@@ -9,7 +9,7 @@ import net.weyne1.easegui.client.extension.RecipeBookExtension;
 import net.weyne1.easegui.client.animation.AnimationScope;
 import net.weyne1.easegui.client.animation.AnimationSystem;
 import net.weyne1.easegui.client.config.ConfigManager;
-import net.weyne1.easegui.client.config.UIElementCategory;
+import net.weyne1.easegui.client.config.EaseGUIElementCategory;
 import net.weyne1.easegui.client.state.ScreenStateTracker;
 
 public class ContainerAnimator {
@@ -43,7 +43,7 @@ public class ContainerAnimator {
             }
         }
 
-        var profile = ConfigManager.getProfileForCurrentContext(UIElementCategory.CONTAINERS);
+        var profile = ConfigManager.getProfileForCurrentContext(EaseGUIElementCategory.CONTAINERS);
         if (profile == null || !profile.enabled) return null;
 
         long startTime = ScreenStateTracker.getScreenOpenTime();

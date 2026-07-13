@@ -21,12 +21,12 @@ public class EaseGUIConfig {
         public long blurDuration = 300L;
         public boolean blurContainers = true;
         public EasingType dimmingEasing = EASE_OUT_CUBIC;
-        public final Map<UIElementCategory, AnimationProfile> elementProfiles = new EnumMap<>(UIElementCategory.class);
+        public final Map<EaseGUIElementCategory, AnimationProfile> elementProfiles = new EnumMap<>(EaseGUIElementCategory.class);
     }
 
     public static class ScreenSettings {
         public boolean enabled = true;
-        public Map<UIElementCategory, AnimationProfile> customProfiles = new EnumMap<>(UIElementCategory.class);
+        public Map<EaseGUIElementCategory, AnimationProfile> customProfiles = new EnumMap<>(EaseGUIElementCategory.class);
 
         public LogoSettings logo = null;
         public SplashSettings splash = null;

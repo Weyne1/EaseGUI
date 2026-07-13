@@ -13,10 +13,12 @@ import net.minecraft.client.gui.screens.options.OptionsSubScreen;
 import net.minecraft.client.gui.screens.packs.PackSelectionScreen;
 import net.minecraft.client.gui.screens.social.SocialInteractionsScreen;
 import net.minecraft.client.gui.screens.worldselection.*;
+import net.weyne1.easegui.client.animation.AnimationProfile;
 import net.weyne1.easegui.client.gui.screens.EaseGUIAbstractSplitScreen;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 /**
  * Registry that maps Minecraft Screen classes to ScreenType definitions.
@@ -24,21 +26,19 @@ import java.util.concurrent.ConcurrentHashMap;
  * <p>This is used by EaseGUI to decide how different screens should be categorized
  * and animated. Matching works in two steps:
  * <ul>
- *   <li>Fast exact class lookup (cache)</li>
- *   <li>Fallback hierarchy scan using isAssignableFrom</li>
+ * <li>Fast exact class lookup (cache)</li>
+ * <li>Fallback hierarchy scan using isAssignableFrom</li>
  * </ul>
  *
- * <p>Mod developers can register custom screens to integrate them into animation system.
+ * <p>Mod developers can register custom screens and default animation parameters
+ * to integrate them into the EaseGUI animation system.
  */
 public final class EaseGUIScreenRegistry {
 
-    /** Cache for exact class → ScreenType mapping to avoid hierarchy checks */
     private static final Map<Class<? extends Screen>, ScreenType> EXACT_MATCH_CACHE = new ConcurrentHashMap<>();
-
-    /** Sorted list of screen types used for inheritance-based matching */
+    private static final Map<String, Consumer<EaseGUIConfig.ScreenSettings>> DEFAULT_CONFIGURATORS = new ConcurrentHashMap<>();
     private static final List<ScreenType> HIERARCHY_LIST = new ArrayList<>();
 
-    /** Fallback type used when no match is found */
     public static final ScreenType OTHER = new ScreenType("other", Screen.class, Integer.MIN_VALUE, ScreenGroup.OTHER, false);
 
     static {
@@ -112,6 +112,60 @@ public final class EaseGUIScreenRegistry {
         } catch (ClassNotFoundException ignored) {
             // Mod Menu is not installed — safely skip registration
         }
+    }
+
+    /**
+     * Registers a custom configurator callback for a specific screen ID.
+     * This is intended for third-party developers to populate custom default configurations.
+     *
+     * @param id the unique screen ID (e.g. "mymod:grinder")
+     * @param configurator the consumer that configures the default {@link EaseGUIConfig.ScreenSettings}
+     */
+    @SuppressWarnings("unused")
+    public static void registerConfigurator(String id, Consumer<EaseGUIConfig.ScreenSettings> configurator) {
+        DEFAULT_CONFIGURATORS.put(id, configurator);
+    }
+
+    /**
+     * Configures the screen settings with registered developer defaults.
+     * Primarily called by the config factory during clean setup initialization.
+     *
+     * @param id the screen identifier
+     * @param settings the target settings to configure
+     */
+    public static void configureDefaults(String id, EaseGUIConfig.ScreenSettings settings) {
+        Consumer<EaseGUIConfig.ScreenSettings> configurator = DEFAULT_CONFIGURATORS.get(id);
+        if (configurator != null) {
+            configurator.accept(settings);
+        }
+    }
+
+    /**
+     * Patches the existing screen settings with newly introduced developer defaults.
+     * Ensures that new categories or default entries are added safely without
+     * overwriting any manual modifications made by the user in the config file.
+     *
+     * @param id the screen identifier
+     * @param settings the user's existing settings
+     * @return true if the settings were modified and need to be saved
+     */
+    public static boolean patchDefaults(String id, EaseGUIConfig.ScreenSettings settings) {
+        Consumer<EaseGUIConfig.ScreenSettings> configurator = DEFAULT_CONFIGURATORS.get(id);
+        if (configurator == null) return false;
+
+        EaseGUIConfig.ScreenSettings defaultSettings = new EaseGUIConfig.ScreenSettings();
+        configurator.accept(defaultSettings);
+
+        boolean changed = false;
+
+        for (Map.Entry<EaseGUIElementCategory, AnimationProfile> entry : defaultSettings.customProfiles.entrySet()) {
+            if (!settings.customProfiles.containsKey(entry.getKey())) {
+                settings.customProfiles.put(entry.getKey(), entry.getValue());
+                changed = true;
+            }
+        }
+
+        return changed;
     }
 
     /**

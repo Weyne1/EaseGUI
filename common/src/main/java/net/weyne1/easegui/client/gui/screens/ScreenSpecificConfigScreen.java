@@ -106,9 +106,9 @@ public class ScreenSpecificConfigScreen extends EaseGUIAbstractSplitScreen {
     }
 
     private void setupCategoryButtons(SettingsScrollList rightScrollList, EaseGUIConfig.ScreenSettings settings, EaseGUIConfig config) {
-        EnumSet<UIElementCategory> overridableCategories = EnumSet.complementOf(EnumSet.of(UIElementCategory.UNKNOWN));
+        EnumSet<EaseGUIElementCategory> overridableCategories = EnumSet.complementOf(EnumSet.of(EaseGUIElementCategory.UNKNOWN));
 
-        for (UIElementCategory category : overridableCategories) {
+        for (EaseGUIElementCategory category : overridableCategories) {
             boolean hasCustom = settings.customProfiles.containsKey(category);
 
             Component categoryLabel = Component.translatable("easegui.category." + category.name().toLowerCase());
