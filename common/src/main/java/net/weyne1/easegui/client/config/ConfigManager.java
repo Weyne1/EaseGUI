@@ -19,7 +19,7 @@ public class ConfigManager {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
-    private static EaseGUIConfig currentConfig = new EaseGUIConfig();
+    private static EaseGUIConfig currentConfig = EaseGUIConfigFactory.createDefaultConfig();
     private static boolean isLoaded = false;
 
     private static Screen cachedScreenInstance = null;
@@ -54,12 +54,12 @@ public class ConfigManager {
                 currentConfig = GSON.fromJson(jsonConfig, EaseGUIConfig.class);
 
                 if (currentConfig == null) {
-                    currentConfig = new EaseGUIConfig();
+                    currentConfig = EaseGUIConfigFactory.createDefaultConfig();
                 }
 
                 currentConfig.schemaVersion = EaseGUIConfig.CURRENT_SCHEMA_VERSION;
 
-                if (currentConfig.mergeDefaults() || migrated) {
+                if (EaseGUIConfigFactory.mergeDefaults(currentConfig) || migrated) {
                     LOGGER.info("[EaseGUI] Config schema updated from version {} to {}.", version, EaseGUIConfig.CURRENT_SCHEMA_VERSION);
                     save();
                 }
@@ -67,7 +67,7 @@ public class ConfigManager {
                 LOGGER.info("[EaseGUI] Config successfully loaded from disk.");
             } catch (Exception e) {
                 LOGGER.error("[EaseGUI] Failed to read config, creating default... Error: {}", e.getMessage());
-                currentConfig = new EaseGUIConfig();
+                currentConfig = EaseGUIConfigFactory.createDefaultConfig();
                 save();
             }
         } else {
