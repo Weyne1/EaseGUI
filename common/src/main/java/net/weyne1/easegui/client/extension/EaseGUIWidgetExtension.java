@@ -1,9 +1,9 @@
 package net.weyne1.easegui.client.extension;
 
-import net.weyne1.easegui.client.config.UIElementCategory;
+import net.weyne1.easegui.client.config.EaseGUIElementCategory;
 
 public interface EaseGUIWidgetExtension {
-    UIElementCategory easeGUI$getCategory();
+    EaseGUIElementCategory easeGUI$getCategory();
 
     float easeGUI$getAlpha();
 }

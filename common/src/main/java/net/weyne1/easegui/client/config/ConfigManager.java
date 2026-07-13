@@ -91,8 +91,8 @@ public class ConfigManager {
         return currentConfig;
     }
 
-    public static AnimationProfile getProfileForCurrentContext(UIElementCategory category) {
-        if (category == null || category == UIElementCategory.UNKNOWN) return null;
+    public static AnimationProfile getProfileForCurrentContext(EaseGUIElementCategory category) {
+        if (category == null || category == EaseGUIElementCategory.UNKNOWN) return null;
         if (!isLoaded) load();
 
         Screen currentScreen = Minecraft.getInstance().screen;

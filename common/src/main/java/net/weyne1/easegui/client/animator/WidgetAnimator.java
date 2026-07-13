@@ -8,7 +8,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.weyne1.easegui.client.extension.EaseGUIWidgetExtension;
 import net.weyne1.easegui.client.animation.*;
 import net.weyne1.easegui.client.config.ConfigManager;
-import net.weyne1.easegui.client.config.UIElementCategory;
+import net.weyne1.easegui.client.config.EaseGUIElementCategory;
 import net.weyne1.easegui.client.state.ScreenStateTracker;
 
 /**
@@ -16,7 +16,7 @@ import net.weyne1.easegui.client.state.ScreenStateTracker;
  */
 public class WidgetAnimator {
 
-    public static AnimationScope beginRender(AbstractWidget widget, GuiGraphics gg, UIElementCategory category, AnimationState state) {
+    public static AnimationScope beginRender(AbstractWidget widget, GuiGraphics gg, EaseGUIElementCategory category, AnimationState state) {
         if (Minecraft.getInstance().screen instanceof AbstractContainerScreen) {
             return null;
         }

@@ -59,6 +59,7 @@ public final class ScreenType {
     /**
      * Creates a screen type enabled by default.
      */
+    @SuppressWarnings("unused")
     public ScreenType(
             String id,
             Class<? extends Screen> screenClass,

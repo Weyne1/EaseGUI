@@ -6,13 +6,13 @@ import net.weyne1.easegui.client.animation.AnimationProfile;
 import net.weyne1.easegui.client.animation.AnimationScope;
 import net.weyne1.easegui.client.animation.AnimationSystem;
 import net.weyne1.easegui.client.config.ConfigManager;
-import net.weyne1.easegui.client.config.UIElementCategory;
+import net.weyne1.easegui.client.config.EaseGUIElementCategory;
 import net.weyne1.easegui.client.state.ScreenStateTracker;
 
 public class ListItemAnimator {
 
     public static AnimationScope beginRender(GuiGraphics gg, int top, int left, int width, int height) {
-        var profile = ConfigManager.getProfileForCurrentContext(UIElementCategory.LIST_ENTRY);
+        var profile = ConfigManager.getProfileForCurrentContext(EaseGUIElementCategory.LIST_ENTRY);
         if (profile == null || !profile.enabled) return null;
 
         long delay = getDelay(top, left, profile);

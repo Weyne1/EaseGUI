@@ -77,11 +77,11 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
 
         leftList.addHeader(Component.translatable("easegui.config.title.elements").getString());
 
-        addGlobalProfileButton(leftList, config, mc, UIElementCategory.BUTTON_LIKE, "easegui.main.button.button_like");
-        addGlobalProfileButton(leftList, config, mc, UIElementCategory.TEXT, "easegui.main.button.text");
-        addGlobalProfileButton(leftList, config, mc, UIElementCategory.SCROLLABLE, "easegui.main.button.scrollable");
-        addGlobalProfileButton(leftList, config, mc, UIElementCategory.LIST_ENTRY, "easegui.main.button.list_entry");
-        addGlobalProfileButton(leftList, config, mc, UIElementCategory.CONTAINERS, "easegui.main.button.containers");
+        addGlobalProfileButton(leftList, config, mc, EaseGUIElementCategory.BUTTON_LIKE, "easegui.main.button.button_like");
+        addGlobalProfileButton(leftList, config, mc, EaseGUIElementCategory.TEXT, "easegui.main.button.text");
+        addGlobalProfileButton(leftList, config, mc, EaseGUIElementCategory.SCROLLABLE, "easegui.main.button.scrollable");
+        addGlobalProfileButton(leftList, config, mc, EaseGUIElementCategory.LIST_ENTRY, "easegui.main.button.list_entry");
+        addGlobalProfileButton(leftList, config, mc, EaseGUIElementCategory.CONTAINERS, "easegui.main.button.containers");
 
         this.addRenderableWidget(leftList);
 
@@ -124,7 +124,7 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
         ).bounds(halfWidth - 100, this.height - 30, 200, 20).build());
     }
 
-    private void addGlobalProfileButton(SettingsScrollList list, EaseGUIConfig config, Minecraft mc, UIElementCategory category, String translationKey) {
+    private void addGlobalProfileButton(SettingsScrollList list, EaseGUIConfig config, Minecraft mc, EaseGUIElementCategory category, String translationKey) {
         AnimationProfile cleanDefault = new EaseGUIConfig().global.elementProfiles.get(category);
         if (cleanDefault == null) cleanDefault = new AnimationProfile();
         AnimationProfile finalCleanDefault = cleanDefault;

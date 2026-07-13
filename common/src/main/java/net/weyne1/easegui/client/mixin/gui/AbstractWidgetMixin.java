@@ -10,7 +10,7 @@ import net.weyne1.easegui.client.animation.AnimationScope;
 import net.weyne1.easegui.client.animation.AnimationState;
 import net.weyne1.easegui.client.animator.WidgetAnimator;
 import net.weyne1.easegui.client.config.ConfigManager;
-import net.weyne1.easegui.client.config.UIElementCategory;
+import net.weyne1.easegui.client.config.EaseGUIElementCategory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
@@ -22,7 +22,7 @@ public abstract class AbstractWidgetMixin implements EaseGUIWidgetExtension {
     @Shadow protected boolean isHovered;
 
     @Unique private final AnimationState easeGUI$animationState = new AnimationState();
-    @Unique private UIElementCategory easeGUI$cachedCategory = null;
+    @Unique private EaseGUIElementCategory easeGUI$cachedCategory = null;
 
     @Override
     public float easeGUI$getAlpha() {
@@ -30,9 +30,9 @@ public abstract class AbstractWidgetMixin implements EaseGUIWidgetExtension {
     }
 
     @Override
-    public UIElementCategory easeGUI$getCategory() {
+    public EaseGUIElementCategory easeGUI$getCategory() {
         if (this.easeGUI$cachedCategory == null) {
-            this.easeGUI$cachedCategory = UIElementCategory.fromClass(this.getClass());
+            this.easeGUI$cachedCategory = EaseGUIElementCategory.fromClass(this.getClass());
         }
         return this.easeGUI$cachedCategory;
     }
@@ -47,7 +47,7 @@ public abstract class AbstractWidgetMixin implements EaseGUIWidgetExtension {
         }
 
         var category = this.easeGUI$getCategory();
-        if (category == null || category == UIElementCategory.UNKNOWN) {
+        if (category == null || category == EaseGUIElementCategory.UNKNOWN) {
             original.call(guiGraphics, mouseX, mouseY, partialTick);
             return;
         }
