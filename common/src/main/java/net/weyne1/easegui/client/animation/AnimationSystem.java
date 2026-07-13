@@ -1,8 +1,28 @@
 package net.weyne1.easegui.client.animation;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.Util;
 
 public final class AnimationSystem {
+
+    public static AnimationScope begin(
+            GuiGraphics gg,
+            int x, int y, int width, int height,
+            AnimationProfile profile,
+            long startTime,
+            long delay,
+            float baseAlpha
+    ) {
+        long elapsed = Util.getMillis() - startTime - delay;
+
+        if (elapsed >= profile.duration) {
+            return null;
+        }
+
+        float progress = elapsed <= 0 ? 0.0f : AnimationMath.calculateProgress(elapsed, profile.duration, profile.easing);
+
+        return begin(gg, x, y, width, height, profile, progress, baseAlpha);
+    }
 
     public static AnimationScope begin(
             GuiGraphics gg,
