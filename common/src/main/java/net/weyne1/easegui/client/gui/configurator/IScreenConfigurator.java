@@ -5,7 +5,7 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.weyne1.easegui.client.config.EaseGUIConfig;
-import net.weyne1.easegui.client.gui.FieldValidator;
+import net.weyne1.easegui.client.gui.components.FieldValidator;
 import net.weyne1.easegui.client.gui.components.SettingsScrollList;
 
 import java.util.HashMap;

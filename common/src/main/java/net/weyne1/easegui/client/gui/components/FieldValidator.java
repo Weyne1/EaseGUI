@@ -1,4 +1,4 @@
-package net.weyne1.easegui.client.gui;
+package net.weyne1.easegui.client.gui.components;
 
 import net.minecraft.client.gui.components.EditBox;
 

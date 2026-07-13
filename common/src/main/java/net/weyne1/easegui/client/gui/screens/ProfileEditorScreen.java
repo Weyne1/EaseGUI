@@ -11,7 +11,7 @@ import net.weyne1.easegui.client.animation.PivotPoint;
 import net.weyne1.easegui.client.util.StringUtils;
 import net.weyne1.easegui.client.animation.AnimationProfile;
 import net.weyne1.easegui.client.config.ProfileFeature;
-import net.weyne1.easegui.client.gui.FieldValidator;
+import net.weyne1.easegui.client.gui.components.FieldValidator;
 import net.weyne1.easegui.client.gui.components.SettingsScrollList;
 import net.weyne1.easegui.client.gui.preview.ProfilePreviewRenderer;
 

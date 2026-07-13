@@ -7,7 +7,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.weyne1.easegui.client.animation.AnimationProfile;
 import net.weyne1.easegui.client.config.*;
-import net.weyne1.easegui.client.gui.FieldValidator;
+import net.weyne1.easegui.client.gui.components.FieldValidator;
 import net.weyne1.easegui.client.gui.components.SettingsScrollList;
 
 import java.util.Comparator;
