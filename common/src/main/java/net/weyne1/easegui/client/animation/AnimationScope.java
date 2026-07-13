@@ -17,6 +17,26 @@ public final class AnimationScope implements AutoCloseable {
     private float scaleX = 1.0f, scaleY = 1.0f;
     private float pivotX, pivotY;
 
+    public float getOffsetX() { return offsetX; }
+    public float getOffsetY() { return offsetY; }
+
+    public float getScaleX() { return scaleX; }
+    public float getScaleY() { return scaleY; }
+
+    public float getPivotX() { return pivotX; }
+    public float getPivotY() { return pivotY; }
+
+    public float getAlpha() {
+        return alpha;
+    }
+
+    public boolean isClosed() {
+        return isClosed;
+    }
+    public boolean isSuspended() {
+        return isSuspended;
+    }
+
     public AnimationScope(GuiGraphics guiGraphics, float alpha) {
         this.guiGraphics = guiGraphics;
         this.alpha = alpha;
@@ -86,18 +106,6 @@ public final class AnimationScope implements AutoCloseable {
         }
 
         AnimationContext.popScope(this);
-    }
-
-    public boolean isClosed() {
-        return isClosed;
-    }
-
-    public boolean isSuspended() {
-        return isSuspended;
-    }
-
-    public float getAlpha() {
-        return alpha;
     }
 
     private static float clampScale(float scale) {

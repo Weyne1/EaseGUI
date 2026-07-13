@@ -13,6 +13,8 @@
     "gui.AbstractWidgetMixin",
     "gui.AdvancementsScreenMixin",
     "gui.GuiGraphicsMixin",
+    "gui.GuiItemRenderStateMixin",
+    "gui.GuiRendererMixin",
     "gui.GuiTextRenderStateMixin",
     "gui.ScreenLifecycleMixin",
     "gui.ScreenMixin",

@@ -5,7 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.weyne1.easegui.client.EaseGUIWidget;
+import net.weyne1.easegui.client.extension.EaseGUIWidgetExtension;
 import net.weyne1.easegui.client.animation.*;
 import net.weyne1.easegui.client.config.ConfigManager;
 import net.weyne1.easegui.client.config.UIElementCategory;
@@ -50,7 +50,7 @@ public class WidgetAnimator {
                 widget.getHeight(),
                 profile,
                 progress,
-                ((EaseGUIWidget) widget).easeGUI$getAlpha()
+                ((EaseGUIWidgetExtension) widget).easeGUI$getAlpha()
         );
     }
 
