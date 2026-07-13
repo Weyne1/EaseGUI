@@ -1,6 +1,6 @@
-package net.weyne1.easegui.client.accessor;
+package net.weyne1.easegui.client.extension;
 
-public interface ContainerScreenAccessor {
+public interface ContainerScreenExtension {
     int easeGUI$getLeftPos();
     int easeGUI$getTopPos();
     int easeGUI$getImageWidth();

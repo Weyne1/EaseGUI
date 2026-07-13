@@ -4,9 +4,9 @@ import net.minecraft.util.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
-import net.weyne1.easegui.client.accessor.ContainerScreenAccessor;
-import net.weyne1.easegui.client.accessor.RecipeBookComponentAccessor;
-import net.weyne1.easegui.client.accessor.RecipeBookScreenAccessor;
+import net.weyne1.easegui.client.extension.ContainerScreenExtension;
+import net.weyne1.easegui.client.extension.RecipeBookComponentExtension;
+import net.weyne1.easegui.client.extension.RecipeBookScreenExtension;
 import net.weyne1.easegui.client.animation.AnimationMath;
 import net.weyne1.easegui.client.animation.AnimationScope;
 import net.weyne1.easegui.client.animation.AnimationSystem;
@@ -17,7 +17,7 @@ import net.weyne1.easegui.client.state.ScreenStateTracker;
 public class ContainerAnimator {
 
     public static AnimationScope beginAnimation(Screen screen, GuiGraphics gg) {
-        if (!(screen instanceof ContainerScreenAccessor container)) {
+        if (!(screen instanceof ContainerScreenExtension container)) {
             return null;
         }
 
@@ -26,10 +26,10 @@ public class ContainerAnimator {
         int maxX = minX + container.easeGUI$getImageWidth();
         int maxY = minY + container.easeGUI$getImageHeight();
 
-        if (screen instanceof RecipeBookScreenAccessor recipeScreen) {
+        if (screen instanceof RecipeBookScreenExtension recipeScreen) {
             RecipeBookComponent<?> book = recipeScreen.easeGUI$getRecipeBookComponent();
-            if (book != null && ((RecipeBookComponentAccessor) book).easeGUI$isVisible()) {
-                RecipeBookComponentAccessor accessor = (RecipeBookComponentAccessor) book;
+            if (book != null && ((RecipeBookComponentExtension) book).easeGUI$isVisible()) {
+                RecipeBookComponentExtension accessor = (RecipeBookComponentExtension) book;
                 minX = Math.min(minX, accessor.easeGUI$getXOrigin());
                 minY = Math.min(minY, accessor.easeGUI$getYOrigin());
                 maxX = Math.max(maxX, accessor.easeGUI$getXOrigin() + RecipeBookComponent.IMAGE_WIDTH);

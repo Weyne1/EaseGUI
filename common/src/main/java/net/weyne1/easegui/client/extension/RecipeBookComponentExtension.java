@@ -1,6 +1,6 @@
-package net.weyne1.easegui.client.accessor;
+package net.weyne1.easegui.client.extension;
 
-public interface RecipeBookComponentAccessor {
+public interface RecipeBookComponentExtension {
     boolean easeGUI$isVisible();
     int easeGUI$getXOrigin();
     int easeGUI$getYOrigin();
