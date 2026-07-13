@@ -1,15 +1,16 @@
 package net.weyne1.easegui.client.config;
 
 import net.weyne1.easegui.client.animation.AnimationProfile;
-import net.weyne1.easegui.client.animation.AnimationProfile.EasingType;
+import net.weyne1.easegui.client.animation.EasingType;
+import net.weyne1.easegui.client.animation.PivotPoint;
 
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
-import static net.weyne1.easegui.client.animation.AnimationProfile.CascadeDirection.BOTTOM_TO_TOP;
-import static net.weyne1.easegui.client.animation.AnimationProfile.CascadeDirection.LEFT_TO_RIGHT;
-import static net.weyne1.easegui.client.animation.AnimationProfile.EasingType.*;
+import static net.weyne1.easegui.client.animation.CascadeDirection.BOTTOM_TO_TOP;
+import static net.weyne1.easegui.client.animation.CascadeDirection.LEFT_TO_RIGHT;
+import static net.weyne1.easegui.client.animation.EasingType.*;
 
 public class EaseGUIConfig {
     public static final int CURRENT_SCHEMA_VERSION = 2;
@@ -146,7 +147,7 @@ public class EaseGUIConfig {
                 .cascadeDelay(60L)
                 .cascadeDirection(LEFT_TO_RIGHT)
                 .easing(EASE_OUT_BACK)
-                .pivot(AnimationProfile.PivotPoint.CENTER);
+                .pivot(PivotPoint.CENTER);
 
         public AnimationProfile editionProfile = new AnimationProfile()
                 .duration(400L)
@@ -154,7 +155,7 @@ public class EaseGUIConfig {
                 .startScale(0.9f)
                 .startAlpha(0.0f)
                 .easing(EASE_OUT_QUAD)
-                .pivot(AnimationProfile.PivotPoint.CENTER);
+                .pivot(PivotPoint.CENTER);
     }
 
     public static class SplashSettings {

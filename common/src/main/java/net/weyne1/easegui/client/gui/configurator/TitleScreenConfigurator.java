@@ -5,6 +5,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.weyne1.easegui.client.animation.EasingType;
 import net.weyne1.easegui.client.util.StringUtils;
 import net.weyne1.easegui.client.animation.AnimationProfile;
 import net.weyne1.easegui.client.config.ConfigManager;
@@ -78,7 +79,7 @@ public class TitleScreenConfigurator implements IScreenConfigurator {
             // Интерполяция сплеша
             Component easingComp = Component.literal(StringUtils.toTitleCase(splash.splashEasing));
             list.addButton(Button.builder(Component.translatable("easegui.config.title.splash.easing", easingComp), btn -> {
-                AnimationProfile.EasingType[] values = AnimationProfile.EasingType.values();
+                EasingType[] values = EasingType.values();
                 splash.splashEasing = values[(splash.splashEasing.ordinal() + 1) % values.length];
                 Component updatedEasing = Component.literal(StringUtils.toTitleCase(splash.splashEasing));
                 btn.setMessage(Component.translatable("easegui.config.title.splash.easing", updatedEasing));
