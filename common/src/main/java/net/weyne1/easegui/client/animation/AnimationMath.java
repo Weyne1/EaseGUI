@@ -20,7 +20,7 @@ public final class AnimationMath {
     public static float calculateProgress(
             long elapsed,
             long duration,
-            AnimationProfile.EasingType easing
+            EasingType easing
     ) {
         if (elapsed <= 0) return 0f;
         if (elapsed >= duration) return 1f;

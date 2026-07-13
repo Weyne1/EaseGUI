@@ -5,6 +5,9 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.weyne1.easegui.client.animation.CascadeDirection;
+import net.weyne1.easegui.client.animation.EasingType;
+import net.weyne1.easegui.client.animation.PivotPoint;
 import net.weyne1.easegui.client.StringUtils;
 import net.weyne1.easegui.client.animation.AnimationProfile;
 import net.weyne1.easegui.client.config.ProfileFeature;
@@ -109,7 +112,7 @@ public class ProfileEditorScreen extends EaseGUIAbstractSplitScreen {
         if (activeFeatures.contains(ProfileFeature.CASCADE_DIRECTION)) {
             Component dirComp = getCascadeDirectionComponent(workingCopy.cascadeDirection);
             leftScrollList.addButton(Button.builder(Component.translatable("easegui.editor.button.cascade_dir", dirComp), b -> {
-                AnimationProfile.CascadeDirection[] v = AnimationProfile.CascadeDirection.values();
+                CascadeDirection[] v = CascadeDirection.values();
                 workingCopy.cascadeDirection(v[(workingCopy.cascadeDirection.ordinal() + 1) % v.length]);
                 b.setMessage(Component.translatable("easegui.editor.button.cascade_dir", getCascadeDirectionComponent(workingCopy.cascadeDirection)));
             }).build());
@@ -119,7 +122,7 @@ public class ProfileEditorScreen extends EaseGUIAbstractSplitScreen {
         if (activeFeatures.contains(ProfileFeature.PIVOT)) {
             Component pivotComp = Component.translatable("easegui.pivot." + workingCopy.pivot.name().toLowerCase());
             leftScrollList.addButton(Button.builder(Component.translatable("easegui.editor.button.pivot", pivotComp), b -> {
-                AnimationProfile.PivotPoint[] v = AnimationProfile.PivotPoint.values();
+                PivotPoint[] v = PivotPoint.values();
                 workingCopy.pivot(v[(workingCopy.pivot.ordinal() + 1) % v.length]);
                 Component updatedPivot = Component.translatable("easegui.pivot." + workingCopy.pivot.name().toLowerCase());
                 b.setMessage(Component.translatable("easegui.editor.button.pivot", updatedPivot));
@@ -131,7 +134,7 @@ public class ProfileEditorScreen extends EaseGUIAbstractSplitScreen {
         leftScrollList.addButton(Button.builder(
                 Component.translatable("easegui.editor.button.easing", easingComp),
                 button -> {
-                    AnimationProfile.EasingType[] values = AnimationProfile.EasingType.values();
+                    EasingType[] values = EasingType.values();
                     workingCopy.easing(values[(workingCopy.easing.ordinal() + 1) % values.length]);
                     Component updatedEasing = Component.literal(StringUtils.toTitleCase(workingCopy.easing));
                     button.setMessage(Component.translatable("easegui.editor.button.easing", updatedEasing));
@@ -152,7 +155,7 @@ public class ProfileEditorScreen extends EaseGUIAbstractSplitScreen {
         return editBox;
     }
 
-    private Component getCascadeDirectionComponent(AnimationProfile.CascadeDirection dir) {
+    private Component getCascadeDirectionComponent(CascadeDirection dir) {
         return Component.translatable(switch (dir) {
             case TOP_TO_BOTTOM -> "easegui.cascade.top_to_bottom";
             case BOTTOM_TO_TOP -> "easegui.cascade.bottom_to_top";

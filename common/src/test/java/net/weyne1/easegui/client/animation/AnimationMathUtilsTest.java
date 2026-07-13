@@ -1,6 +1,5 @@
 package net.weyne1.easegui.client.animation;
 
-import net.weyne1.easegui.client.animation.AnimationProfile.PivotPoint;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -43,19 +42,19 @@ class AnimationMathUtilsTest {
             "500,  1000, 0.5f"   // В середине
     })
     void testAnimationProgress(long timePassed, long duration, float expectedProgress) {
-        float result = AnimationMath.calculateProgress(timePassed, duration, AnimationProfile.EasingType.LINEAR);
+        float result = AnimationMath.calculateProgress(timePassed, duration, EasingType.LINEAR);
         assertEquals(expectedProgress, result, 0.0001f);
     }
 
     @ParameterizedTest
-    @EnumSource(AnimationProfile.EasingType.class)
-    void allEasingsReturnZeroAtStart(AnimationProfile.EasingType easing) {
+    @EnumSource(EasingType.class)
+    void allEasingsReturnZeroAtStart(EasingType easing) {
         assertEquals(0.0f, easing.ease(0.0f), 0.0001f);
     }
 
     @ParameterizedTest
-    @EnumSource(AnimationProfile.EasingType.class)
-    void allEasingsReturnOneAtEnd(AnimationProfile.EasingType easing) {
+    @EnumSource(EasingType.class)
+    void allEasingsReturnOneAtEnd(EasingType easing) {
         assertEquals(1.0f, easing.ease(1.0f), 0.0001f);
     }
 }

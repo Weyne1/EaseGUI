@@ -3,10 +3,7 @@ package net.weyne1.easegui.client.gui.preview;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.weyne1.easegui.client.animation.AnimationMath;
-import net.weyne1.easegui.client.animation.AnimationProfile;
-import net.weyne1.easegui.client.animation.AnimationScope;
-import net.weyne1.easegui.client.animation.AnimationSystem;
+import net.weyne1.easegui.client.animation.*;
 import net.weyne1.easegui.client.config.ProfileFeature;
 
 import java.util.EnumSet;
@@ -41,8 +38,8 @@ public class ProfilePreviewRenderer {
         int itemCount = isCascadeActive ? 3 : 1;
         boolean isEnabled = profile.enabled;
 
-        boolean isHorizontal = profile.cascadeDirection == AnimationProfile.CascadeDirection.LEFT_TO_RIGHT ||
-                profile.cascadeDirection == AnimationProfile.CascadeDirection.RIGHT_TO_LEFT;
+        boolean isHorizontal = profile.cascadeDirection == CascadeDirection.LEFT_TO_RIGHT ||
+                profile.cascadeDirection == CascadeDirection.RIGHT_TO_LEFT;
 
         int boxWidth = (isHorizontal && isCascadeActive) ? 40 : 120;
 
@@ -172,8 +169,8 @@ public class ProfilePreviewRenderer {
     }
 
     private static long calculateCascadeDelay(AnimationProfile profile, int i) {
-        boolean reverse = profile.cascadeDirection == AnimationProfile.CascadeDirection.BOTTOM_TO_TOP ||
-                profile.cascadeDirection == AnimationProfile.CascadeDirection.RIGHT_TO_LEFT;
+        boolean reverse = profile.cascadeDirection == CascadeDirection.BOTTOM_TO_TOP ||
+                profile.cascadeDirection == CascadeDirection.RIGHT_TO_LEFT;
 
         int factor = reverse ? (2 - i) : i;
         return factor * profile.cascadeDelay;
