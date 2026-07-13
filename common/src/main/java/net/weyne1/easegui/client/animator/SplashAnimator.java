@@ -18,8 +18,8 @@ public class SplashAnimator {
         }
 
         var splashConfig = screenConfig.splash;
-        long startTime = ScreenStateTracker.getScreenOpenTime();
-        long elapsed = Util.getMillis() - startTime - splashConfig.splashDelay;
+        long actualStartTime = ScreenStateTracker.getTitleActualStartTime();
+        long elapsed = Util.getMillis() - actualStartTime - splashConfig.splashDelay;
 
         if (elapsed <= 0) {
             return AnimationSystem.beginAlphaOnly(gg, 0.0f);

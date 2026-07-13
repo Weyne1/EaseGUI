@@ -36,16 +36,11 @@ public class LogoAnimator {
      */
     private static final int[] LOGICAL_INDICES = new int[] { 0, 1, 2, 3, 8, 7, 6, 5, 4 };
 
-    private static long lastTrackedSessionTime = -1L;
-    private static long actualStartTime = -1L;
-
     public static boolean render(GuiGraphics gg, int screenWidth, float transparency, int height, boolean showEasterEgg, boolean keepLogoThroughFade) {
         var titleSettings = ConfigManager.getConfig().screens.get("title");
         if (titleSettings == null || !titleSettings.enabled || titleSettings.logo == null) {
             return false;
         }
-
-        trackSessionTime();
 
         var logoConfig = titleSettings.logo;
         float finalAlpha = keepLogoThroughFade ? 1.0f : transparency;
@@ -64,6 +59,7 @@ public class LogoAnimator {
     }
 
     private static void renderWholeLogo(GuiGraphics gg, ResourceLocation texture, AnimationProfile profile, int startX, int height, float finalAlpha) {
+        long actualStartTime = ScreenStateTracker.getTitleActualStartTime();
         long elapsed = Util.getMillis() - actualStartTime;
         int logoWidth = LogoRendererAccessor.easeGUI$getLogoWidth();
         int logoHeight = LogoRendererAccessor.easeGUI$getLogoHeight();
@@ -85,6 +81,7 @@ public class LogoAnimator {
 
     private static void renderCascadedLetters(GuiGraphics gg, AnimationProfile profile, int startX, int height, float finalAlpha) {
         long now = Util.getMillis();
+        long actualStartTime = ScreenStateTracker.getTitleActualStartTime();
         long maxLogoDelay = (LETTER_TEXTURES.length - 1) * profile.cascadeDelay;
         int logoWidth = LogoRendererAccessor.easeGUI$getLogoWidth();
         int logoHeight = LogoRendererAccessor.easeGUI$getLogoHeight();
@@ -157,19 +154,12 @@ public class LogoAnimator {
     }
 
     private static long getEditionElapsed(EaseGUIConfig.LogoSettings config) {
+        long actualStartTime = ScreenStateTracker.getTitleActualStartTime();
         long maxLogoDelay = config.animateWholeText ? 0L : switch (config.logoProfile.cascadeDirection) {
             case LEFT_TO_RIGHT, RIGHT_TO_LEFT -> (LETTER_TEXTURES.length - 1) * config.logoProfile.cascadeDelay;
             case TOP_TO_BOTTOM, BOTTOM_TO_TOP -> 0L;
         };
         return Util.getMillis() - actualStartTime - maxLogoDelay;
-    }
-
-    private static void trackSessionTime() {
-        long currentSessionTime = ScreenStateTracker.getScreenOpenTime();
-        if (lastTrackedSessionTime != currentSessionTime) {
-            lastTrackedSessionTime = currentSessionTime;
-            actualStartTime = Util.getMillis();
-        }
     }
 
     private static void drawLogoTexture(GuiGraphics gg, ResourceLocation texture, int x, int y) {
