@@ -57,9 +57,12 @@ public abstract class ScreenMixin {
         if (currentScope != null) currentScope.suspend();
 
         try {
+            Screen currentScreen = (Screen) (Object) this;
             boolean blurContainers = ConfigManager.getConfig().global.blurContainers;
 
-            if (this.minecraft != null && this.minecraft.level != null && blurContainers && this.minecraft.screen == (Object) this) {
+            if (this.minecraft != null && this.minecraft.level != null && this.minecraft.screen == (Object) this
+                    && blurContainers && BackgroundAnimator.shouldAnimateBackground(currentScreen))
+            {
                 float partialTick = this.minecraft.getTimer().getGameTimeDeltaTicks();
                 this.renderBlurredBackground(partialTick);
             }
@@ -81,7 +84,7 @@ public abstract class ScreenMixin {
         AnimationScope currentScope = AnimationContext.getCurrentScope();
         if (currentScope != null) currentScope.suspend();
 
-        try (AnimationScope ignored = BackgroundAnimator.beginRenderMenu(guiGraphics)) {
+        try (AnimationScope ignored = BackgroundAnimator.beginRenderMenu((Screen) (Object) this, guiGraphics)) {
             original.call(guiGraphics);
         } finally {
             if (currentScope != null) currentScope.resume();
@@ -96,11 +99,11 @@ public abstract class ScreenMixin {
     )
     private void easeGUI$modifyTransparentBgColors(Args args) {
         Screen currentScreen = (Screen) (Object) this;
-        if (BackgroundAnimator.isLoadingScreen(currentScreen) || WatutCompat.isWatutRendering()) {
+        if (!BackgroundAnimator.shouldAnimateBackground(currentScreen) || WatutCompat.isWatutRendering()) {
             return;
         }
 
-        args.set(4, BackgroundAnimator.getAnimatedColor(args.get(4)));
-        args.set(5, BackgroundAnimator.getAnimatedColor(args.get(5)));
+        args.set(4, BackgroundAnimator.getAnimatedColor(currentScreen, args.get(4)));
+        args.set(5, BackgroundAnimator.getAnimatedColor(currentScreen, args.get(5)));
     }
 }

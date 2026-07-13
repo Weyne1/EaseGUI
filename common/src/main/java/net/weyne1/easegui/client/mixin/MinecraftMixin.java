@@ -11,20 +11,19 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(Minecraft.class)
 public class MinecraftMixin {
-    @Shadow
-    public Screen screen;
+    @Shadow public Screen screen;
 
     @Inject(method = "setScreen", at = @At("HEAD"))
     private void easeGUI$onScreenTransition(Screen guiScreen, CallbackInfo ci) {
         Screen oldScreen = this.screen;
 
-        if (BackgroundAnimator.isLoadingScreen(guiScreen)) {
+        if (!BackgroundAnimator.shouldAnimateBackground(guiScreen)) {
             BackgroundAnimator.skipBackgroundFade = true;
             return;
         }
 
-        boolean wasBlurred = BackgroundAnimator.isScreenBlurred(oldScreen);
-        boolean willBeBlurred = BackgroundAnimator.isScreenBlurred(guiScreen);
+        boolean wasBlurred = BackgroundAnimator.shouldAnimateBackground(oldScreen);
+        boolean willBeBlurred = BackgroundAnimator.shouldAnimateBackground(guiScreen);
 
         BackgroundAnimator.skipBackgroundFade = wasBlurred && willBeBlurred;
     }

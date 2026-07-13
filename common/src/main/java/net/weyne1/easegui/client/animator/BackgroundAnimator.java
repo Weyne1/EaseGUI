@@ -1,6 +1,5 @@
 package net.weyne1.easegui.client.animator;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.*;
 import net.weyne1.easegui.client.animation.AnimationScope;
@@ -11,26 +10,30 @@ import net.weyne1.easegui.client.config.EaseGUIScreenRegistry;
 import net.weyne1.easegui.client.config.ScreenType;
 import net.weyne1.easegui.client.state.ScreenAnimationTracker;
 import net.weyne1.easegui.client.state.ScreenStateTracker;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * Handles background fade animations.
- */
 public class BackgroundAnimator {
     public static boolean skipBackgroundFade = false;
 
-    public static boolean isLoadingScreen(Screen screen) {
-        return screen instanceof LevelLoadingScreen
-                || screen instanceof ProgressScreen
-                || screen instanceof ConnectScreen
-                || screen instanceof ReceivingLevelScreen
-                || screen instanceof GenericWaitingScreen
-                || screen instanceof BackupConfirmScreen;
+    private static final Set<Class<? extends Screen>> IGNORED_SCREEN_CLASSES = ConcurrentHashMap.newKeySet();
+
+    static {
+        IGNORED_SCREEN_CLASSES.add(TitleScreen.class);
+        IGNORED_SCREEN_CLASSES.add(LevelLoadingScreen.class);
+        IGNORED_SCREEN_CLASSES.add(ProgressScreen.class);
+        IGNORED_SCREEN_CLASSES.add(ConnectScreen.class);
+        IGNORED_SCREEN_CLASSES.add(GenericWaitingScreen.class);
+        IGNORED_SCREEN_CLASSES.add(BackupConfirmScreen.class);
     }
 
-    public static boolean isScreenBlurred(Screen screen) {
-        if (screen == null
-                || screen instanceof TitleScreen
-                || isLoadingScreen(screen)) {
+    @SuppressWarnings("unused")
+    public static void registerIgnoredScreen(Class<? extends Screen> screenClass) {
+        IGNORED_SCREEN_CLASSES.add(screenClass);
+    }
+
+    public static boolean shouldAnimateBackground(Screen screen) {
+        if (screen == null || isIgnoredScreen(screen)) {
             return false;
         }
 
@@ -48,15 +51,8 @@ public class BackgroundAnimator {
         }
     }
 
-    public static boolean shouldAnimate() {
-        return isScreenBlurred(Minecraft.getInstance().screen);
-    }
-
-    /**
-     * Returns whether background animations are enabled.
-     */
-    public static int getAnimatedColor(int originalColor) {
-        if (!shouldAnimate() || skipBackgroundFade) {
+    public static int getAnimatedColor(Screen screen, int originalColor) {
+        if (!shouldAnimateBackground(screen) || skipBackgroundFade) {
             return originalColor;
         }
 
@@ -73,13 +69,10 @@ public class BackgroundAnimator {
         return (originalColor & 0x00FFFFFF) | (finalAlpha << 24);
     }
 
-    /**
-     * Starts the animation.
-     *
-     * @return an {@link AnimationScope} that must be closed, or {@code null} if no animation is needed
-     */
-    public static AnimationScope beginRenderMenu(GuiGraphics gg) {
-        if (!shouldAnimate() || skipBackgroundFade) return null;
+    public static AnimationScope beginRenderMenu(Screen screen, GuiGraphics gg) {
+        if (!shouldAnimateBackground(screen) || skipBackgroundFade) {
+            return null;
+        }
 
         long elapsed = ScreenStateTracker.getScreenElapsed();
         long duration = ConfigManager.getConfig().global.blurDuration;
@@ -89,5 +82,15 @@ public class BackgroundAnimator {
 
         float progress = Math.max(0.0f, Math.min(1.0f, ScreenAnimationTracker.getProgress()));
         return AnimationSystem.beginAlphaOnly(gg, progress);
+    }
+
+    private static boolean isIgnoredScreen(Screen screen) {
+        Class<? extends Screen> screenClass = screen.getClass();
+        for (Class<? extends Screen> ignored : IGNORED_SCREEN_CLASSES) {
+            if (ignored.isAssignableFrom(screenClass)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
