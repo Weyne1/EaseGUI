@@ -1,13 +1,16 @@
 package net.weyne1.easegui.client.config;
 
-import net.weyne1.easegui.client.animation.AnimationProfile;
-import net.weyne1.easegui.client.animation.PivotPoint;
+import net.weyne1.easegui.api.WidgetCategory;
+import net.weyne1.easegui.api.EaseGUIScreenRegistry;
+import net.weyne1.easegui.api.EaseGUIScreenType;
+import net.weyne1.easegui.api.animation.AnimationProfile;
+import net.weyne1.easegui.api.animation.PivotPoint;
 import java.util.EnumMap;
 import java.util.HashMap;
 
-import static net.weyne1.easegui.client.animation.CascadeDirection.BOTTOM_TO_TOP;
-import static net.weyne1.easegui.client.animation.CascadeDirection.LEFT_TO_RIGHT;
-import static net.weyne1.easegui.client.animation.EasingType.*;
+import static net.weyne1.easegui.api.animation.CascadeDirection.BOTTOM_TO_TOP;
+import static net.weyne1.easegui.api.animation.CascadeDirection.LEFT_TO_RIGHT;
+import static net.weyne1.easegui.api.animation.EasingType.*;
 
 /**
  * Factory responsible for creating default configurations, applying structural patches,
@@ -18,13 +21,13 @@ public final class EaseGUIConfigFactory {
     public static EaseGUIConfig createDefaultConfig() {
         EaseGUIConfig config = new EaseGUIConfig();
 
-        config.global.elementProfiles.put(EaseGUIElementCategory.BUTTON_LIKE, createButtonProfile());
-        config.global.elementProfiles.put(EaseGUIElementCategory.TEXT, createTextProfile());
-        config.global.elementProfiles.put(EaseGUIElementCategory.SCROLLABLE, createScrollableProfile());
-        config.global.elementProfiles.put(EaseGUIElementCategory.LIST_ENTRY, createListEntryProfile());
-        config.global.elementProfiles.put(EaseGUIElementCategory.CONTAINERS, createContainerProfile());
+        config.global.elementProfiles.put(WidgetCategory.BUTTON_LIKE, createButtonProfile());
+        config.global.elementProfiles.put(WidgetCategory.TEXT, createTextProfile());
+        config.global.elementProfiles.put(WidgetCategory.SCROLLABLE, createScrollableProfile());
+        config.global.elementProfiles.put(WidgetCategory.LIST_ENTRY, createListEntryProfile());
+        config.global.elementProfiles.put(WidgetCategory.CONTAINERS, createContainerProfile());
 
-        for (ScreenType type : EaseGUIScreenRegistry.getRegisteredTypes()) {
+        for (EaseGUIScreenType type : EaseGUIScreenRegistry.getRegisteredTypes()) {
             config.screens.put(type.getId(), createDefaultSettingsFor(type));
         }
         config.screens.put(EaseGUIScreenRegistry.OTHER.getId(), createDefaultSettingsFor(EaseGUIScreenRegistry.OTHER));
@@ -51,7 +54,7 @@ public final class EaseGUIConfigFactory {
             changed = true;
         }
 
-        for (ScreenType type : EaseGUIScreenRegistry.getRegisteredTypes()) {
+        for (EaseGUIScreenType type : EaseGUIScreenRegistry.getRegisteredTypes()) {
             if (!config.screens.containsKey(type.getId())) {
                 config.screens.put(type.getId(), createDefaultSettingsFor(type));
                 changed = true;
@@ -68,7 +71,7 @@ public final class EaseGUIConfigFactory {
         return changed;
     }
 
-    private static boolean patchScreenSettings(ScreenType type, EaseGUIConfig.ScreenSettings settings, EaseGUIConfig config) {
+    private static boolean patchScreenSettings(EaseGUIScreenType type, EaseGUIConfig.ScreenSettings settings, EaseGUIConfig config) {
         boolean changed = false;
 
         if (settings == null) {
@@ -93,7 +96,7 @@ public final class EaseGUIConfigFactory {
         }
 
         if (settings.customProfiles == null) {
-            settings.customProfiles = new EnumMap<>(EaseGUIElementCategory.class);
+            settings.customProfiles = new EnumMap<>(WidgetCategory.class);
             changed = true;
         }
 
@@ -103,7 +106,7 @@ public final class EaseGUIConfigFactory {
         return changed;
     }
 
-    private static EaseGUIConfig.ScreenSettings createDefaultSettingsFor(ScreenType type) {
+    private static EaseGUIConfig.ScreenSettings createDefaultSettingsFor(EaseGUIScreenType type) {
         EaseGUIConfig.ScreenSettings settings = new EaseGUIConfig.ScreenSettings();
         settings.enabled = type.isEnabledByDefault();
 

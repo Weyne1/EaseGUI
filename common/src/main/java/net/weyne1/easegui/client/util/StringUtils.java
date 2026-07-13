@@ -1,4 +1,4 @@
-package net.weyne1.easegui.client;
+package net.weyne1.easegui.client.util;
 
 public class StringUtils {
     public static String toTitleCase(Enum<?> e) {

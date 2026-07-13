@@ -3,6 +3,8 @@ package net.weyne1.easegui.client.gui.preview;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.weyne1.easegui.api.animation.AnimationProfile;
+import net.weyne1.easegui.api.animation.CascadeDirection;
 import net.weyne1.easegui.client.animation.*;
 import net.weyne1.easegui.client.config.ProfileFeature;
 
@@ -36,10 +38,10 @@ public class ProfilePreviewRenderer {
 
         boolean isCascadeActive = activeFeatures.contains(ProfileFeature.CASCADE_DELAY);
         int itemCount = isCascadeActive ? 3 : 1;
-        boolean isEnabled = profile.enabled;
+        boolean isEnabled = profile.isEnabled();
 
-        boolean isHorizontal = profile.cascadeDirection == CascadeDirection.LEFT_TO_RIGHT ||
-                profile.cascadeDirection == CascadeDirection.RIGHT_TO_LEFT;
+        boolean isHorizontal = profile.getCascadeDirection() == CascadeDirection.LEFT_TO_RIGHT ||
+                profile.getCascadeDirection() == CascadeDirection.RIGHT_TO_LEFT;
 
         int boxWidth = (isHorizontal && isCascadeActive) ? 40 : 120;
 
@@ -61,9 +63,9 @@ public class ProfilePreviewRenderer {
     }
 
     private static void renderAnimatedElements(GuiGraphics gg, Font font, int centerX, int centerY, AnimationProfile profile, boolean isCascade, int count, boolean isHorizontal, int boxWidth) {
-        boolean isEnabled = profile.enabled;
-        long duration = Math.max(profile.duration, 50L);
-        long totalLoopTime = duration + (isCascade ? (2 * profile.cascadeDelay) : 0L) + LOOP_PADDING_MS;
+        boolean isEnabled = profile.isEnabled();
+        long duration = Math.max(profile.getDuration(), 50L);
+        long totalLoopTime = duration + (isCascade ? (2 * profile.getCascadeDelay()) : 0L) + LOOP_PADDING_MS;
         long currentTime = isEnabled ? (System.currentTimeMillis() % totalLoopTime) : 0L;
 
         int halfW = boxWidth / 2;
@@ -78,7 +80,7 @@ public class ProfilePreviewRenderer {
                 long itemDelay = isCascade ? calculateCascadeDelay(profile, i) : 0L;
                 long itemTime = currentTime - itemDelay;
                 float progress = itemTime >= duration ? 1.0f : (itemTime > 0 ? (float) itemTime / duration : 0.0f);
-                easedProgress = profile.easing != null ? profile.easing.ease(progress) : progress;
+                easedProgress = profile.getEasing() != null ? profile.getEasing().ease(progress) : progress;
             }
 
             int targetX = getTargetX(centerX, isCascade, isHorizontal, i);
@@ -88,7 +90,7 @@ public class ProfilePreviewRenderer {
             int y = targetY - halfH;
 
             try (AnimationScope ignored = AnimationSystem.begin(gg, x, y, boxWidth, BOX_HEIGHT, profile, easedProgress, 1.0f)) {
-                int bgAlpha = calcAlphaColor(profile.startAlpha, easedProgress);
+                int bgAlpha = calcAlphaColor(profile.getStartAlpha(), easedProgress);
                 int boxColor = isEnabled ? 0x353535 : 0x222222;
                 gg.fill(x, y, x + boxWidth, y + BOX_HEIGHT, (bgAlpha << 24) | boxColor);
 
@@ -96,7 +98,7 @@ public class ProfilePreviewRenderer {
                         ? (isHorizontal ? CASCADE_SHORT_LABELS[i] : CASCADE_LABELS[i])
                         : STATIC_LABEL;
 
-                int fontAlpha = calcAlphaColor(profile.startAlpha, easedProgress);
+                int fontAlpha = calcAlphaColor(profile.getStartAlpha(), easedProgress);
                 int textColor = isEnabled ? 0xE0E0E0 : 0x888888;
 
                 gg.drawCenteredString(font, label, targetX, targetY - 4, (fontAlpha << 24) | textColor);
@@ -169,10 +171,10 @@ public class ProfilePreviewRenderer {
     }
 
     private static long calculateCascadeDelay(AnimationProfile profile, int i) {
-        boolean reverse = profile.cascadeDirection == CascadeDirection.BOTTOM_TO_TOP ||
-                profile.cascadeDirection == CascadeDirection.RIGHT_TO_LEFT;
+        boolean reverse = profile.getCascadeDirection() == CascadeDirection.BOTTOM_TO_TOP ||
+                profile.getCascadeDirection() == CascadeDirection.RIGHT_TO_LEFT;
 
         int factor = reverse ? (2 - i) : i;
-        return factor * profile.cascadeDelay;
+        return factor * profile.getCascadeDelay();
     }
 }

@@ -5,11 +5,11 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.weyne1.easegui.client.animation.CascadeDirection;
-import net.weyne1.easegui.client.animation.EasingType;
-import net.weyne1.easegui.client.animation.PivotPoint;
-import net.weyne1.easegui.client.StringUtils;
-import net.weyne1.easegui.client.animation.AnimationProfile;
+import net.weyne1.easegui.api.animation.CascadeDirection;
+import net.weyne1.easegui.api.animation.EasingType;
+import net.weyne1.easegui.api.animation.PivotPoint;
+import net.weyne1.easegui.client.util.StringUtils;
+import net.weyne1.easegui.api.animation.AnimationProfile;
 import net.weyne1.easegui.client.config.ProfileFeature;
 import net.weyne1.easegui.client.gui.components.FieldValidator;
 import net.weyne1.easegui.client.gui.components.SettingsScrollList;
@@ -45,12 +45,12 @@ public class ProfileEditorScreen extends EaseGUIAbstractSplitScreen {
         leftScrollList.setY(50);
 
         // --- 0. Переключатель "Включено / Выключено" + кнопка "Reset" ---
-        Component statusComp = workingCopy.enabled ? Component.translatable("easegui.generic.on") : Component.translatable("easegui.generic.off");
+        Component statusComp = workingCopy.isEnabled() ? Component.translatable("easegui.generic.on") : Component.translatable("easegui.generic.off");
         Button toggleBtn = Button.builder(
                 Component.translatable("easegui.editor.button.enabled", statusComp),
                 button -> {
-                    workingCopy.enabled(!workingCopy.enabled);
-                    Component newStatus = workingCopy.enabled ? Component.translatable("easegui.generic.on") : Component.translatable("easegui.generic.off");
+                    workingCopy.enabled(!workingCopy.isEnabled());
+                    Component newStatus = workingCopy.isEnabled() ? Component.translatable("easegui.generic.on") : Component.translatable("easegui.generic.off");
                     button.setMessage(Component.translatable("easegui.editor.button.enabled", newStatus));
                 }
         ).build();
@@ -68,16 +68,16 @@ public class ProfileEditorScreen extends EaseGUIAbstractSplitScreen {
         leftScrollList.addTwoButtons(toggleBtn, resetBtn, 0.70f);
 
         // --- 1. Длительность (Лимит: от 0 до 5000 мс) ---
-        EditBox durationField = createTextField(String.valueOf(workingCopy.duration));
+        EditBox durationField = createTextField(String.valueOf(workingCopy.getDuration()));
         FieldValidator.registerLongValidator(durationField, 0L, 5000L, workingCopy::duration);
         leftScrollList.addField(Component.translatable("easegui.editor.field.duration").getString(), durationField);
 
         // --- 2. Смещение (Лимит: от -1000 до 1000 пикселей) ---
         if (activeFeatures.contains(ProfileFeature.OFFSET)) {
-            EditBox ox = createTextField(String.valueOf(workingCopy.offset.x));
+            EditBox ox = createTextField(String.valueOf(workingCopy.getOffsetX()));
             FieldValidator.registerFloatValidator(ox, -1000f, 1000f, workingCopy::offsetX);
 
-            EditBox oy = createTextField(String.valueOf(workingCopy.offset.y));
+            EditBox oy = createTextField(String.valueOf(workingCopy.getOffsetY()));
             FieldValidator.registerFloatValidator(oy, -1000f, 1000f, workingCopy::offsetY);
 
             leftScrollList.addTwoFields(Component.translatable("easegui.editor.field.offset").getString(), ox, oy);
@@ -85,10 +85,10 @@ public class ProfileEditorScreen extends EaseGUIAbstractSplitScreen {
 
         // --- 3. Масштаб (Лимит: от 0.0 до 10.0 крат) ---
         if (activeFeatures.contains(ProfileFeature.SCALE)) {
-            EditBox sx = createTextField(String.valueOf(workingCopy.startScale.x));
+            EditBox sx = createTextField(String.valueOf(workingCopy.getStartScaleX()));
             FieldValidator.registerFloatValidator(sx, 0.0f, 10.0f, workingCopy::startScaleX);
 
-            EditBox sy = createTextField(String.valueOf(workingCopy.startScale.y));
+            EditBox sy = createTextField(String.valueOf(workingCopy.getStartScaleY()));
             FieldValidator.registerFloatValidator(sy, 0.0f, 10.0f, workingCopy::startScaleY);
 
             leftScrollList.addTwoFields(Component.translatable("easegui.editor.field.scale").getString(), sx, sy);
@@ -96,47 +96,47 @@ public class ProfileEditorScreen extends EaseGUIAbstractSplitScreen {
 
         // --- 4. Прозрачность (Лимит: от 0.0 до 1.0) ---
         if (activeFeatures.contains(ProfileFeature.ALPHA)) {
-            EditBox alphaField = createTextField(String.valueOf(workingCopy.startAlpha));
+            EditBox alphaField = createTextField(String.valueOf(workingCopy.getStartAlpha()));
             FieldValidator.registerFloatValidator(alphaField, 0.0f, 1.0f, workingCopy::startAlpha);
             leftScrollList.addField(Component.translatable("easegui.editor.field.alpha").getString(), alphaField);
         }
 
         // --- 5. Каскадность (Лимит: от 0 до 1000 мс) ---
         if (activeFeatures.contains(ProfileFeature.CASCADE_DELAY)) {
-            EditBox cascadeField = createTextField(String.valueOf(workingCopy.cascadeDelay));
+            EditBox cascadeField = createTextField(String.valueOf(workingCopy.getCascadeDelay()));
             FieldValidator.registerLongValidator(cascadeField, 0L, 1000L, workingCopy::cascadeDelay);
             leftScrollList.addField(Component.translatable("easegui.editor.field.cascade_delay").getString(), cascadeField);
         }
 
         // --- 5.1. Направление каскада
         if (activeFeatures.contains(ProfileFeature.CASCADE_DIRECTION)) {
-            Component dirComp = getCascadeDirectionComponent(workingCopy.cascadeDirection);
+            Component dirComp = getCascadeDirectionComponent(workingCopy.getCascadeDirection());
             leftScrollList.addButton(Button.builder(Component.translatable("easegui.editor.button.cascade_dir", dirComp), b -> {
                 CascadeDirection[] v = CascadeDirection.values();
-                workingCopy.cascadeDirection(v[(workingCopy.cascadeDirection.ordinal() + 1) % v.length]);
-                b.setMessage(Component.translatable("easegui.editor.button.cascade_dir", getCascadeDirectionComponent(workingCopy.cascadeDirection)));
+                workingCopy.cascadeDirection(v[(workingCopy.getCascadeDirection().ordinal() + 1) % v.length]);
+                b.setMessage(Component.translatable("easegui.editor.button.cascade_dir", getCascadeDirectionComponent(workingCopy.getCascadeDirection())));
             }).build());
         }
 
         // --- 6. Точка опоры (Pivot) ---
         if (activeFeatures.contains(ProfileFeature.PIVOT)) {
-            Component pivotComp = Component.translatable("easegui.pivot." + workingCopy.pivot.name().toLowerCase());
+            Component pivotComp = Component.translatable("easegui.pivot." + workingCopy.getPivot().name().toLowerCase());
             leftScrollList.addButton(Button.builder(Component.translatable("easegui.editor.button.pivot", pivotComp), b -> {
                 PivotPoint[] v = PivotPoint.values();
-                workingCopy.pivot(v[(workingCopy.pivot.ordinal() + 1) % v.length]);
-                Component updatedPivot = Component.translatable("easegui.pivot." + workingCopy.pivot.name().toLowerCase());
+                workingCopy.pivot(v[(workingCopy.getPivot().ordinal() + 1) % v.length]);
+                Component updatedPivot = Component.translatable("easegui.pivot." + workingCopy.getPivot().name().toLowerCase());
                 b.setMessage(Component.translatable("easegui.editor.button.pivot", updatedPivot));
             }).build());
         }
 
         // --- 7. Интерполяция (Easing) ---
-        Component easingComp = Component.literal(StringUtils.toTitleCase(workingCopy.easing));
+        Component easingComp = Component.literal(StringUtils.toTitleCase(workingCopy.getEasing()));
         leftScrollList.addButton(Button.builder(
                 Component.translatable("easegui.editor.button.easing", easingComp),
                 button -> {
                     EasingType[] values = EasingType.values();
-                    workingCopy.easing(values[(workingCopy.easing.ordinal() + 1) % values.length]);
-                    Component updatedEasing = Component.literal(StringUtils.toTitleCase(workingCopy.easing));
+                    workingCopy.easing(values[(workingCopy.getEasing().ordinal() + 1) % values.length]);
+                    Component updatedEasing = Component.literal(StringUtils.toTitleCase(workingCopy.getEasing()));
                     button.setMessage(Component.translatable("easegui.editor.button.easing", updatedEasing));
                 }
         ).build());
@@ -183,14 +183,14 @@ public class ProfileEditorScreen extends EaseGUIAbstractSplitScreen {
 
     private AnimationProfile applyProfileValues(AnimationProfile target, AnimationProfile source) {
         return target
-                .enabled(source.enabled)
-                .duration(source.duration)
-                .offset(source.offset.x, source.offset.y)
-                .startScale(source.startScale.x, source.startScale.y)
-                .startAlpha(source.startAlpha)
-                .cascadeDelay(source.cascadeDelay)
-                .easing(source.easing)
-                .pivot(source.pivot)
-                .cascadeDirection(source.cascadeDirection);
+                .enabled(source.isEnabled())
+                .duration(source.getDuration())
+                .offset(source.getOffsetX(), source.getOffsetY())
+                .startScale(source.getStartScaleX(), source.getStartScaleY())
+                .startAlpha(source.getStartAlpha())
+                .cascadeDelay(source.getCascadeDelay())
+                .easing(source.getEasing())
+                .pivot(source.getPivot())
+                .cascadeDirection(source.getCascadeDirection());
     }
 }

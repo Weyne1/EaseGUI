@@ -1,7 +1,8 @@
-package net.weyne1.easegui.client.config;
+package net.weyne1.easegui.api;
 
 import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.weyne1.easegui.client.config.ProfileFeature;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.EnumSet;
@@ -12,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Represents the logical category of a UI element, defining which animation features
  * are permitted and how classes map to these categories.
  */
-public enum EaseGUIElementCategory {
+public enum WidgetCategory {
     BUTTON_LIKE(EnumSet.allOf(ProfileFeature.class)),
     TEXT(EnumSet.of(ProfileFeature.OFFSET, ProfileFeature.SCALE, ProfileFeature.ALPHA, ProfileFeature.PIVOT)),
     SCROLLABLE(EnumSet.of(ProfileFeature.OFFSET, ProfileFeature.SCALE, ProfileFeature.ALPHA)),
@@ -20,11 +21,11 @@ public enum EaseGUIElementCategory {
     CONTAINERS(EnumSet.of(ProfileFeature.OFFSET, ProfileFeature.SCALE, ProfileFeature.ALPHA, ProfileFeature.PIVOT)),
     UNKNOWN(EnumSet.noneOf(ProfileFeature.class));
 
-    private static final Map<Class<?>, EaseGUIElementCategory> CUSTOM_MAPPINGS = new ConcurrentHashMap<>();
+    private static final Map<Class<?>, WidgetCategory> CUSTOM_MAPPINGS = new ConcurrentHashMap<>();
 
     private final EnumSet<ProfileFeature> allowedFeatures;
 
-    EaseGUIElementCategory(EnumSet<ProfileFeature> allowedFeatures) {
+    WidgetCategory(EnumSet<ProfileFeature> allowedFeatures) {
         this.allowedFeatures = allowedFeatures;
     }
 
@@ -40,7 +41,7 @@ public enum EaseGUIElementCategory {
      * @param category the category to assign to this class and its descendants
      */
     @SuppressWarnings("unused")
-    public static void registerMapping(@NotNull Class<?> clazz, @NotNull EaseGUIElementCategory category) {
+    public static void registerMapping(@NotNull Class<?> clazz, @NotNull WidgetCategory category) {
         CUSTOM_MAPPINGS.put(clazz, category);
     }
 
@@ -52,10 +53,10 @@ public enum EaseGUIElementCategory {
      * @return the matched category, or {@link #UNKNOWN} if no match is found
      */
     @NotNull
-    public static EaseGUIElementCategory fromClass(Class<?> clazz) {
+    public static WidgetCategory fromClass(Class<?> clazz) {
         if (clazz == null) return UNKNOWN;
 
-        for (Map.Entry<Class<?>, EaseGUIElementCategory> entry : CUSTOM_MAPPINGS.entrySet()) {
+        for (Map.Entry<Class<?>, WidgetCategory> entry : CUSTOM_MAPPINGS.entrySet()) {
             if (entry.getKey().isAssignableFrom(clazz)) {
                 return entry.getValue();
             }

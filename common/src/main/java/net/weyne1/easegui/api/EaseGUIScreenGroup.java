@@ -1,6 +1,6 @@
-package net.weyne1.easegui.client.config;
+package net.weyne1.easegui.api;
 
-public enum ScreenGroup {
+public enum EaseGUIScreenGroup {
     BASIC("easegui.screen_group.basic"),
     EDITORS("easegui.screen_group.editors"),
     WORLDS("easegui.screen_group.worlds"),
@@ -9,7 +9,7 @@ public enum ScreenGroup {
 
     private final String translationKey;
 
-    ScreenGroup(String translationKey) {
+    EaseGUIScreenGroup(String translationKey) {
         this.translationKey = translationKey;
     }
 

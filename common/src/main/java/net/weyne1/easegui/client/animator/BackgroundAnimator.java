@@ -6,8 +6,8 @@ import net.weyne1.easegui.client.animation.AnimationScope;
 import net.weyne1.easegui.client.animation.AnimationSystem;
 import net.weyne1.easegui.client.config.ConfigManager;
 import net.weyne1.easegui.client.config.EaseGUIConfig;
-import net.weyne1.easegui.client.config.EaseGUIScreenRegistry;
-import net.weyne1.easegui.client.config.ScreenType;
+import net.weyne1.easegui.api.EaseGUIScreenRegistry;
+import net.weyne1.easegui.api.EaseGUIScreenType;
 import net.weyne1.easegui.client.state.ScreenAnimationTracker;
 import net.weyne1.easegui.client.state.ScreenStateTracker;
 import java.util.Set;
@@ -41,7 +41,7 @@ public class BackgroundAnimator {
         if (!config.global.enableSmoothBlur) return false;
 
         try {
-            ScreenType screenType = EaseGUIScreenRegistry.from(screen);
+            EaseGUIScreenType screenType = EaseGUIScreenRegistry.from(screen);
             if (screenType == null) return true;
 
             EaseGUIConfig.ScreenSettings screenSettings = config.screens.get(screenType.getId());

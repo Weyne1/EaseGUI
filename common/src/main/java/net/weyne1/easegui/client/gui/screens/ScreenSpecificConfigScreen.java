@@ -6,7 +6,9 @@ import net.minecraft.client.gui.components.MultiLineTextWidget;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.weyne1.easegui.client.animation.AnimationProfile;
+import net.weyne1.easegui.api.WidgetCategory;
+import net.weyne1.easegui.api.EaseGUIScreenType;
+import net.weyne1.easegui.api.animation.AnimationProfile;
 import net.weyne1.easegui.client.config.*;
 import net.weyne1.easegui.client.gui.components.SettingsScrollList;
 import net.weyne1.easegui.client.gui.configurator.IScreenConfigurator;
@@ -15,9 +17,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.EnumSet;
 
 public class ScreenSpecificConfigScreen extends EaseGUIAbstractSplitScreen {
-    private final ScreenType screenType;
+    private final EaseGUIScreenType screenType;
 
-    public ScreenSpecificConfigScreen(Screen parent, ScreenType type) {
+    public ScreenSpecificConfigScreen(Screen parent, EaseGUIScreenType type) {
         super(type.getDisplayName(), parent);
         this.screenType = type;
     }
@@ -106,9 +108,9 @@ public class ScreenSpecificConfigScreen extends EaseGUIAbstractSplitScreen {
     }
 
     private void setupCategoryButtons(SettingsScrollList rightScrollList, EaseGUIConfig.ScreenSettings settings, EaseGUIConfig config) {
-        EnumSet<EaseGUIElementCategory> overridableCategories = EnumSet.complementOf(EnumSet.of(EaseGUIElementCategory.UNKNOWN));
+        EnumSet<WidgetCategory> overridableCategories = EnumSet.complementOf(EnumSet.of(WidgetCategory.UNKNOWN));
 
-        for (EaseGUIElementCategory category : overridableCategories) {
+        for (WidgetCategory category : overridableCategories) {
             boolean hasCustom = settings.customProfiles.containsKey(category);
 
             Component categoryLabel = Component.translatable("easegui.category." + category.name().toLowerCase());
@@ -156,14 +158,14 @@ public class ScreenSpecificConfigScreen extends EaseGUIAbstractSplitScreen {
         AnimationProfile dest = new AnimationProfile();
         if (src == null) return dest;
         return dest
-                .enabled(src.enabled)
-                .duration(src.duration)
-                .offset(src.offset.x, src.offset.y)
-                .startScale(src.startScale.x, src.startScale.y)
-                .startAlpha(src.startAlpha)
-                .cascadeDelay(src.cascadeDelay)
-                .easing(src.easing)
-                .pivot(src.pivot)
-                .cascadeDirection(src.cascadeDirection);
+                .enabled(src.isEnabled())
+                .duration(src.getDuration())
+                .offset(src.getOffsetX(), src.getOffsetY())
+                .startScale(src.getStartScaleX(), src.getStartScaleY())
+                .startAlpha(src.getStartAlpha())
+                .cascadeDelay(src.getCascadeDelay())
+                .easing(src.getEasing())
+                .pivot(src.getPivot())
+                .cascadeDirection(src.getCascadeDirection());
     }
 }

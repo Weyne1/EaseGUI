@@ -1,4 +1,4 @@
-package net.weyne1.easegui.client.animation;
+package net.weyne1.easegui.api.animation;
 
 public enum PivotPoint {
     TOP_LEFT(0.0f, 0.0f),

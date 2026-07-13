@@ -5,33 +5,34 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.weyne1.easegui.client.extension.EaseGUIWidgetExtension;
+import net.weyne1.easegui.api.animation.AnimationProfile;
+import net.weyne1.easegui.client.extension.WidgetExtension;
 import net.weyne1.easegui.client.animation.*;
 import net.weyne1.easegui.client.config.ConfigManager;
-import net.weyne1.easegui.client.config.EaseGUIElementCategory;
+import net.weyne1.easegui.api.WidgetCategory;
 import net.weyne1.easegui.client.state.ScreenStateTracker;
 
 public class WidgetAnimator {
 
-    public static AnimationScope beginRender(AbstractWidget widget, GuiGraphics gg, EaseGUIElementCategory category, AnimationState state) {
+    public static AnimationScope beginRender(AbstractWidget widget, GuiGraphics gg, WidgetCategory category, AnimationState state) {
         if (Minecraft.getInstance().screen instanceof AbstractContainerScreen) {
             return null;
         }
 
         var profile = ConfigManager.getProfileForCurrentContext(category);
-        if (profile == null || !profile.enabled) return null;
+        if (profile == null || !profile.isEnabled()) return null;
 
         long now = Util.getMillis();
 
         updateAnimationState(widget, state, now, profile);
 
         if (ScreenStateTracker.isResizeFrame() || AnimationContext.hasParentAnimation()) {
-            state.startTime = now - profile.duration - state.delay;
+            state.startTime = now - profile.getDuration() - state.delay;
             return null;
         }
 
         return AnimationSystem.begin(gg, widget.getX(), widget.getY(), widget.getWidth(), widget.getHeight(), profile,
-                state.startTime, state.delay, ((EaseGUIWidgetExtension) widget).easeGUI$getAlpha());
+                state.startTime, state.delay, ((WidgetExtension) widget).easeGUI$getAlpha());
     }
 
     private static void updateAnimationState(AbstractWidget widget, AnimationState state, long now, AnimationProfile profile) {
@@ -47,7 +48,7 @@ public class WidgetAnimator {
 
             float distance = getDistance(widget, profile);
 
-            float delayMultiplier = profile.cascadeDelay / 100.0f;
+            float delayMultiplier = profile.getCascadeDelay() / 100.0f;
             state.delay = (long) (distance * delayMultiplier);
         }
 
@@ -65,7 +66,7 @@ public class WidgetAnimator {
         final float BASELINE_WIDTH = 960.0f;
         final float BASELINE_HEIGHT = 540.0f;
 
-        return switch (profile.cascadeDirection) {
+        return switch (profile.getCascadeDirection()) {
             case TOP_TO_BOTTOM -> (Math.max(0, y) / (float) screenHeight) * BASELINE_HEIGHT;
             case BOTTOM_TO_TOP -> (Math.max(0f, screenHeight - y) / (float) screenHeight) * BASELINE_HEIGHT;
             case LEFT_TO_RIGHT -> (Math.max(0, x) / (float) screenWidth) * BASELINE_WIDTH;

@@ -1,4 +1,4 @@
-package net.weyne1.easegui.client.animation;
+package net.weyne1.easegui.api.animation;
 
 public enum CascadeDirection {
     TOP_TO_BOTTOM,
