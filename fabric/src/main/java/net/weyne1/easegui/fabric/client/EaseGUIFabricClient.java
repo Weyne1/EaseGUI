@@ -1,4 +1,4 @@
-package net.weyne1.easegui.neoforge.client;
+package net.weyne1.easegui.fabric.client;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.weyne1.easegui.client.EaseGUIClient;
