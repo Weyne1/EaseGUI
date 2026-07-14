@@ -1,44 +1,39 @@
 package net.weyne1.easegui.client.animator;
 
-import net.minecraft.Util;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.ActiveTextCollector;
+import net.minecraft.util.Util;
+import net.weyne1.easegui.client.animation.AnimationContext;
 import net.weyne1.easegui.client.animation.AnimationMath;
-import net.weyne1.easegui.client.animation.AnimationScope;
-import net.weyne1.easegui.client.animation.AnimationSystem;
 import net.weyne1.easegui.client.config.ConfigManager;
 import net.weyne1.easegui.client.state.ScreenStateTracker;
 
-/**
- * Animates the title screen splash text.
- */
 public class SplashAnimator {
-    /**
-     * Starts the animation.
-     *
-     * @return an {@link AnimationScope} that must be closed, or {@code null} if no animation is needed
-     */
-    public static AnimationScope beginRender(GuiGraphics gg, int color) {
+
+    public static ActiveTextCollector.Parameters getAnimatedParameters(ActiveTextCollector.Parameters parameters) {
         var screenConfig = ConfigManager.getConfig().screens.get("title");
+
         if (screenConfig == null || !screenConfig.enabled || screenConfig.splash == null || !screenConfig.splash.enabled) {
-            return null;
+            return parameters.withOpacity(AnimationContext.getCurrentAlpha());
         }
 
         var splashConfig = screenConfig.splash;
-        long startTime = ScreenStateTracker.getScreenOpenTime();
-        long elapsed = Util.getMillis() - startTime - splashConfig.splashDelay;
+        long actualStartTime = ScreenStateTracker.getTitleActualStartTime();
+        long elapsed = Util.getMillis() - actualStartTime - splashConfig.splashDelay;
+        float parentAlpha = AnimationContext.getCurrentAlpha();
 
-        if (elapsed >= splashConfig.splashDuration) {
+        if (elapsed <= 0) {
             return null;
         }
 
+        if (elapsed >= splashConfig.splashDuration) {
+            return parameters.withOpacity(parentAlpha);
+        }
+
         float progress = AnimationMath.calculateProgress(elapsed, splashConfig.splashDuration, splashConfig.splashEasing);
+        float finalAlpha = AnimationMath.clamp(progress * parentAlpha, 0f, 1f);
 
-        float baseAlpha = ((color >> 24) & 255) / 255.0f;
-        float finalAlpha = baseAlpha * progress;
-        AnimationScope scope = AnimationSystem.beginAlphaOnly(gg, finalAlpha);
-
-        gg.pose().scale(progress, progress, 1.0f);
-
-        return scope;
+        return parameters
+                .withOpacity(finalAlpha)
+                .withScale(progress);
     }
 }

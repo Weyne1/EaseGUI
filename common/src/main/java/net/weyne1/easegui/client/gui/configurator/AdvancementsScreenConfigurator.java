@@ -4,7 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.weyne1.easegui.client.animation.AnimationProfile;
+import net.weyne1.easegui.api.animation.AnimationProfile;
 import net.weyne1.easegui.client.config.ConfigManager;
 import net.weyne1.easegui.client.config.EaseGUIConfig;
 import net.weyne1.easegui.client.config.ProfileFeature;

@@ -1,14 +1,15 @@
 package net.weyne1.easegui.client.animator;
 
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.weyne1.easegui.client.EaseGUIWidget;
+import net.weyne1.easegui.api.animation.AnimationProfile;
+import net.weyne1.easegui.client.extension.WidgetExtension;
 import net.weyne1.easegui.client.animation.*;
 import net.weyne1.easegui.client.config.ConfigManager;
-import net.weyne1.easegui.client.config.UIElementCategory;
+import net.weyne1.easegui.api.WidgetCategory;
 import net.weyne1.easegui.client.state.ScreenStateTracker;
 
 /**
@@ -16,54 +17,32 @@ import net.weyne1.easegui.client.state.ScreenStateTracker;
  */
 public class WidgetAnimator {
 
-    /**
-     * Starts the animation.
-     *
-     * @return an {@link AnimationScope} that must be closed, or {@code null} if no animation is needed
-     */
-    public static AnimationScope beginRender(AbstractWidget widget, GuiGraphics gg, UIElementCategory category, AnimationState.AnimationData state) {
+    public static AnimationScope beginRender(AbstractWidget widget, GuiGraphics gg, WidgetCategory category, AnimationState state) {
         if (Minecraft.getInstance().screen instanceof AbstractContainerScreen) {
             return null;
         }
 
         var profile = ConfigManager.getProfileForCurrentContext(category);
-        if (profile == null || !profile.enabled) return null;
+        if (profile == null || !profile.isEnabled()) return null;
 
         long now = Util.getMillis();
 
         updateAnimationState(widget, state, now, profile);
 
         if (ScreenStateTracker.isResizeFrame() || AnimationContext.hasParentAnimation()) {
-            state.startTime = now - profile.duration - state.delay;
+            state.startTime = now - profile.getDuration() - state.delay;
             return null;
         }
 
-        long elapsed = now - state.startTime - state.delay;
-
-        if (elapsed >= profile.duration) return null;
-
-        float progress = 0.0f;
-        if (elapsed > 0) {
-            progress = AnimationMath.calculateProgress(elapsed, profile.duration, profile.easing);
-        }
-
-        return AnimationSystem.begin(
-                gg,
-                widget.getX(),
-                widget.getY(),
-                widget.getWidth(),
-                widget.getHeight(),
-                profile,
-                progress,
-                ((EaseGUIWidget) widget).easeGUI$getAlpha()
-        );
+        return AnimationSystem.begin(gg, widget.getX(), widget.getY(), widget.getWidth(), widget.getHeight(), profile,
+                state.startTime, state.delay, ((WidgetExtension) widget).easeGUI$getAlpha());
     }
 
     /**
      * Initializes animation state when a widget appears and
      * recalculates cascade timing if needed.
      */
-    private static void updateAnimationState(AbstractWidget widget, AnimationState.AnimationData state, long now, AnimationProfile profile) {
+    private static void updateAnimationState(AbstractWidget widget, AnimationState state, long now, AnimationProfile profile) {
         int currentFrame = ScreenStateTracker.getCurrentFrameId();
 
         if (state.init && currentFrame > state.lastRenderFrame + 1) {
@@ -76,7 +55,7 @@ public class WidgetAnimator {
 
             float distance = getDistance(widget, profile);
 
-            float delayMultiplier = profile.cascadeDelay / 100.0f;
+            float delayMultiplier = profile.getCascadeDelay() / 100.0f;
             state.delay = (long) (distance * delayMultiplier);
         }
 
@@ -84,8 +63,8 @@ public class WidgetAnimator {
     }
 
     /**
-     * Вычисляет расстояние до виджета в виртуальной шкале координат,
-     * делая скорость каскада независимой от GUI Scale и разрешения монитора.
+     * Calculates the distance to the widget in a virtual coordinate scale,
+     * making the cascade speed independent of the GUI scale and monitor resolution.
      */
     private static float getDistance(AbstractWidget widget, AnimationProfile profile) {
         var window = Minecraft.getInstance().getWindow();
@@ -98,7 +77,7 @@ public class WidgetAnimator {
         final float BASELINE_WIDTH = 960.0f;
         final float BASELINE_HEIGHT = 540.0f;
 
-        return switch (profile.cascadeDirection) {
+        return switch (profile.getCascadeDirection()) {
             case TOP_TO_BOTTOM -> (Math.max(0, y) / (float) screenHeight) * BASELINE_HEIGHT;
             case BOTTOM_TO_TOP -> (Math.max(0f, screenHeight - y) / (float) screenHeight) * BASELINE_HEIGHT;
             case LEFT_TO_RIGHT -> (Math.max(0, x) / (float) screenWidth) * BASELINE_WIDTH;

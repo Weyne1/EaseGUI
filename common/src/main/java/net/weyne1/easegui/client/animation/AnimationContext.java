@@ -6,39 +6,54 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 
 public final class AnimationContext {
-    private static final Deque<Float> ALPHA_STACK = new ArrayDeque<>();
-    private static int suspensionDepth = 0;
+    private static final Deque<AnimationScope> SCOPE_STACK = new ArrayDeque<>();
     private static int parentAnimationDepth = 0;
 
-    public static void pushAnimation(float alpha) {
-        ALPHA_STACK.push(alpha);
+    public static void pushScope(AnimationScope scope) {
+        SCOPE_STACK.push(scope);
     }
 
-    public static void popAnimation() {
-        if (!ALPHA_STACK.isEmpty()) {
-            ALPHA_STACK.pop();
+    public static void popScope(AnimationScope scope) {
+        if (SCOPE_STACK.isEmpty()) {
+            EaseGUIDebug.reportError("scope_underflow", () -> "Attempt to close a scope when the stack is empty!");
+            return;
+        }
+
+        if (SCOPE_STACK.peek() == scope) {
+            SCOPE_STACK.pop();
+        } else {
+            EaseGUIDebug.reportError("scope_mismatch", () -> "Animation closing order violated! Attempted to close the wrong scope.");
         }
     }
 
-    public static void suspend() {
-        suspensionDepth++;
+    public static AnimationScope getCurrentScope() {
+        return SCOPE_STACK.peek();
     }
 
-    public static void resume() {
-        if (suspensionDepth > 0) {
-            suspensionDepth--;
+    public static boolean isActive() {
+        if (SCOPE_STACK.isEmpty()) return false;
+        for (AnimationScope scope : SCOPE_STACK) {
+            if (!scope.isSuspended()) return true;
         }
-    }
-
-    public static boolean isAnimating() {
-        return suspensionDepth == 0 && !ALPHA_STACK.isEmpty();
+        return false;
     }
 
     public static float getCurrentAlpha() {
-        if (suspensionDepth > 0 || ALPHA_STACK.isEmpty()) {
+        if (SCOPE_STACK.isEmpty()) {
             return 1.0f;
         }
-        return ALPHA_STACK.peek();
+
+        float totalAlpha = 1.0f;
+        boolean hasActiveScope = false;
+
+        for (AnimationScope scope : SCOPE_STACK) {
+            if (!scope.isSuspended()) {
+                totalAlpha *= scope.getAlpha();
+                hasActiveScope = true;
+            }
+        }
+
+        return hasActiveScope ? totalAlpha : 1.0f;
     }
 
     public static void pushParentAnimation() {
@@ -59,8 +74,7 @@ public final class AnimationContext {
     }
 
     public static void resetFrameState() {
-        ALPHA_STACK.clear();
-        suspensionDepth = 0;
+        SCOPE_STACK.clear();
         parentAnimationDepth = 0;
     }
 }

@@ -1,5 +1,7 @@
 package net.weyne1.easegui.client.animation;
 
+import net.weyne1.easegui.api.animation.EasingType;
+
 public final class AnimationMath {
 
     private AnimationMath() { }
@@ -20,7 +22,7 @@ public final class AnimationMath {
     public static float calculateProgress(
             long elapsed,
             long duration,
-            AnimationProfile.EasingType easing
+            EasingType easing
     ) {
         if (elapsed <= 0) return 0f;
         if (elapsed >= duration) return 1f;

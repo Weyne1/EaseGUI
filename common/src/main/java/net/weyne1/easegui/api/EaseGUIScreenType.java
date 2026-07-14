@@ -1,4 +1,4 @@
-package net.weyne1.easegui.client.config;
+package net.weyne1.easegui.api;
 
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -17,13 +17,13 @@ import net.minecraft.network.chat.MutableComponent;
  *   <li>UI grouping</li>
  * </ul>
  */
-public final class ScreenType {
+public final class EaseGUIScreenType {
 
     private final String id;
     private final Class<? extends Screen> screenClass;
     private final String translationKey;
     private final int priority;
-    private final ScreenGroup group;
+    private final EaseGUIScreenGroup group;
     private final boolean enabledByDefault;
 
     /**
@@ -35,11 +35,11 @@ public final class ScreenType {
      *   <li>"modid:screen" → "modid.screen_type.screen"</li>
      * </ul>
      */
-    public ScreenType(
+    public EaseGUIScreenType(
             String id,
             Class<? extends Screen> screenClass,
             int priority,
-            ScreenGroup group,
+            EaseGUIScreenGroup group,
             boolean enabledByDefault
     ) {
         this.id = id;
@@ -59,11 +59,12 @@ public final class ScreenType {
     /**
      * Creates a screen type enabled by default.
      */
-    public ScreenType(
+    @SuppressWarnings("unused")
+    public EaseGUIScreenType(
             String id,
             Class<? extends Screen> screenClass,
             int priority,
-            ScreenGroup group
+            EaseGUIScreenGroup group
     ) {
         this(id, screenClass, priority, group, true);
     }
@@ -80,7 +81,7 @@ public final class ScreenType {
         return priority;
     }
 
-    public ScreenGroup getGroup() {
+    public EaseGUIScreenGroup getGroup() {
         return group;
     }
 

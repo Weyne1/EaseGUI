@@ -5,7 +5,10 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.weyne1.easegui.client.animation.AnimationProfile;
+import net.weyne1.easegui.api.WidgetCategory;
+import net.weyne1.easegui.api.EaseGUIScreenRegistry;
+import net.weyne1.easegui.api.EaseGUIScreenType;
+import net.weyne1.easegui.api.animation.AnimationProfile;
 
 import java.io.File;
 import java.io.FileReader;
@@ -19,11 +22,11 @@ public class ConfigManager {
 
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
-    private static EaseGUIConfig currentConfig = new EaseGUIConfig();
+    private static EaseGUIConfig currentConfig = EaseGUIConfigFactory.createDefaultConfig();
     private static boolean isLoaded = false;
 
     private static Screen cachedScreenInstance = null;
-    private static ScreenType cachedScreenType = EaseGUIScreenRegistry.OTHER;
+    private static EaseGUIScreenType cachedScreenType = EaseGUIScreenRegistry.OTHER;
 
     public static void load() {
         if (isLoaded) return;
@@ -54,12 +57,12 @@ public class ConfigManager {
                 currentConfig = GSON.fromJson(jsonConfig, EaseGUIConfig.class);
 
                 if (currentConfig == null) {
-                    currentConfig = new EaseGUIConfig();
+                    currentConfig = EaseGUIConfigFactory.createDefaultConfig();
                 }
 
                 currentConfig.schemaVersion = EaseGUIConfig.CURRENT_SCHEMA_VERSION;
 
-                if (currentConfig.mergeDefaults() || migrated) {
+                if (EaseGUIConfigFactory.mergeDefaults(currentConfig) || migrated) {
                     LOGGER.info("[EaseGUI] Config schema updated from version {} to {}.", version, EaseGUIConfig.CURRENT_SCHEMA_VERSION);
                     save();
                 }
@@ -67,7 +70,7 @@ public class ConfigManager {
                 LOGGER.info("[EaseGUI] Config successfully loaded from disk.");
             } catch (Exception e) {
                 LOGGER.error("[EaseGUI] Failed to read config, creating default... Error: {}", e.getMessage());
-                currentConfig = new EaseGUIConfig();
+                currentConfig = EaseGUIConfigFactory.createDefaultConfig();
                 save();
             }
         } else {
@@ -91,8 +94,8 @@ public class ConfigManager {
         return currentConfig;
     }
 
-    public static AnimationProfile getProfileForCurrentContext(UIElementCategory category) {
-        if (category == null || category == UIElementCategory.UNKNOWN) return null;
+    public static AnimationProfile getProfileForCurrentContext(WidgetCategory category) {
+        if (category == null || category == WidgetCategory.UNKNOWN) return null;
         if (!isLoaded) load();
 
         Screen currentScreen = Minecraft.getInstance().screen;
@@ -109,7 +112,7 @@ public class ConfigManager {
 
             AnimationProfile customProfile = screenSettings.customProfiles.get(category);
             if (customProfile != null) {
-                return customProfile.enabled ? customProfile : null;
+                return customProfile.isEnabled() ? customProfile : null;
             }
         }
 

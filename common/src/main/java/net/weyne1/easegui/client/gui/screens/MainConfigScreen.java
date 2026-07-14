@@ -5,9 +5,13 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.weyne1.easegui.client.animation.AnimationProfile;
+import net.weyne1.easegui.api.WidgetCategory;
+import net.weyne1.easegui.api.EaseGUIScreenRegistry;
+import net.weyne1.easegui.api.EaseGUIScreenGroup;
+import net.weyne1.easegui.api.EaseGUIScreenType;
+import net.weyne1.easegui.api.animation.AnimationProfile;
 import net.weyne1.easegui.client.config.*;
-import net.weyne1.easegui.client.gui.FieldValidator;
+import net.weyne1.easegui.client.gui.components.FieldValidator;
 import net.weyne1.easegui.client.gui.components.SettingsScrollList;
 
 import java.util.Comparator;
@@ -77,11 +81,11 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
 
         leftList.addHeader(Component.translatable("easegui.config.title.elements").getString());
 
-        addGlobalProfileButton(leftList, config, mc, UIElementCategory.BUTTON_LIKE, "easegui.main.button.button_like");
-        addGlobalProfileButton(leftList, config, mc, UIElementCategory.TEXT, "easegui.main.button.text");
-        addGlobalProfileButton(leftList, config, mc, UIElementCategory.SCROLLABLE, "easegui.main.button.scrollable");
-        addGlobalProfileButton(leftList, config, mc, UIElementCategory.LIST_ENTRY, "easegui.main.button.list_entry");
-        addGlobalProfileButton(leftList, config, mc, UIElementCategory.CONTAINERS, "easegui.main.button.containers");
+        addGlobalProfileButton(leftList, config, mc, WidgetCategory.BUTTON_LIKE, "easegui.main.button.button_like");
+        addGlobalProfileButton(leftList, config, mc, WidgetCategory.TEXT, "easegui.main.button.text");
+        addGlobalProfileButton(leftList, config, mc, WidgetCategory.SCROLLABLE, "easegui.main.button.scrollable");
+        addGlobalProfileButton(leftList, config, mc, WidgetCategory.LIST_ENTRY, "easegui.main.button.list_entry");
+        addGlobalProfileButton(leftList, config, mc, WidgetCategory.CONTAINERS, "easegui.main.button.containers");
 
         this.addRenderableWidget(leftList);
 
@@ -91,8 +95,8 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
         rightList.setX(rightX);
         rightList.setY(50);
 
-        for (ScreenGroup category : ScreenGroup.values()) {
-            List<ScreenType> categoryScreens = EaseGUIScreenRegistry.getRegisteredTypes().stream()
+        for (EaseGUIScreenGroup category : EaseGUIScreenGroup.values()) {
+            List<EaseGUIScreenType> categoryScreens = EaseGUIScreenRegistry.getRegisteredTypes().stream()
                     .filter(type -> type.getGroup() == category)
                     .sorted(Comparator.comparing(type -> type.getDisplayName().getString()))
                     .toList();
@@ -100,7 +104,7 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
             if (!categoryScreens.isEmpty()) {
                 rightList.addHeader(Component.translatable(category.getTranslationKey()).getString());
 
-                for (ScreenType type : categoryScreens) {
+                for (EaseGUIScreenType type : categoryScreens) {
                     rightList.addButton(Button.builder(
                             type.getDisplayName(),
                             b -> mc.setScreen(new ScreenSpecificConfigScreen(this, type))
@@ -124,7 +128,7 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
         ).bounds(halfWidth - 100, this.height - 30, 200, 20).build());
     }
 
-    private void addGlobalProfileButton(SettingsScrollList list, EaseGUIConfig config, Minecraft mc, UIElementCategory category, String translationKey) {
+    private void addGlobalProfileButton(SettingsScrollList list, EaseGUIConfig config, Minecraft mc, WidgetCategory category, String translationKey) {
         AnimationProfile cleanDefault = new EaseGUIConfig().global.elementProfiles.get(category);
         if (cleanDefault == null) cleanDefault = new AnimationProfile();
         AnimationProfile finalCleanDefault = cleanDefault;
@@ -145,7 +149,6 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
     }
 
     private EditBox createTextField(String value) {
-        assert this.minecraft != null;
         EditBox editBox = new EditBox(this.minecraft.font, 0, 0, 60, 16, Component.empty());
         editBox.setValue(value);
         return editBox;

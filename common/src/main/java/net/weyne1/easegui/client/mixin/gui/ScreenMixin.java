@@ -1,173 +1,98 @@
 package net.weyne1.easegui.client.mixin.gui;
 
+import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.weyne1.easegui.client.accessor.ContainerScreenAccessor;
-import net.weyne1.easegui.client.accessor.ScreenAnimationAccessor;
+import net.weyne1.easegui.client.extension.ContainerScreenExtension;
+import net.weyne1.easegui.client.animation.AnimationContext;
 import net.weyne1.easegui.client.animation.AnimationScope;
 import net.weyne1.easegui.client.animator.BackgroundAnimator;
 import net.weyne1.easegui.client.animator.ContainerAnimator;
 import net.weyne1.easegui.client.config.ConfigManager;
-import net.weyne1.easegui.client.config.EaseGUIConfig;
-import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.ModifyArgs;
+import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
-/**
- * Injects custom animation behavior into the global Screen rendering pipeline.
- * Manages container transition lifecycles, menu textures, and background dimming.
- */
 @Mixin(Screen.class)
-public abstract class ScreenMixin implements ScreenAnimationAccessor {
+@SuppressWarnings("ConstantConditions")
+public abstract class ScreenMixin {
 
-    @Unique private AnimationScope easeGUI$containerScreenScope = null;
-    @Unique private AnimationScope easeGUI$menuBackgroundScope = null;
+    @Final @Shadow protected Minecraft minecraft;
+    @Shadow protected abstract void renderBlurredBackground(GuiGraphics guiGraphics);
 
-    @Shadow @Nullable protected Minecraft minecraft;
-    @Shadow protected abstract void renderBlurredBackground(float partialTick);
+    // Container lifecycle
 
-    @Override
-    @Unique
-    public AnimationScope easeGUI$getContainerScope() {
-        return this.easeGUI$containerScreenScope;
-    }
+    @WrapMethod(method = "renderWithTooltipAndSubtitles")
+    private void easeGUI$wrapScreenRender(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, Operation<Void> original) {
+        if (RenderSystem.isOnRenderThread() && this instanceof ContainerScreenExtension) {
 
-    @Unique
-    private boolean easeGUI$isWorldLoadingScreen() {
-        return BackgroundAnimator.isLoadingScreen((Screen) (Object) this);
-    }
+            try (AnimationScope ignored = ContainerAnimator.beginAnimation((Screen) (Object) this, guiGraphics)) {
+                AnimationContext.pushParentAnimation();
 
-    // CONTAINER SCREEN ANIMATION LIFECYCLE
+                original.call(guiGraphics, mouseX, mouseY, partialTick);
 
-    /**
-     * Initializes the container animation scope at the absolute beginning of the screen
-     * rendering pipeline, ensuring both widgets and late-rendered tooltips are captured.
-     */
-    @Inject(method = "renderWithTooltip", at = @At("HEAD"))
-    private void easeGUI$beforeScreenRenderWithTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
-        if (RenderSystem.isOnRenderThread() && this instanceof ContainerScreenAccessor) {
-            if (this.easeGUI$containerScreenScope != null) {
-                ContainerAnimator.closeScope(this.easeGUI$containerScreenScope);
+                AnimationContext.popParentAnimation();
             }
 
-            this.easeGUI$containerScreenScope = ContainerAnimator.beginScreenAnimation((Screen) (Object) this, guiGraphics);
+        } else {
+            original.call(guiGraphics, mouseX, mouseY, partialTick);
         }
     }
 
-    /**
-     * Safely collapses and closes the container animation scope at the end of the rendering
-     * pipeline to prevent matrix stack underflows.
-     */
-    @Inject(method = "renderWithTooltip", at = @At("RETURN"))
-    private void easeGUI$afterScreenRenderWithTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
-        if (RenderSystem.isOnRenderThread() && this.easeGUI$containerScreenScope != null) {
-            ContainerAnimator.closeScope(this.easeGUI$containerScreenScope);
-            this.easeGUI$containerScreenScope = null;
+    // Transparent background (blur / dim)
+
+    @WrapMethod(method = "renderTransparentBackground")
+    private void easeGUI$wrapTransparentBackground(GuiGraphics guiGraphics, Operation<Void> original) {
+        AnimationScope currentScope = AnimationContext.getCurrentScope();
+        if (currentScope != null) currentScope.suspend();
+
+        try {
+            Screen currentScreen = (Screen) (Object) this;
+            boolean blurContainers = ConfigManager.getConfig().global.blurContainers;
+
+            if (this.minecraft != null && this.minecraft.level != null && blurContainers && BackgroundAnimator.shouldAnimateBackground(currentScreen)) {
+                this.renderBlurredBackground(guiGraphics);
+            }
+
+            original.call(guiGraphics);
+        } finally {
+            if (currentScope != null) currentScope.resume();
         }
     }
 
-    // BACKGROUND RENDERING ISOLATION (SUSPEND / RESUME)
+    // Menu background
 
-    /**
-     * Suspends active container scaling/translation right before the transparent background
-     * gradient is drawn, keeping the background tint absolute and static.
-     */
-    @Inject(method = "renderTransparentBackground", at = @At("HEAD"))
-    private void easeGUI$suspendBeforeTransparentBackground(GuiGraphics guiGraphics, CallbackInfo ci) {
-        if (this.easeGUI$containerScreenScope != null) {
-            this.easeGUI$containerScreenScope.suspend();
-        }
+    @WrapMethod(method = "renderMenuBackground(Lnet/minecraft/client/gui/GuiGraphics;)V")
+    private void easeGUI$wrapMenuBackground(GuiGraphics guiGraphics, Operation<Void> original) {
+        AnimationScope currentScope = AnimationContext.getCurrentScope();
+        if (currentScope != null) currentScope.suspend();
 
-        boolean blurContainers = ConfigManager.getConfig().global.blurContainers;
-
-        if (this.minecraft != null && this.minecraft.level != null && blurContainers) {
-            float partialTick = this.minecraft.getTimer().getGameTimeDeltaTicks();
-            this.renderBlurredBackground(partialTick);
+        try (AnimationScope ignored = BackgroundAnimator.beginRenderMenu((Screen) (Object) this, guiGraphics)) {
+            original.call(guiGraphics);
+        } finally {
+            if (currentScope != null) currentScope.resume();
         }
     }
 
-    /**
-     * Resumes the container animation transformations immediately after the transparent
-     * background gradient has finished rendering.
-     */
-    @Inject(method = "renderTransparentBackground", at = @At("RETURN"))
-    private void easeGUI$resumeAfterTransparentBackground(GuiGraphics guiGraphics, CallbackInfo ci) {
-        if (this.easeGUI$containerScreenScope != null) {
-            this.easeGUI$containerScreenScope.resume();
-        }
-    }
+    // Gradient color
 
-    /**
-     * Isolates the main menu background rendering from container transformations and
-     * handles standalone main-menu background animations.
-     */
-    @Inject(method = "renderMenuBackground(Lnet/minecraft/client/gui/GuiGraphics;)V", at = @At("HEAD"))
-    private void easeGUI$preRenderMenuBackground(GuiGraphics guiGraphics, CallbackInfo ci) {
-        if (this.easeGUI$containerScreenScope != null) {
-            this.easeGUI$containerScreenScope.suspend();
-        }
-
-        if (this.easeGUI$menuBackgroundScope != null) {
-            this.easeGUI$menuBackgroundScope.close();
-        }
-
-        if (!easeGUI$isWorldLoadingScreen() && BackgroundAnimator.shouldAnimate()) {
-            this.easeGUI$menuBackgroundScope = BackgroundAnimator.beginRenderMenu(guiGraphics);
-        }
-    }
-
-    /**
-     * Cleans up menu background scope and restores the container animation transforms
-     * for subsequent interface elements.
-     */
-    @Inject(method = "renderMenuBackground(Lnet/minecraft/client/gui/GuiGraphics;)V", at = @At("RETURN"))
-    private void easeGUI$postRenderMenuBackground(GuiGraphics guiGraphics, CallbackInfo ci) {
-        if (this.easeGUI$menuBackgroundScope != null) {
-            this.easeGUI$menuBackgroundScope.close();
-            this.easeGUI$menuBackgroundScope = null;
-        }
-
-        if (this.easeGUI$containerScreenScope != null) {
-            this.easeGUI$containerScreenScope.resume();
-        }
-    }
-
-    // BACKGROUND GRADIENT COLOR MODIFICATIONS
-
-    /**
-     * Applies animated alpha to the top color of the Screen background gradient.
-     */
-    @ModifyArg(
+    @ModifyArgs(
             method = "renderTransparentBackground(Lnet/minecraft/client/gui/GuiGraphics;)V",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;fillGradient(IIIIII)V"),
-            index = 4
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;fillGradient(IIIIII)V")
     )
-    private int easeGUI$modifyTransparentBgTopColor(int originalColor) {
-        if (easeGUI$isWorldLoadingScreen()) {
-            return originalColor;
+    private void easeGUI$modifyTransparentBgColors(Args args) {
+        Screen currentScreen = (Screen) (Object) this;
+        if (!BackgroundAnimator.shouldAnimateBackground(currentScreen)) {
+            return;
         }
-        return BackgroundAnimator.getAnimatedColor(originalColor);
-    }
 
-    /**
-     * Applies animated alpha to the bottom color of the Screen background gradient.
-     */
-    @ModifyArg(
-            method = "renderTransparentBackground(Lnet/minecraft/client/gui/GuiGraphics;)V",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;fillGradient(IIIIII)V"),
-            index = 5
-    )
-    private int easeGUI$modifyTransparentBgBottomColor(int originalColor) {
-        if (easeGUI$isWorldLoadingScreen()) {
-            return originalColor;
-        }
-        return BackgroundAnimator.getAnimatedColor(originalColor);
+        args.set(4, BackgroundAnimator.getAnimatedColor(currentScreen, args.get(4)));
+        args.set(5, BackgroundAnimator.getAnimatedColor(currentScreen, args.get(5)));
     }
 }

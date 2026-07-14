@@ -1,12 +1,14 @@
 package net.weyne1.easegui.client.state;
 
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.client.gui.screens.Screen;
 
 import java.lang.ref.WeakReference;
 
 public class ScreenStateTracker {
     private static long screenOpenTime = -1;
+    private static long lastTrackedSessionTime = -1L;
+    private static long titleActualStartTime = -1L;
     private static int currentFrameId = 0;
     private static int resizeGraceFrames = 0;
     private static int lastWidth = -1;
@@ -49,6 +51,17 @@ public class ScreenStateTracker {
         if (resizeGraceFrames > 0) {
             resizeGraceFrames--;
         }
+    }
+
+    public static long getTitleActualStartTime() {
+        long openTime = getScreenOpenTime();
+
+        if (lastTrackedSessionTime != openTime) {
+            lastTrackedSessionTime = openTime;
+            titleActualStartTime = Util.getMillis();
+        }
+
+        return titleActualStartTime;
     }
 
     public static long getScreenOpenTime() {
