@@ -1,4 +1,4 @@
-package net.weyne1.easegui.neoforge.client;
+package net.weyne1.easegui.fabric.client;
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
