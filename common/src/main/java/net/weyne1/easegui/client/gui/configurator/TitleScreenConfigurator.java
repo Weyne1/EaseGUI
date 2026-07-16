@@ -6,6 +6,7 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.weyne1.easegui.api.animation.EasingType;
+import net.weyne1.easegui.client.config.EaseGUIConfigFactory;
 import net.weyne1.easegui.client.util.StringUtils;
 import net.weyne1.easegui.api.animation.AnimationProfile;
 import net.weyne1.easegui.client.config.ConfigManager;
@@ -26,8 +27,9 @@ public class TitleScreenConfigurator implements IScreenConfigurator {
             var logo = settings.logo;
             list.addHeader(Component.translatable("easegui.config.title.logo.header").getString());
 
-            AnimationProfile defaultLogo = new EaseGUIConfig.LogoSettings().logoProfile;
-            AnimationProfile defaultEdition = new EaseGUIConfig.LogoSettings().editionProfile;
+            var defaultSettings = EaseGUIConfigFactory.DEFAULT_CONFIG.screens.get("title").logo;
+            AnimationProfile defaultLogo = defaultSettings.logoProfile;
+            AnimationProfile defaultEdition = defaultSettings.editionProfile;
 
             // Настройка анимации букв
             list.addButton(Button.builder(Component.translatable("easegui.config.title.logo.edit_anim"), btn ->

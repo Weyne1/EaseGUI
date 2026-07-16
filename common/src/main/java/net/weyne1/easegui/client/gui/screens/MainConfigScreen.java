@@ -129,7 +129,7 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
     }
 
     private void addGlobalProfileButton(SettingsScrollList list, EaseGUIConfig config, Minecraft mc, WidgetCategory category, String translationKey) {
-        AnimationProfile cleanDefault = new EaseGUIConfig().global.elementProfiles.get(category);
+        AnimationProfile cleanDefault = EaseGUIConfigFactory.DEFAULT_CONFIG.global.elementProfiles.get(category);
         if (cleanDefault == null) cleanDefault = new AnimationProfile();
         AnimationProfile finalCleanDefault = cleanDefault;
 
