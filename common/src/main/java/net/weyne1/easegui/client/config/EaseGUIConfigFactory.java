@@ -18,6 +18,8 @@ import static net.weyne1.easegui.api.animation.EasingType.*;
  */
 public final class EaseGUIConfigFactory {
 
+    public static final EaseGUIConfig DEFAULT_CONFIG = createDefaultConfig();
+
     public static EaseGUIConfig createDefaultConfig() {
         EaseGUIConfig config = new EaseGUIConfig();
 
