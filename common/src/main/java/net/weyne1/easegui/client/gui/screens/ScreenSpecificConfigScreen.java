@@ -108,7 +108,7 @@ public class ScreenSpecificConfigScreen extends EaseGUIAbstractSplitScreen {
     }
 
     private void setupCategoryButtons(SettingsScrollList rightScrollList, EaseGUIConfig.ScreenSettings settings, EaseGUIConfig config) {
-        EnumSet<WidgetCategory> overridableCategories = EnumSet.complementOf(EnumSet.of(WidgetCategory.UNKNOWN));
+        EnumSet<WidgetCategory> overridableCategories = EnumSet.complementOf(EnumSet.of(WidgetCategory.UNKNOWN, WidgetCategory.CONTAINERS));
 
         for (WidgetCategory category : overridableCategories) {
             boolean hasCustom = settings.customProfiles.containsKey(category);
@@ -116,7 +116,7 @@ public class ScreenSpecificConfigScreen extends EaseGUIAbstractSplitScreen {
             Component categoryLabel = Component.translatable("easegui.category." + category.name().toLowerCase());
             Component modeLabel = Component.translatable(hasCustom ? "easegui.generic.custom" : "easegui.generic.global");
 
-            AnimationProfile cleanDefault = new EaseGUIConfig().global.elementProfiles.get(category);
+            AnimationProfile cleanDefault = EaseGUIConfigFactory.DEFAULT_CONFIG.global.elementProfiles.get(category);
             if (cleanDefault == null) cleanDefault = new AnimationProfile();
             AnimationProfile finalCleanDefault = cleanDefault;
 
