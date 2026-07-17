@@ -98,7 +98,8 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
         for (EaseGUIScreenGroup category : EaseGUIScreenGroup.values()) {
             List<EaseGUIScreenType> categoryScreens = EaseGUIScreenRegistry.getRegisteredTypes().stream()
                     .filter(type -> type.getGroup() == category)
-                    .sorted(Comparator.comparing(type -> type.getDisplayName().getString()))
+                    .sorted(Comparator.comparingInt(EaseGUIScreenType::getPriority).reversed()
+                            .thenComparing(type -> type.getDisplayName().getString()))
                     .toList();
 
             if (!categoryScreens.isEmpty()) {
