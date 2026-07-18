@@ -56,7 +56,8 @@ public abstract class ScreenMixin {
             Screen currentScreen = (Screen) (Object) this;
             boolean blurContainers = ConfigManager.getConfig().global.blurContainers;
 
-            if (this.minecraft != null && this.minecraft.level != null && blurContainers && BackgroundAnimator.shouldAnimateBackground(currentScreen)) {
+            if (this.minecraft != null && this.minecraft.level != null && this.minecraft.screen == (Object) this
+                    && blurContainers && BackgroundAnimator.shouldAnimateBackground(currentScreen)) {
                 this.renderBlurredBackground(guiGraphics);
             }
 
