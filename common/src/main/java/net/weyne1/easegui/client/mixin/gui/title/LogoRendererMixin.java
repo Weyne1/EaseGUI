@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(LogoRenderer.class)
+@Mixin(value = LogoRenderer.class, priority = 1010)
 public class LogoRendererMixin {
 
     @Shadow @Final private boolean showEasterEgg;

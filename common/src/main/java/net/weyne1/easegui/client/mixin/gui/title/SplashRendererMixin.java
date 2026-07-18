@@ -29,6 +29,11 @@ public class SplashRendererMixin {
             Component text,
             Operation<Void> original
     ) {
+        if (text == null || text.getString().isBlank()) {
+            original.call(collector, textAlignment, x, y, parameters, text);
+            return;
+        }
+
         ActiveTextCollector.Parameters animatedParams = SplashAnimator.getAnimatedParameters(parameters);
 
         if (animatedParams != null) {
