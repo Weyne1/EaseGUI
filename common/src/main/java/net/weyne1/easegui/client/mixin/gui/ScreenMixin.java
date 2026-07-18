@@ -10,7 +10,6 @@ import net.weyne1.easegui.client.animation.AnimationScope;
 import net.weyne1.easegui.client.animator.BackgroundAnimator;
 import net.weyne1.easegui.client.animator.ContainerAnimator;
 import net.weyne1.easegui.client.config.ConfigManager;
-import net.weyne1.easegui.client.config.EaseGUIConfig;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -87,7 +86,9 @@ public abstract class ScreenMixin implements ScreenAnimationAccessor {
 
         boolean blurContainers = ConfigManager.getConfig().global.blurContainers;
 
-        if (this.minecraft != null && this.minecraft.level != null && blurContainers) {
+        //noinspection ConstantValue
+        if (this.minecraft != null && this.minecraft.level != null && blurContainers && this.minecraft.screen == (Object) this) {
+
             float partialTick = this.minecraft.getTimer().getGameTimeDeltaTicks();
             this.renderBlurredBackground(partialTick);
         }
