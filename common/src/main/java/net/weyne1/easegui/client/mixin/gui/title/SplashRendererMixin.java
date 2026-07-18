@@ -18,6 +18,11 @@ public class SplashRendererMixin {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;drawCenteredString(Lnet/minecraft/client/gui/Font;Ljava/lang/String;III)V")
     )
     private void easeGUI$wrapSplash(GuiGraphics gg, Font font, String text, int x, int y, int color, Operation<Void> original) {
+        if (text == null || text.isBlank()) {
+            original.call(gg, font, text, x, y, color);
+            return;
+        }
+
         AnimationScope scope = SplashAnimator.beginRender(gg, color);
 
         if (scope != null) {
