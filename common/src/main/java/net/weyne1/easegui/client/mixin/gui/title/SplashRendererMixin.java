@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.At;
 public class SplashRendererMixin {
 
     @WrapOperation(
-            method = "render",
+            method = "extractRenderState",
             at = @At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/client/gui/ActiveTextCollector;accept(Lnet/minecraft/client/gui/TextAlignment;IILnet/minecraft/client/gui/ActiveTextCollector$Parameters;Lnet/minecraft/network/chat/Component;)V"
@@ -22,22 +22,22 @@ public class SplashRendererMixin {
     )
     private void easeGUI$animateSplash(
             ActiveTextCollector collector,
-            TextAlignment textAlignment,
-            int x,
+            TextAlignment alignment,
+            int anchorX,
             int y,
             ActiveTextCollector.Parameters parameters,
             Component text,
             Operation<Void> original
     ) {
         if (text == null || text.getString().isBlank()) {
-            original.call(collector, textAlignment, x, y, parameters, text);
+            original.call(collector, alignment, anchorX, y, parameters, text);
             return;
         }
 
         ActiveTextCollector.Parameters animatedParams = SplashAnimator.getAnimatedParameters(parameters);
 
         if (animatedParams != null) {
-            original.call(collector, textAlignment, x, y, animatedParams, text);
+            original.call(collector, alignment, anchorX, y, animatedParams, text);
         }
     }
 }

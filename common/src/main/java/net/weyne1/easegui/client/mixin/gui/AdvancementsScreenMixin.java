@@ -2,7 +2,7 @@ package net.weyne1.easegui.client.mixin.gui;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.advancements.AdvancementTab;
 import net.minecraft.client.gui.screens.advancements.AdvancementsScreen;
 import net.weyne1.easegui.client.animation.AnimationContext;
@@ -22,24 +22,24 @@ public class AdvancementsScreenMixin {
 
     // Main window animation
     @Inject(
-            method = "render",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/advancements/AdvancementsScreen;renderInside(Lnet/minecraft/client/gui/GuiGraphics;II)V")
+            method = "extractRenderState",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/advancements/AdvancementsScreen;extractInside(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V")
     )
-    private void easeGUI$preRenderWindow(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
+    private void easeGUI$preRenderWindow(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, CallbackInfo ci) {
         if (this.easeGUI$windowScope != null) {
             this.easeGUI$windowScope.close();
             AnimationContext.popParentAnimation();
         }
 
-        this.easeGUI$windowScope = AdvancementsAnimator.beginRenderWindow((AdvancementsScreen) (Object) this, guiGraphics);
+        this.easeGUI$windowScope = AdvancementsAnimator.beginRenderWindow((AdvancementsScreen) (Object) this, graphics);
 
         if (this.easeGUI$windowScope != null) {
             AnimationContext.pushParentAnimation();
         }
     }
 
-    @Inject(method = "render", at = @At("RETURN"))
-    private void easeGUI$postRenderWindow(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
+    @Inject(method = "extractRenderState", at = @At("RETURN"))
+    private void easeGUI$postRenderWindow(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, CallbackInfo ci) {
         if (this.easeGUI$windowScope != null) {
             this.easeGUI$windowScope.close();
             this.easeGUI$windowScope = null;
@@ -49,29 +49,29 @@ public class AdvancementsScreenMixin {
 
     // Tab animation (bg)
     @WrapOperation(
-            method = "renderWindow",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/advancements/AdvancementTab;drawTab(Lnet/minecraft/client/gui/GuiGraphics;IIIIZ)V")
+            method = "extractWindow",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/advancements/AdvancementTab;extractTab(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIIIZ)V")
     )
-    private void easeGUI$wrapDrawTab(AdvancementTab tab, GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, boolean selected, Operation<Void> original) {
+    private void easeGUI$wrapDrawTab(AdvancementTab tab, GuiGraphicsExtractor graphics, int xo, int yo, int mouseX, int mouseY, boolean selected, Operation<Void> original) {
         AdvancementsScreen screen = (AdvancementsScreen) (Object) this;
         int index = ((AdvancementTabAccessor) tab).easeGUI$getIndex();
 
-        try (AnimationScope ignored = AdvancementsAnimator.beginRenderTab(screen, guiGraphics, index)) {
-            original.call(tab, guiGraphics, x, y, mouseX, mouseY, selected);
+        try (AnimationScope ignored = AdvancementsAnimator.beginRenderTab(screen, graphics, index)) {
+            original.call(tab, graphics, xo, yo, mouseX, mouseY, selected);
         }
     }
 
     // Tab animation (fg/icons)
     @WrapOperation(
-            method = "renderWindow",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/advancements/AdvancementTab;drawIcon(Lnet/minecraft/client/gui/GuiGraphics;II)V")
+            method = "extractWindow",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/advancements/AdvancementTab;extractIcon(Lnet/minecraft/client/gui/GuiGraphicsExtractor;II)V")
     )
-    private void easeGUI$wrapDrawIcon(AdvancementTab tab, GuiGraphics guiGraphics, int offsetX, int offsetY, Operation<Void> original) {
+    private void easeGUI$wrapDrawIcon(AdvancementTab tab, GuiGraphicsExtractor graphics, int xo, int yo, Operation<Void> original) {
         AdvancementsScreen screen = (AdvancementsScreen) (Object) this;
         int index = ((AdvancementTabAccessor) tab).easeGUI$getIndex();
 
-        try (AnimationScope ignored = AdvancementsAnimator.beginRenderTab(screen, guiGraphics, index)) {
-            original.call(tab, guiGraphics, offsetX, offsetY);
+        try (AnimationScope ignored = AdvancementsAnimator.beginRenderTab(screen, graphics, index)) {
+            original.call(tab, graphics, xo, yo);
         }
     }
 }

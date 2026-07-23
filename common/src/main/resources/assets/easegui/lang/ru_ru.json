@@ -134,7 +134,7 @@
   "easegui.screen_type.statistics": "Окно статистики",
   "easegui.screen_type.warning": "Предупреждения и уведомления",
   "easegui.screen_type.pause": "Меню паузы",
-  "easegui.screen_type.share_to_lan": "Открыть для сети",
+  "easegui.screen_type.multiplayer_options": "Настройки игры по сети",
   "easegui.screen_type.death": "Экран смерти",
   "easegui.screen_type.chat": "Экран чата",
   "easegui.screen_type.social_interactions": "Сетевые взаимодействия",

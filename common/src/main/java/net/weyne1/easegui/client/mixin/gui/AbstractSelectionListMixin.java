@@ -2,7 +2,7 @@ package net.weyne1.easegui.client.mixin.gui;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractSelectionList;
 import net.minecraft.client.gui.layouts.LayoutElement;
 import net.weyne1.easegui.client.animation.AnimationContext;
@@ -20,14 +20,14 @@ public abstract class AbstractSelectionListMixin {
     @Shadow public abstract int getRowWidth();
 
     @WrapOperation(
-            method = "renderListItems",
+            method = "extractListItems",
             at = @At(
                     value = "INVOKE",
-                    target = "Lnet/minecraft/client/gui/components/AbstractSelectionList;renderItem(Lnet/minecraft/client/gui/GuiGraphics;IIFLnet/minecraft/client/gui/components/AbstractSelectionList$Entry;)V"
+                    target = "Lnet/minecraft/client/gui/components/AbstractSelectionList;extractItem(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIFLnet/minecraft/client/gui/components/AbstractSelectionList$Entry;)V"
             )
     )
-    private void easeGUI$wrapRenderItem(AbstractSelectionList<?> instance, GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, @Coerce Object item, Operation<Void> original) {
-        LayoutElement element = (LayoutElement) item;
+    private void easeGUI$wrapRenderItem(AbstractSelectionList<?> instance, GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, @Coerce Object entry, Operation<Void> original) {
+        LayoutElement element = (LayoutElement) entry;
         int left = this.getRowLeft();
         int width = this.getRowWidth();
         int top = element.getY();
@@ -35,8 +35,8 @@ public abstract class AbstractSelectionListMixin {
 
         AnimationContext.pushParentAnimation();
 
-        try (AnimationScope ignored = ListItemAnimator.beginRender(guiGraphics, top, left, width, height)) {
-            original.call(instance, guiGraphics, mouseX, mouseY, partialTick, item);
+        try (AnimationScope ignored = ListItemAnimator.beginRender(graphics, top, left, width, height)) {
+            original.call(instance, graphics, mouseX, mouseY, a, entry);
         } finally {
             AnimationContext.popParentAnimation();
         }

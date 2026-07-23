@@ -36,7 +36,7 @@ public class ScreenSpecificConfigScreen extends EaseGUIAbstractSplitScreen {
         EaseGUIConfig.ScreenSettings settings = config.screens.get(screenType.getId());
 
         if (settings == null) {
-            Minecraft.getInstance().setScreen(this.parent);
+            Minecraft.getInstance().gui.setScreen(this.parent);
             return;
         }
 
@@ -92,7 +92,7 @@ public class ScreenSpecificConfigScreen extends EaseGUIAbstractSplitScreen {
         this.addRenderableWidget(rightScrollList);
 
         // Кнопка Назад
-        this.addRenderableWidget(Button.builder(Component.translatable("easegui.generic.back"), b -> onClose())
+        this.addRenderableWidget(Button.builder(Component.translatable("easegui.generic.back"), _ -> onClose())
                 .bounds(halfWidth - 100, this.height - 30, 200, 20).build());
     }
 
@@ -121,12 +121,12 @@ public class ScreenSpecificConfigScreen extends EaseGUIAbstractSplitScreen {
             if (cleanDefault == null) cleanDefault = new AnimationProfile();
             AnimationProfile finalCleanDefault = cleanDefault;
 
-            Button editBtn = Button.builder(Component.translatable("easegui.generic.configure"), btn -> {
+            Button editBtn = Button.builder(Component.translatable("easegui.generic.configure"), _ -> {
                 var profile = settings.customProfiles.getOrDefault(category, new AnimationProfile());
 
                 EnumSet<ProfileFeature> allowedFeatures = category.getAllowedFeatures();
 
-                Minecraft.getInstance().setScreen(new ProfileEditorScreen(this, profile, finalCleanDefault, allowedFeatures, updated -> {
+                Minecraft.getInstance().gui.setScreen(new ProfileEditorScreen(this, profile, finalCleanDefault, allowedFeatures, updated -> {
                     settings.customProfiles.put(category, updated);
                     ConfigManager.save();
                 }));

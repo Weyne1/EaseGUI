@@ -98,7 +98,7 @@ public class ConfigManager {
         if (category == null || category == WidgetCategory.UNKNOWN) return null;
         if (!isLoaded) load();
 
-        Screen currentScreen = Minecraft.getInstance().screen;
+        Screen currentScreen = Minecraft.getInstance().gui.screen();
 
         if (currentScreen != cachedScreenInstance) {
             cachedScreenInstance = currentScreen;

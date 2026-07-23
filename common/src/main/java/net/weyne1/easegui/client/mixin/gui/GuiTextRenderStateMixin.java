@@ -1,6 +1,6 @@
 package net.weyne1.easegui.client.mixin.gui;
 
-import net.minecraft.client.gui.render.state.GuiTextRenderState;
+import net.minecraft.client.renderer.state.gui.GuiTextRenderState;
 import net.weyne1.easegui.client.animation.AnimationContext;
 import net.weyne1.easegui.client.util.ColorUtils;
 import org.spongepowered.asm.mixin.Mixin;

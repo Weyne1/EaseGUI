@@ -6,14 +6,10 @@ import java.util.function.Consumer;
 
 public class FieldValidator {
 
-    public static final String REGEX_INT = "\\d*";
-    public static final String REGEX_FLOAT = "-?\\d*\\.?\\d*";
-
     private static final int COLOR_VALID = 0xFFE0E0E0;
     private static final int COLOR_INVALID = 0xFFFF5555;
 
     public static void registerLongValidator(EditBox editBox, long min, long max, Consumer<Long> onSuccess) {
-        editBox.setFilter(s -> s.matches(REGEX_INT));
         editBox.setResponder(text -> {
             if (text.isEmpty()) {
                 editBox.setTextColor(COLOR_INVALID);
@@ -34,7 +30,6 @@ public class FieldValidator {
     }
 
     public static void registerFloatValidator(EditBox editBox, float min, float max, Consumer<Float> onSuccess) {
-        editBox.setFilter(s -> s.matches(REGEX_FLOAT));
         editBox.setResponder(text -> {
             String clean = text.replace(',', '.');
             if (clean.isEmpty() || clean.equals("-") || clean.equals(".") || clean.equals("-.")) {

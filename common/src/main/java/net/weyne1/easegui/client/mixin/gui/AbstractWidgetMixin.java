@@ -3,7 +3,7 @@ package net.weyne1.easegui.client.mixin.gui;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import net.minecraft.util.Util;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.*;
 import net.weyne1.easegui.client.extension.WidgetExtension;
 import net.weyne1.easegui.client.animation.AnimationScope;
@@ -37,22 +37,22 @@ public abstract class AbstractWidgetMixin implements WidgetExtension {
         return this.easeGUI$cachedCategory;
     }
 
-    @WrapMethod(method = "render")
-    private void easeGUI$wrapWidgetRender(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, Operation<Void> original) {
+    @WrapMethod(method = "extractRenderState")
+    private void easeGUI$wrapWidgetRender(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, Operation<Void> original) {
         AbstractWidget widget = (AbstractWidget) (Object) this;
 
         if (!widget.visible) {
-            original.call(guiGraphics, mouseX, mouseY, partialTick);
+            original.call(graphics, mouseX, mouseY, a);
             return;
         }
 
         var category = this.easeGUI$getCategory();
         if (category == null || category == WidgetCategory.UNKNOWN) {
-            original.call(guiGraphics, mouseX, mouseY, partialTick);
+            original.call(graphics, mouseX, mouseY, a);
             return;
         }
 
-        try (AnimationScope ignored = WidgetAnimator.beginRender(widget, guiGraphics, category, this.easeGUI$animationState)) {
+        try (AnimationScope ignored = WidgetAnimator.beginRender(widget, graphics, category, this.easeGUI$animationState)) {
 
             var profile = ConfigManager.getProfileForCurrentContext(category);
             boolean shouldBypassHover = false;
@@ -68,11 +68,11 @@ public abstract class AbstractWidgetMixin implements WidgetExtension {
                 boolean savedHover = this.isHovered;
                 this.isHovered = false;
 
-                original.call(guiGraphics, mouseX, mouseY, partialTick);
+                original.call(graphics, mouseX, mouseY, a);
 
                 this.isHovered = savedHover;
             } else {
-                original.call(guiGraphics, mouseX, mouseY, partialTick);
+                original.call(graphics, mouseX, mouseY, a);
             }
         }
     }

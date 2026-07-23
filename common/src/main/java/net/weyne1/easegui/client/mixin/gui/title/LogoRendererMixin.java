@@ -1,6 +1,6 @@
 package net.weyne1.easegui.client.mixin.gui.title;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.LogoRenderer;
 import net.weyne1.easegui.client.animator.LogoAnimator;
 import org.spongepowered.asm.mixin.Final;
@@ -17,12 +17,12 @@ public class LogoRendererMixin {
     @Shadow @Final private boolean keepLogoThroughFade;
 
     @Inject(
-            method = "renderLogo(Lnet/minecraft/client/gui/GuiGraphics;IFI)V",
+            method = "extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IFI)V",
             at = @At("HEAD"),
             cancellable = true
     )
-    private void easeGUI$overrideLogo(GuiGraphics guiGraphics, int screenWidth, float transparency, int height, CallbackInfo ci) {
-        if (LogoAnimator.render(guiGraphics, screenWidth, transparency, height, showEasterEgg, keepLogoThroughFade)) {
+    private void easeGUI$overrideLogo(GuiGraphicsExtractor graphics, int width, float alpha, int heightOffset, CallbackInfo ci) {
+        if (LogoAnimator.render(graphics, width, alpha, heightOffset, showEasterEgg, keepLogoThroughFade)) {
             ci.cancel();
         }
     }

@@ -1,7 +1,7 @@
 package net.weyne1.easegui.client.animator;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.weyne1.easegui.api.animation.AnimationProfile;
 import net.weyne1.easegui.client.animation.AnimationScope;
 import net.weyne1.easegui.client.animation.AnimationSystem;
@@ -11,14 +11,14 @@ import net.weyne1.easegui.client.state.ScreenStateTracker;
 
 public class ListItemAnimator {
 
-    public static AnimationScope beginRender(GuiGraphics gg, int top, int left, int width, int height) {
+    public static AnimationScope beginRender(GuiGraphicsExtractor graphics, int top, int left, int width, int height) {
         var profile = ConfigManager.getProfileForCurrentContext(WidgetCategory.LIST_ENTRY);
         if (profile == null || !profile.isEnabled()) return null;
 
         long delay = getDelay(top, left, profile);
         long startTime = ScreenStateTracker.getScreenOpenTime();
 
-        return AnimationSystem.begin(gg, left, top, width, height, profile, startTime, delay, 1.0f);
+        return AnimationSystem.begin(graphics, left, top, width, height, profile, startTime, delay, 1.0f);
     }
 
     private static long getDelay(int top, int left, AnimationProfile profile) {

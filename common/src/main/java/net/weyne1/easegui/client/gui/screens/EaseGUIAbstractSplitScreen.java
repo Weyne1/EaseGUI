@@ -2,7 +2,7 @@ package net.weyne1.easegui.client.gui.screens;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -72,20 +72,20 @@ public abstract class EaseGUIAbstractSplitScreen extends Screen {
 
     protected abstract Component getRightSubtitle();
 
-    protected void renderOverlay(GuiGraphics gg, int mouseX, int mouseY, float partialTick) {}
+    protected void renderOverlay(GuiGraphicsExtractor gg, int mouseX, int mouseY, float partialTick) {}
 
     @Override
-    public void render(@NonNull GuiGraphics gg, int mouseX, int mouseY, float partialTick) {
-        super.render(gg, mouseX, mouseY, partialTick);
+    public void extractRenderState(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
 
         // Вертикальный разделитель по центру экрана
-        gg.fill(halfWidth - 1, 50, halfWidth + 1, this.height - 45, LINE_COLOR);
+        graphics.fill(halfWidth - 1, 50, halfWidth + 1, this.height - 45, LINE_COLOR);
 
-        renderOverlay(gg, mouseX, mouseY, partialTick);
+        renderOverlay(graphics, mouseX, mouseY, partialTick);
     }
 
     @Override
     public void onClose() {
-        Minecraft.getInstance().setScreen(this.parent);
+        Minecraft.getInstance().gui.setScreen(this.parent);
     }
 }

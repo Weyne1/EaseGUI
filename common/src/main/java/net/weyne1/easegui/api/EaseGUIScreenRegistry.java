@@ -52,7 +52,7 @@ public final class EaseGUIScreenRegistry {
         register("statistics", StatsScreen.class, 1000, EaseGUIScreenGroup.BASIC);
         register("warning", WarningScreen.class, 1000, EaseGUIScreenGroup.BASIC);
         register("pause", PauseScreen.class, 1000, EaseGUIScreenGroup.BASIC);
-        register("share_to_lan", ShareToLanScreen.class, 1000, EaseGUIScreenGroup.BASIC);
+        register("multiplayer_options", MultiplayerOptionsScreen.class, 1000, EaseGUIScreenGroup.BASIC);
         register("death", DeathScreen.class, 1000, EaseGUIScreenGroup.BASIC);
         register("social_interactions", SocialInteractionsScreen.class, 1000, EaseGUIScreenGroup.BASIC);
 
@@ -73,7 +73,7 @@ public final class EaseGUIScreenRegistry {
         register("direct_join_server", DirectJoinServerScreen.class, 1000, EaseGUIScreenGroup.WORLDS);
         register("edit_world", EditWorldScreen.class, 1000, EaseGUIScreenGroup.WORLDS);
         register("edit_server", ManageServerScreen.class, 1000, EaseGUIScreenGroup.WORLDS);
-        register("edit_game_rules", EditGameRulesScreen.class, 1000, EaseGUIScreenGroup.WORLDS);
+        register("edit_game_rules", AbstractGameRulesScreen.class, 1000, EaseGUIScreenGroup.WORLDS);
         register("experiments", ExperimentsScreen.class, 1000, EaseGUIScreenGroup.WORLDS);
         register("connecting", ConnectScreen.class, 1000, EaseGUIScreenGroup.WORLDS);
         register("disconnected", DisconnectedScreen.class, 1000, EaseGUIScreenGroup.WORLDS);

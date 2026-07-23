@@ -1,6 +1,6 @@
 package net.weyne1.easegui.client.animation;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.util.Util;
 import net.weyne1.easegui.api.animation.AnimationProfile;
 
@@ -10,7 +10,7 @@ public final class AnimationSystem {
      * An entry point for animations with automatic timing and progress calculation.
      */
     public static AnimationScope begin(
-            GuiGraphics gg,
+            GuiGraphicsExtractor graphics,
             int x, int y, int width, int height,
             AnimationProfile profile,
             long startTime,
@@ -25,11 +25,11 @@ public final class AnimationSystem {
 
         float progress = elapsed <= 0 ? 0.0f : AnimationMath.calculateProgress(elapsed, profile.getDuration(), profile.getEasing());
 
-        return begin(gg, x, y, width, height, profile, progress, baseAlpha);
+        return begin(graphics, x, y, width, height, profile, progress, baseAlpha);
     }
 
     public static AnimationScope begin(
-            GuiGraphics gg,
+            GuiGraphicsExtractor graphics,
             int x, int y, int width, int height,
             AnimationProfile profile,
             float progress,
@@ -39,7 +39,7 @@ public final class AnimationSystem {
         float lerpedAlpha = AnimationMath.lerp(profile.getStartAlpha(), 1.0f, alphaProgress);
         float finalAlpha = AnimationMath.clamp(baseAlpha * lerpedAlpha, 0.0f, 1.0f);
 
-        AnimationScope scope = new AnimationScope(gg, finalAlpha);
+        AnimationScope scope = new AnimationScope(graphics, finalAlpha);
         scope.setTransformParams(
                 AnimationMath.calculateCurrentOffset(profile.getOffsetX(), progress),
                 AnimationMath.calculateCurrentOffset(profile.getOffsetY(), progress),
@@ -51,7 +51,7 @@ public final class AnimationSystem {
         return scope;
     }
 
-    public static AnimationScope beginAlphaOnly(GuiGraphics gg, float alpha) {
+    public static AnimationScope beginAlphaOnly(GuiGraphicsExtractor gg, float alpha) {
         return new AnimationScope(gg, alpha);
     }
 }

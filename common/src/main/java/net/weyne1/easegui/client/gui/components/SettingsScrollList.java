@@ -2,7 +2,7 @@ package net.weyne1.easegui.client.gui.components;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.EditBox;
@@ -49,9 +49,9 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
         }
 
         @Override
-        public void renderContent(GuiGraphics gg, int mouseX, int mouseY, boolean isHovered, float partialTick) {
+        public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean isHovered, float partialTick) {
             Font font = Minecraft.getInstance().font;
-            gg.drawCenteredString(font, this.text, this.getContentXMiddle(), this.getContentYMiddle() - 4, COLOR_HEADER);
+            graphics.centeredText(font, this.text, this.getContentXMiddle(), this.getContentYMiddle() - 4, COLOR_HEADER);
         }
 
         @Override
@@ -70,10 +70,10 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
         }
 
         @Override
-        public void renderContent(@NonNull GuiGraphics gg, int mouseX, int mouseY, boolean isHovered, float partialTick) {
+        public void extractContent(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean isHovered, float partialTick) {
             button.setX(this.getContentX() + SCROLLBAR_WIDTH_GAP / 2);
             button.setY(this.getContentY());
-            button.render(gg, mouseX, mouseY, partialTick);
+            button.extractRenderState(graphics, mouseX, mouseY, partialTick);
         }
 
         @Override
@@ -103,15 +103,15 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
         }
 
         @Override
-        public void renderContent(@NonNull GuiGraphics gg, int mouseX, int mouseY, boolean isHovered, float partialTick) {
+        public void extractContent(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean isHovered, float partialTick) {
             button1.setX(this.getContentX() + SCROLLBAR_WIDTH_GAP / 2);
             button1.setY(this.getContentY());
 
             button2.setX(button1.getX() + button1.getWidth() + ELEMENT_SPACING);
             button2.setY(this.getContentY());
 
-            button1.render(gg, mouseX, mouseY, partialTick);
-            button2.render(gg, mouseX, mouseY, partialTick);
+            button1.extractRenderState(graphics, mouseX, mouseY, partialTick);
+            button2.extractRenderState(graphics, mouseX, mouseY, partialTick);
         }
 
         @Override
@@ -129,7 +129,7 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
             int lblW = (int) (availWidth * LABEL_WIDTH_RATIO);
             int fldW = availWidth - lblW - ELEMENT_SPACING;
 
-            this.label = Button.builder(Component.literal(labelText), b -> {})
+            this.label = Button.builder(Component.literal(labelText), _ -> {})
                     .bounds(0, 0, lblW, WIDGET_HEIGHT)
                     .build();
             this.label.active = false;
@@ -141,14 +141,14 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
         }
 
         @Override
-        public void renderContent(@NonNull GuiGraphics gg, int mouseX, int mouseY, boolean isHovered, float partialTick) {
+        public void extractContent(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean isHovered, float partialTick) {
             label.setX(this.getContentX() + SCROLLBAR_WIDTH_GAP / 2);
             label.setY(this.getContentY());
             field.setX(label.getX() + label.getWidth() + ELEMENT_SPACING);
             field.setY(this.getContentY());
 
-            label.render(gg, mouseX, mouseY, partialTick);
-            field.render(gg, mouseX, mouseY, partialTick);
+            label.extractRenderState(graphics, mouseX, mouseY, partialTick);
+            field.extractRenderState(graphics, mouseX, mouseY, partialTick);
         }
 
         @Override
@@ -168,7 +168,7 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
             int fieldsArea = availWidth - lblW - ELEMENT_SPACING;
             int subFldW = (fieldsArea - ELEMENT_SPACING) / 2;
 
-            this.label = Button.builder(Component.literal(labelText), b -> {})
+            this.label = Button.builder(Component.literal(labelText), _ -> {})
                     .bounds(0, 0, lblW, WIDGET_HEIGHT)
                     .build();
             this.label.active = false;
@@ -185,7 +185,7 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
         }
 
         @Override
-        public void renderContent(@NonNull GuiGraphics gg, int mouseX, int mouseY, boolean isHovered, float partialTick) {
+        public void extractContent(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean isHovered, float partialTick) {
             label.setX(this.getContentX() + SCROLLBAR_WIDTH_GAP / 2);
             label.setY(this.getContentY());
 
@@ -195,9 +195,9 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
             field2.setX(field1.getX() + field1.getWidth() + ELEMENT_SPACING);
             field2.setY(this.getContentY());
 
-            label.render(gg, mouseX, mouseY, partialTick);
-            field1.render(gg, mouseX, mouseY, partialTick);
-            field2.render(gg, mouseX, mouseY, partialTick);
+            label.extractRenderState(graphics, mouseX, mouseY, partialTick);
+            field1.extractRenderState(graphics, mouseX, mouseY, partialTick);
+            field2.extractRenderState(graphics, mouseX, mouseY, partialTick);
         }
 
         @Override

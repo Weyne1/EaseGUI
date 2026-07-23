@@ -1,7 +1,7 @@
 package net.weyne1.easegui.client.animator;
 
 import net.minecraft.util.Util;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.advancements.AdvancementsScreen;
 import net.weyne1.easegui.client.animation.AnimationContext;
@@ -15,7 +15,7 @@ import net.weyne1.easegui.client.state.ScreenStateTracker;
 
 public class AdvancementsAnimator {
 
-    public static AnimationScope beginRenderWindow(AdvancementsScreen screen, GuiGraphics gg) {
+    public static AnimationScope beginRenderWindow(AdvancementsScreen screen, GuiGraphicsExtractor graphics) {
         EaseGUIScreenType type = EaseGUIScreenRegistry.from(screen);
         var titleSettings = ConfigManager.getConfig().screens.get(type.getId());
 
@@ -31,10 +31,10 @@ public class AdvancementsAnimator {
 
         float progress = elapsed <= 0 ? 0.0f : AnimationMath.calculateProgress(elapsed, profile.getDuration(), profile.getEasing());
 
-        return AnimationSystem.begin(gg, 0, 0, screen.width, screen.height, profile, progress, 1.0f);
+        return AnimationSystem.begin(graphics, 0, 0, screen.width, screen.height, profile, progress, 1.0f);
     }
 
-    public static AnimationScope beginRenderTab(Screen screen, GuiGraphics gg, int tabIndex) {
+    public static AnimationScope beginRenderTab(Screen screen, GuiGraphicsExtractor graphics, int tabIndex) {
         EaseGUIScreenType type = EaseGUIScreenRegistry.from(screen);
         var titleSettings = ConfigManager.getConfig().screens.get(type.getId());
 
@@ -45,7 +45,7 @@ public class AdvancementsAnimator {
         float parentAlpha = AnimationContext.getCurrentAlpha();
 
         if (tabIndex == 0) {
-            return AnimationSystem.beginAlphaOnly(gg, parentAlpha);
+            return AnimationSystem.beginAlphaOnly(graphics, parentAlpha);
         }
 
         var profile = titleSettings.advancements.tabsProfile;
@@ -61,6 +61,6 @@ public class AdvancementsAnimator {
             progress = AnimationMath.calculateProgress(elapsed, profile.getDuration(), profile.getEasing());
         }
 
-        return AnimationSystem.begin(gg, 0, 0, 28, 32, profile, progress, parentAlpha);
+        return AnimationSystem.begin(graphics, 0, 0, 28, 32, profile, progress, parentAlpha);
     }
 }
