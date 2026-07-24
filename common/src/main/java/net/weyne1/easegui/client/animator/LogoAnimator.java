@@ -4,7 +4,6 @@ import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.LogoRenderer;
 import net.minecraft.resources.ResourceLocation;
-import net.weyne1.easegui.client.animation.AnimationMath;
 import net.weyne1.easegui.api.animation.AnimationProfile;
 import net.weyne1.easegui.client.animation.AnimationScope;
 import net.weyne1.easegui.client.animation.AnimationSystem;
@@ -64,37 +63,16 @@ public class LogoAnimator {
         int logoWidth = LogoRendererAccessor.easeGUI$getLogoWidth();
         int logoHeight = LogoRendererAccessor.easeGUI$getLogoHeight();
 
-        if (elapsed >= profile.getDuration()) {
-            try (AnimationScope ignored = AnimationSystem.beginAlphaOnly(gg, finalAlpha)) {
-                drawLogoTexture(gg, texture, startX, height);
-                gg.flush();
-            }
-            return;
-        }
-
-        float progress = elapsed <= 0 ? 0.0f : AnimationMath.calculateProgress(elapsed, profile.getDuration(), profile.getEasing());
-        try (AnimationScope ignored = AnimationSystem.begin(gg, startX, height, logoWidth, logoHeight, profile, progress, finalAlpha)) {
+        try (AnimationScope ignored = AnimationSystem.begin(gg, startX, height, logoWidth, logoHeight, profile, elapsed, finalAlpha)) {
             drawLogoTexture(gg, texture, startX, height);
-            gg.flush();
         }
     }
 
     private static void renderCascadedLetters(GuiGraphics gg, AnimationProfile profile, int startX, int height, float finalAlpha) {
         long now = Util.getMillis();
         long actualStartTime = ScreenStateTracker.getTitleActualStartTime();
-        long maxLogoDelay = (LETTER_TEXTURES.length - 1) * profile.getCascadeDelay();
         int logoWidth = LogoRendererAccessor.easeGUI$getLogoWidth();
         int logoHeight = LogoRendererAccessor.easeGUI$getLogoHeight();
-
-        if (now - actualStartTime >= maxLogoDelay + profile.getDuration()) {
-            try (AnimationScope ignored = AnimationSystem.beginAlphaOnly(gg, finalAlpha)) {
-                for (ResourceLocation texture : LETTER_TEXTURES) {
-                    drawLogoTexture(gg, texture, startX, height);
-                }
-                gg.flush();
-            }
-            return;
-        }
 
         for (int i = 0; i < LETTER_TEXTURES.length; i++) {
             int logicalIndex = LOGICAL_INDICES[i];
@@ -102,11 +80,9 @@ public class LogoAnimator {
 
             long cascadeDelay = calculateCascadeDelay(profile, logicalIndex);
             long elapsed = now - actualStartTime - cascadeDelay;
-            float progress = elapsed <= 0 ? 0.0f : AnimationMath.calculateProgress(elapsed, profile.getDuration(), profile.getEasing());
 
-            try (AnimationScope ignored = AnimationSystem.begin(gg, startX, height, logoWidth, logoHeight, profile, progress, finalAlpha)) {
+            try (AnimationScope ignored = AnimationSystem.begin(gg, startX, height, logoWidth, logoHeight, profile, elapsed, finalAlpha)) {
                 drawLogoTexture(gg, texture, startX, height);
-                gg.flush();
             }
         }
     }
@@ -131,10 +107,8 @@ public class LogoAnimator {
             return;
         }
 
-        float progress = elapsed <= 0 ? 0.0f : AnimationMath.calculateProgress(elapsed, profile.getDuration(), profile.getEasing());
-        try (AnimationScope ignored = AnimationSystem.begin(gg, x, y, editionWidth, editionHeight, profile, progress, finalAlpha)) {
+        try (AnimationScope ignored = AnimationSystem.begin(gg, x, y, editionWidth, editionHeight, profile, elapsed, finalAlpha)) {
             drawEditionTexture(gg, x, y);
-            gg.flush();
         }
     }
 

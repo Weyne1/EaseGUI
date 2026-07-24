@@ -25,7 +25,7 @@ public final class AnimationScope implements AutoCloseable {
         this.guiGraphics.pose().pushPose();
     }
 
-    public void setTransformParams(float offsetX, float offsetY, float scaleX, float scaleY, float pivotX, float pivotY) {
+    void setTransformParams(float offsetX, float offsetY, float scaleX, float scaleY, float pivotX, float pivotY) {
         this.offsetX = offsetX;
         this.offsetY = offsetY;
         this.scaleX = clampScale(scaleX);
@@ -102,9 +102,6 @@ public final class AnimationScope implements AutoCloseable {
     }
 
     private static float clampScale(float scale) {
-        if (Math.abs(scale) < MIN_SCALE) {
-            return Math.copySign(MIN_SCALE, scale == 0.0f ? 1.0f : scale);
-        }
-        return scale;
+        return Math.max(MIN_SCALE, Math.abs(scale));
     }
 }
