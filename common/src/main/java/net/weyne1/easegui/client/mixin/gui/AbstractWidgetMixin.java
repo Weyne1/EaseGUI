@@ -18,16 +18,10 @@ import org.spongepowered.asm.mixin.Unique;
 @Mixin(AbstractWidget.class)
 public abstract class AbstractWidgetMixin implements WidgetExtension {
 
-    @Shadow protected float alpha;
     @Shadow protected boolean isHovered;
 
     @Unique private final AnimationState easeGUI$animationState = new AnimationState();
     @Unique private WidgetCategory easeGUI$cachedCategory = null;
-
-    @Override
-    public float easeGUI$getAlpha() {
-        return this.alpha;
-    }
 
     @Override
     public WidgetCategory easeGUI$getCategory() {

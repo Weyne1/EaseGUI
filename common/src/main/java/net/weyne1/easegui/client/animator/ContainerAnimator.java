@@ -26,7 +26,7 @@ public class ContainerAnimator {
 
         if (screen instanceof RecipeBookScreenExtension recipeScreen) {
             RecipeBookComponent<?> book = recipeScreen.easeGUI$getRecipeBookComponent();
-            if (book != null && ((RecipeBookComponentExtension) book).easeGUI$isVisible()) {
+            if (book != null && book.isVisible()) {
                 RecipeBookComponentExtension accessor = (RecipeBookComponentExtension) book;
                 minX = Math.min(minX, accessor.easeGUI$getXOrigin());
                 minY = Math.min(minY, accessor.easeGUI$getYOrigin());
