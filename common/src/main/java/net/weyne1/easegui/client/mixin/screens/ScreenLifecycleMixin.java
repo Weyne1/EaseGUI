@@ -1,4 +1,4 @@
-package net.weyne1.easegui.client.mixin.gui;
+package net.weyne1.easegui.client.mixin.screens;
 
 import net.minecraft.client.gui.screens.Screen;
 import net.weyne1.easegui.client.state.ScreenStateTracker;

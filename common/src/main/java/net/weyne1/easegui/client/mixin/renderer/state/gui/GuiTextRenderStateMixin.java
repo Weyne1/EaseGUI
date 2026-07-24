@@ -1,4 +1,4 @@
-package net.weyne1.easegui.client.mixin.gui;
+package net.weyne1.easegui.client.mixin.renderer.state.gui;
 
 import net.minecraft.client.renderer.state.gui.GuiTextRenderState;
 import net.weyne1.easegui.client.animation.AnimationContext;
