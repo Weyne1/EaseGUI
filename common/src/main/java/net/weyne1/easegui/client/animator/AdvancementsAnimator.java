@@ -5,7 +5,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.advancements.AdvancementsScreen;
 import net.weyne1.easegui.client.animation.AnimationContext;
-import net.weyne1.easegui.client.animation.AnimationMath;
 import net.weyne1.easegui.client.animation.AnimationScope;
 import net.weyne1.easegui.client.animation.AnimationSystem;
 import net.weyne1.easegui.client.config.ConfigManager;
@@ -29,9 +28,7 @@ public class AdvancementsAnimator {
 
         if (elapsed >= profile.getDuration()) return null;
 
-        float progress = elapsed <= 0 ? 0.0f : AnimationMath.calculateProgress(elapsed, profile.getDuration(), profile.getEasing());
-
-        return AnimationSystem.begin(gg, 0, 0, screen.width, screen.height, profile, progress, 1.0f);
+        return AnimationSystem.begin(gg, 0, 0, screen.width, screen.height, profile, elapsed, 1.0f);
     }
 
     public static AnimationScope beginRenderTab(Screen screen, GuiGraphics gg, int tabIndex) {
@@ -56,11 +53,6 @@ public class AdvancementsAnimator {
 
         if (elapsed >= profile.getDuration()) return null;
 
-        float progress = 0.0f;
-        if (elapsed > 0) {
-            progress = AnimationMath.calculateProgress(elapsed, profile.getDuration(), profile.getEasing());
-        }
-
-        return AnimationSystem.begin(gg, 0, 0, 28, 32, profile, progress, parentAlpha);
+        return AnimationSystem.begin(gg, 0, 0, 28, 32, profile, elapsed, parentAlpha);
     }
 }

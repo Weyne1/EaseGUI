@@ -5,7 +5,8 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.weyne1.easegui.api.animation.AnimationProfile;
 import net.weyne1.easegui.api.animation.CascadeDirection;
-import net.weyne1.easegui.client.animation.*;
+import net.weyne1.easegui.client.animation.AnimationScope;
+import net.weyne1.easegui.client.animation.AnimationSystem;
 import net.weyne1.easegui.client.config.ProfileFeature;
 
 import java.util.EnumSet;
@@ -72,15 +73,14 @@ public class ProfilePreviewRenderer {
         int halfH = BOX_HEIGHT / 2;
 
         for (int i = 0; i < count; i++) {
-            float easedProgress;
+            float rawProgress;
 
             if (!isEnabled) {
-                easedProgress = 1.0f;
+                rawProgress = 1.0f;
             } else {
                 long itemDelay = isCascade ? calculateCascadeDelay(profile, i) : 0L;
                 long itemTime = currentTime - itemDelay;
-                float progress = itemTime >= duration ? 1.0f : (itemTime > 0 ? (float) itemTime / duration : 0.0f);
-                easedProgress = profile.getEasing() != null ? profile.getEasing().ease(progress) : progress;
+                rawProgress = itemTime >= duration ? 1.0f : (itemTime > 0 ? (float) itemTime / duration : 0.0f);
             }
 
             int targetX = getTargetX(centerX, isCascade, isHorizontal, i);
@@ -89,8 +89,10 @@ public class ProfilePreviewRenderer {
             int x = targetX - halfW;
             int y = targetY - halfH;
 
-            try (AnimationScope ignored = AnimationSystem.begin(gg, x, y, boxWidth, BOX_HEIGHT, profile, easedProgress, 1.0f)) {
-                int bgAlpha = calcAlphaColor(profile.getStartAlpha(), easedProgress);
+            try (AnimationScope scope = AnimationSystem.begin(gg, x, y, boxWidth, BOX_HEIGHT, profile, rawProgress, 1.0f)) {
+                float currentAlpha = scope.getAlpha();
+                int bgAlpha = (int) (currentAlpha * 255.0f);
+
                 int boxColor = isEnabled ? 0x353535 : 0x222222;
                 gg.fill(x, y, x + boxWidth, y + BOX_HEIGHT, (bgAlpha << 24) | boxColor);
 
@@ -98,10 +100,8 @@ public class ProfilePreviewRenderer {
                         ? (isHorizontal ? CASCADE_SHORT_LABELS[i] : CASCADE_LABELS[i])
                         : STATIC_LABEL;
 
-                int fontAlpha = calcAlphaColor(profile.getStartAlpha(), easedProgress);
                 int textColor = isEnabled ? 0xE0E0E0 : 0x888888;
-
-                gg.drawCenteredString(font, label, targetX, targetY - 4, (fontAlpha << 24) | textColor);
+                gg.drawCenteredString(font, label, targetX, targetY - 4, (bgAlpha << 24) | textColor);
             }
         }
     }
@@ -163,11 +163,6 @@ public class ProfilePreviewRenderer {
             int endY = Math.min(y + dashLength, y2 - 1);
             gg.fill(x2 - 1, y, x2, endY, color);
         }
-    }
-
-    private static int calcAlphaColor(float startAlpha, float progress) {
-        float lerp = AnimationMath.lerp(startAlpha, 1.0f, progress);
-        return Math.max(0, Math.min(255, (int) (lerp * 255)));
     }
 
     private static long calculateCascadeDelay(AnimationProfile profile, int i) {
