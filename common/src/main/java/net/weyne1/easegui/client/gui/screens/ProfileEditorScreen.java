@@ -170,24 +170,4 @@ public class ProfileEditorScreen extends EaseGUIAbstractSplitScreen {
     protected void renderOverlay(GuiGraphicsExtractor gg, int mouseX, int mouseY, float partialTick) {
         ProfilePreviewRenderer.render(gg, this.font, this.width, this.height, this.workingCopy, this.activeFeatures);
     }
-
-    private AnimationProfile cloneProfile(AnimationProfile s) {
-        if (s == null) {
-            return new AnimationProfile();
-        }
-        return applyProfileValues(new AnimationProfile(), s);
-    }
-
-    private AnimationProfile applyProfileValues(AnimationProfile target, AnimationProfile source) {
-        return target
-                .enabled(source.isEnabled())
-                .duration(source.getDuration())
-                .offset(source.getOffsetX(), source.getOffsetY())
-                .startScale(source.getStartScaleX(), source.getStartScaleY())
-                .startAlpha(source.getStartAlpha())
-                .cascadeDelay(source.getCascadeDelay())
-                .easing(source.getEasing())
-                .pivot(source.getPivot())
-                .cascadeDirection(source.getCascadeDirection());
-    }
 }
