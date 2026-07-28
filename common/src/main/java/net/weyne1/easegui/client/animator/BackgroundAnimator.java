@@ -1,6 +1,6 @@
 package net.weyne1.easegui.client.animator;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.*;
 import net.weyne1.easegui.client.animation.AnimationScope;
 import net.weyne1.easegui.client.animation.AnimationSystem;
@@ -70,7 +70,7 @@ public class BackgroundAnimator {
         return (originalColor & 0x00FFFFFF) | (finalAlpha << 24);
     }
 
-    public static AnimationScope beginRenderMenu(Screen screen, GuiGraphics gg) {
+    public static AnimationScope beginRenderMenu(Screen screen, GuiGraphicsExtractor graphics) {
         if (!shouldAnimateBackground(screen) || skipBackgroundFade) {
             return null;
         }
@@ -82,7 +82,7 @@ public class BackgroundAnimator {
         }
 
         float progress = Math.max(0.0f, Math.min(1.0f, ScreenAnimationTracker.getProgress()));
-        return AnimationSystem.beginAlphaOnly(gg, progress);
+        return AnimationSystem.beginAlphaOnly(graphics, progress);
     }
 
     private static boolean isIgnoredScreen(Screen screen) {

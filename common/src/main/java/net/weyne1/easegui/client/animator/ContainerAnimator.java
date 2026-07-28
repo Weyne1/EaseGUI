@@ -1,6 +1,6 @@
 package net.weyne1.easegui.client.animator;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.weyne1.easegui.client.extension.ContainerScreenExtension;
@@ -14,7 +14,7 @@ import net.weyne1.easegui.client.state.ScreenStateTracker;
 
 public class ContainerAnimator {
 
-    public static AnimationScope beginAnimation(Screen screen, GuiGraphics gg) {
+    public static AnimationScope beginAnimation(Screen screen, GuiGraphicsExtractor graphics) {
         if (!(screen instanceof ContainerScreenExtension container)) {
             return null;
         }
@@ -26,7 +26,7 @@ public class ContainerAnimator {
 
         if (screen instanceof RecipeBookScreenExtension recipeScreen) {
             RecipeBookComponent<?> book = recipeScreen.easeGUI$getRecipeBookComponent();
-            if (book != null && ((RecipeBookComponentExtension) book).easeGUI$isVisible()) {
+            if (book != null && book.isVisible()) {
                 RecipeBookComponentExtension accessor = (RecipeBookComponentExtension) book;
                 minX = Math.min(minX, accessor.easeGUI$getXOrigin());
                 minY = Math.min(minY, accessor.easeGUI$getYOrigin());
@@ -39,6 +39,6 @@ public class ContainerAnimator {
         if (profile == null || !profile.isEnabled()) return null;
 
         long startTime = ScreenStateTracker.getScreenOpenTime();
-        return AnimationSystem.begin(gg, minX, minY, maxX - minX, maxY - minY, profile, startTime, 0L, 1.0f);
+        return AnimationSystem.begin(graphics, minX, minY, maxX - minX, maxY - minY, profile, startTime, 0L, 1.0f);
     }
 }

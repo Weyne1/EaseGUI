@@ -1,6 +1,6 @@
 package net.weyne1.easegui.client.gui.screens;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
@@ -57,7 +57,7 @@ public class ProfileEditorScreen extends EaseGUIAbstractSplitScreen {
 
         Button resetBtn = Button.builder(
                 Component.translatable("easegui.generic.reset"),
-                button -> {
+                _ -> {
                     applyProfileValues(this.workingCopy, this.defaultProfile);
                     this.init(this.width, this.height);
                 }
@@ -142,8 +142,8 @@ public class ProfileEditorScreen extends EaseGUIAbstractSplitScreen {
         this.addRenderableWidget(leftScrollList);
 
         // Кнопки управления снизу
-        this.addRenderableWidget(Button.builder(Component.translatable("easegui.generic.save"), b -> saveAndClose()).bounds(halfWidth - 105, this.height - 30, 100, 20).build());
-        this.addRenderableWidget(Button.builder(Component.translatable("easegui.generic.cancel"), b -> onClose()).bounds(halfWidth + 5, this.height - 30, 100, 20).build());
+        this.addRenderableWidget(Button.builder(Component.translatable("easegui.generic.save"), _ -> saveAndClose()).bounds(halfWidth - 105, this.height - 30, 100, 20).build());
+        this.addRenderableWidget(Button.builder(Component.translatable("easegui.generic.cancel"), _ -> onClose()).bounds(halfWidth + 5, this.height - 30, 100, 20).build());
     }
 
     private EditBox createTextField(String value) {
@@ -167,27 +167,7 @@ public class ProfileEditorScreen extends EaseGUIAbstractSplitScreen {
     }
 
     @Override
-    protected void renderOverlay(GuiGraphics gg, int mouseX, int mouseY, float partialTick) {
+    protected void renderOverlay(GuiGraphicsExtractor gg, int mouseX, int mouseY, float partialTick) {
         ProfilePreviewRenderer.render(gg, this.font, this.width, this.height, this.workingCopy, this.activeFeatures);
-    }
-
-    private AnimationProfile cloneProfile(AnimationProfile s) {
-        if (s == null) {
-            return new AnimationProfile();
-        }
-        return applyProfileValues(new AnimationProfile(), s);
-    }
-
-    private AnimationProfile applyProfileValues(AnimationProfile target, AnimationProfile source) {
-        return target
-                .enabled(source.isEnabled())
-                .duration(source.getDuration())
-                .offset(source.getOffsetX(), source.getOffsetY())
-                .startScale(source.getStartScaleX(), source.getStartScaleY())
-                .startAlpha(source.getStartAlpha())
-                .cascadeDelay(source.getCascadeDelay())
-                .easing(source.getEasing())
-                .pivot(source.getPivot())
-                .cascadeDirection(source.getCascadeDirection());
     }
 }

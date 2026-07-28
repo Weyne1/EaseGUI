@@ -133,7 +133,7 @@
   "easegui.screen_type.statistics": "Statistics Screen",
   "easegui.screen_type.warning": "Warning & Notification Screens",
   "easegui.screen_type.pause": "Pause Menu",
-  "easegui.screen_type.share_to_lan": "LAN World",
+  "easegui.screen_type.multiplayer_options": "Multiplayer Options",
   "easegui.screen_type.death": "Death Screen",
   "easegui.screen_type.chat": "Chat Screen",
   "easegui.screen_type.social_interactions": "Social Interactions Screen",

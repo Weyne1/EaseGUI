@@ -9,9 +9,6 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 @Mixin(RecipeBookComponent.class)
 public interface RecipeBookComponentMixin extends RecipeBookComponentExtension {
 
-    @Accessor("visible")
-    boolean easeGUI$isVisible();
-
     @Invoker("getXOrigin")
     int easeGUI$getXOrigin();
 

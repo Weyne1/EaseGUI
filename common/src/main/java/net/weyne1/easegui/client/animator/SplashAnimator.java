@@ -2,8 +2,8 @@ package net.weyne1.easegui.client.animator;
 
 import net.minecraft.client.gui.ActiveTextCollector;
 import net.minecraft.util.Util;
+import net.weyne1.easegui.api.animation.EasingType;
 import net.weyne1.easegui.client.animation.AnimationContext;
-import net.weyne1.easegui.client.animation.AnimationMath;
 import net.weyne1.easegui.client.config.ConfigManager;
 import net.weyne1.easegui.client.state.ScreenStateTracker;
 
@@ -29,11 +29,17 @@ public class SplashAnimator {
             return parameters.withOpacity(parentAlpha);
         }
 
-        float progress = AnimationMath.calculateProgress(elapsed, splashConfig.splashDuration, splashConfig.splashEasing);
-        float finalAlpha = AnimationMath.clamp(progress * parentAlpha, 0f, 1f);
+        float rawProgress = elapsed / (float) splashConfig.splashDuration;
+
+        float spatialProgress = splashConfig.splashEasing != null
+                ? splashConfig.splashEasing.ease(rawProgress)
+                : rawProgress;
+
+        float alphaProgress = EasingType.EASE_OUT_CUBIC.ease(rawProgress);
+        float finalAlpha = Math.min(1.0f, Math.max(0.0f, alphaProgress * parentAlpha));
 
         return parameters
                 .withOpacity(finalAlpha)
-                .withScale(progress);
+                .withScale(spatialProgress);
     }
 }

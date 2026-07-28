@@ -8,7 +8,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.weyne1.easegui.api.WidgetCategory;
 import net.weyne1.easegui.api.EaseGUIScreenType;
-import net.weyne1.easegui.api.animation.AnimationProfile;
 import net.weyne1.easegui.client.config.*;
 import net.weyne1.easegui.client.gui.components.SettingsScrollList;
 import net.weyne1.easegui.client.gui.configurator.IScreenConfigurator;
@@ -36,7 +35,7 @@ public class ScreenSpecificConfigScreen extends EaseGUIAbstractSplitScreen {
         EaseGUIConfig.ScreenSettings settings = config.screens.get(screenType.getId());
 
         if (settings == null) {
-            Minecraft.getInstance().setScreen(this.parent);
+            Minecraft.getInstance().gui.setScreen(this.parent);
             return;
         }
 
@@ -92,7 +91,7 @@ public class ScreenSpecificConfigScreen extends EaseGUIAbstractSplitScreen {
         this.addRenderableWidget(rightScrollList);
 
         // Кнопка Назад
-        this.addRenderableWidget(Button.builder(Component.translatable("easegui.generic.back"), b -> onClose())
+        this.addRenderableWidget(Button.builder(Component.translatable("easegui.generic.back"), _ -> onClose())
                 .bounds(halfWidth - 100, this.height - 30, 200, 20).build());
     }
 
@@ -112,61 +111,8 @@ public class ScreenSpecificConfigScreen extends EaseGUIAbstractSplitScreen {
         EnumSet<WidgetCategory> overridableCategories = EnumSet.complementOf(EnumSet.of(WidgetCategory.UNKNOWN, WidgetCategory.CONTAINERS));
 
         for (WidgetCategory category : overridableCategories) {
-            boolean hasCustom = settings.customProfiles.containsKey(category);
-
             Component categoryLabel = Component.translatable("easegui.category." + category.name().toLowerCase());
-            Component modeLabel = Component.translatable(hasCustom ? "easegui.generic.custom" : "easegui.generic.global");
-
-            AnimationProfile cleanDefault = EaseGUIConfigFactory.DEFAULT_CONFIG.global.elementProfiles.get(category);
-            if (cleanDefault == null) cleanDefault = new AnimationProfile();
-            AnimationProfile finalCleanDefault = cleanDefault;
-
-            Button editBtn = Button.builder(Component.translatable("easegui.generic.configure"), btn -> {
-                var profile = settings.customProfiles.getOrDefault(category, new AnimationProfile());
-
-                EnumSet<ProfileFeature> allowedFeatures = category.getAllowedFeatures();
-
-                Minecraft.getInstance().setScreen(new ProfileEditorScreen(this, profile, finalCleanDefault, allowedFeatures, updated -> {
-                    settings.customProfiles.put(category, updated);
-                    ConfigManager.save();
-                }));
-            }).build();
-            editBtn.active = hasCustom;
-
-            Button toggleBtn = Button.builder(Component.empty(), btn -> {
-                if (settings.customProfiles.containsKey(category)) {
-                    settings.customProfiles.remove(category);
-                    editBtn.active = false;
-
-                    Component globalState = Component.translatable("easegui.generic.global");
-                    btn.setMessage(Component.translatable("easegui.generic.toggle_format", categoryLabel, globalState));
-                } else {
-                    settings.customProfiles.put(category, cloneProfile(config.global.elementProfiles.get(category)));
-                    editBtn.active = true;
-
-                    Component customState = Component.translatable("easegui.generic.custom");
-                    btn.setMessage(Component.translatable("easegui.generic.toggle_format", categoryLabel, customState));
-                }
-                ConfigManager.save();
-            }).build();
-
-            toggleBtn.setMessage(Component.translatable("easegui.generic.toggle_format", categoryLabel, modeLabel));
-            rightScrollList.addTwoButtons(toggleBtn, editBtn);
+            addCategoryOverrideRow(rightScrollList, categoryLabel, category, settings, config);
         }
-    }
-
-    private AnimationProfile cloneProfile(AnimationProfile src) {
-        AnimationProfile dest = new AnimationProfile();
-        if (src == null) return dest;
-        return dest
-                .enabled(src.isEnabled())
-                .duration(src.getDuration())
-                .offset(src.getOffsetX(), src.getOffsetY())
-                .startScale(src.getStartScaleX(), src.getStartScaleY())
-                .startAlpha(src.getStartAlpha())
-                .cascadeDelay(src.getCascadeDelay())
-                .easing(src.getEasing())
-                .pivot(src.getPivot())
-                .cascadeDirection(src.getCascadeDirection());
     }
 }

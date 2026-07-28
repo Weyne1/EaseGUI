@@ -36,17 +36,21 @@ public final class PipTransform {
         int roundedStart = Math.round(newStart);
         int roundedEnd = Math.round(newEnd);
 
-        if (Math.abs(roundedEnd - roundedStart) < MIN_SIZE) {
-            int sign = (newEnd >= newStart) ? 1 : -1;
-            roundedEnd = roundedStart + sign * MIN_SIZE;
+        int min = Math.min(roundedStart, roundedEnd);
+        int max = Math.max(roundedStart, roundedEnd);
+
+        if (max - min < MIN_SIZE) {
+            max = min + MIN_SIZE;
         }
 
-        return new int[]{roundedStart, roundedEnd};
+        return new int[]{min, max};
     }
 
     public static float scale(float scale) {
         AnimationScope scope = AnimationContext.getCurrentScope();
         if (scope == null || scope.isSuspended()) return scale;
-        return scale * (scope.getScaleX() + scope.getScaleY()) * 0.5f;
+
+        float animScale = (Math.abs(scope.getScaleX()) + Math.abs(scope.getScaleY())) * 0.5f;
+        return scale * animScale;
     }
 }
