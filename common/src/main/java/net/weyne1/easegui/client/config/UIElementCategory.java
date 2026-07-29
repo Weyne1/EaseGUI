@@ -28,7 +28,7 @@ public enum UIElementCategory {
         if (AbstractButton.class.isAssignableFrom(clazz) || AbstractSliderButton.class.isAssignableFrom(clazz) || EditBox.class.isAssignableFrom(clazz)) {
             return BUTTON_LIKE;
         }
-        if (AbstractStringWidget.class.isAssignableFrom(clazz)) {
+        else if (StringWidget.class.isAssignableFrom(clazz) || MultiLineTextWidget.class.isAssignableFrom(clazz)) {
             return TEXT;
         }
         if (AbstractSelectionList.class.isAssignableFrom(clazz)) {
