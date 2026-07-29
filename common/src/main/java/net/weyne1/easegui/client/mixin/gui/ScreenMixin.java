@@ -9,6 +9,7 @@ import net.weyne1.easegui.client.accessor.ScreenAnimationAccessor;
 import net.weyne1.easegui.client.animation.AnimationScope;
 import net.weyne1.easegui.client.animator.BackgroundAnimator;
 import net.weyne1.easegui.client.animator.ContainerAnimator;
+import net.weyne1.easegui.client.compat.WatutCompat;
 import net.weyne1.easegui.client.config.ConfigManager;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,10 +20,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-/**
- * Injects custom animation behavior into the global Screen rendering pipeline.
- * Manages container transition lifecycles, menu textures, and background dimming.
- */
 @Mixin(Screen.class)
 public abstract class ScreenMixin implements ScreenAnimationAccessor {
 
@@ -45,12 +42,12 @@ public abstract class ScreenMixin implements ScreenAnimationAccessor {
 
     // CONTAINER SCREEN ANIMATION LIFECYCLE
 
-    /**
-     * Initializes the container animation scope at the absolute beginning of the screen
-     * rendering pipeline, ensuring both widgets and late-rendered tooltips are captured.
-     */
     @Inject(method = "renderWithTooltip", at = @At("HEAD"))
     private void easeGUI$beforeScreenRenderWithTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
+        if (WatutCompat.isWatutRendering()) {
+            return;
+        }
+
         if (RenderSystem.isOnRenderThread() && this instanceof ContainerScreenAccessor) {
             if (this.easeGUI$containerScreenScope != null) {
                 ContainerAnimator.closeScope(this.easeGUI$containerScreenScope);
@@ -60,10 +57,6 @@ public abstract class ScreenMixin implements ScreenAnimationAccessor {
         }
     }
 
-    /**
-     * Safely collapses and closes the container animation scope at the end of the rendering
-     * pipeline to prevent matrix stack underflows.
-     */
     @Inject(method = "renderWithTooltip", at = @At("RETURN"))
     private void easeGUI$afterScreenRenderWithTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, CallbackInfo ci) {
         if (RenderSystem.isOnRenderThread() && this.easeGUI$containerScreenScope != null) {
@@ -74,12 +67,12 @@ public abstract class ScreenMixin implements ScreenAnimationAccessor {
 
     // BACKGROUND RENDERING ISOLATION (SUSPEND / RESUME)
 
-    /**
-     * Suspends active container scaling/translation right before the transparent background
-     * gradient is drawn, keeping the background tint absolute and static.
-     */
     @Inject(method = "renderTransparentBackground", at = @At("HEAD"))
     private void easeGUI$suspendBeforeTransparentBackground(GuiGraphics guiGraphics, CallbackInfo ci) {
+        if (WatutCompat.isWatutRendering()) {
+            return;
+        }
+
         if (this.easeGUI$containerScreenScope != null) {
             this.easeGUI$containerScreenScope.suspend();
         }
@@ -94,10 +87,6 @@ public abstract class ScreenMixin implements ScreenAnimationAccessor {
         }
     }
 
-    /**
-     * Resumes the container animation transformations immediately after the transparent
-     * background gradient has finished rendering.
-     */
     @Inject(method = "renderTransparentBackground", at = @At("RETURN"))
     private void easeGUI$resumeAfterTransparentBackground(GuiGraphics guiGraphics, CallbackInfo ci) {
         if (this.easeGUI$containerScreenScope != null) {
@@ -105,12 +94,12 @@ public abstract class ScreenMixin implements ScreenAnimationAccessor {
         }
     }
 
-    /**
-     * Isolates the main menu background rendering from container transformations and
-     * handles standalone main-menu background animations.
-     */
     @Inject(method = "renderMenuBackground(Lnet/minecraft/client/gui/GuiGraphics;)V", at = @At("HEAD"))
     private void easeGUI$preRenderMenuBackground(GuiGraphics guiGraphics, CallbackInfo ci) {
+        if (WatutCompat.isWatutRendering()) {
+            return;
+        }
+
         if (this.easeGUI$containerScreenScope != null) {
             this.easeGUI$containerScreenScope.suspend();
         }
@@ -124,10 +113,6 @@ public abstract class ScreenMixin implements ScreenAnimationAccessor {
         }
     }
 
-    /**
-     * Cleans up menu background scope and restores the container animation transforms
-     * for subsequent interface elements.
-     */
     @Inject(method = "renderMenuBackground(Lnet/minecraft/client/gui/GuiGraphics;)V", at = @At("RETURN"))
     private void easeGUI$postRenderMenuBackground(GuiGraphics guiGraphics, CallbackInfo ci) {
         if (this.easeGUI$menuBackgroundScope != null) {
@@ -142,31 +127,25 @@ public abstract class ScreenMixin implements ScreenAnimationAccessor {
 
     // BACKGROUND GRADIENT COLOR MODIFICATIONS
 
-    /**
-     * Applies animated alpha to the top color of the Screen background gradient.
-     */
     @ModifyArg(
             method = "renderTransparentBackground(Lnet/minecraft/client/gui/GuiGraphics;)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;fillGradient(IIIIII)V"),
             index = 4
     )
     private int easeGUI$modifyTransparentBgTopColor(int originalColor) {
-        if (easeGUI$isWorldLoadingScreen()) {
+        if (easeGUI$isWorldLoadingScreen() || WatutCompat.isWatutRendering()) {
             return originalColor;
         }
         return BackgroundAnimator.getAnimatedColor(originalColor);
     }
 
-    /**
-     * Applies animated alpha to the bottom color of the Screen background gradient.
-     */
     @ModifyArg(
             method = "renderTransparentBackground(Lnet/minecraft/client/gui/GuiGraphics;)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;fillGradient(IIIIII)V"),
             index = 5
     )
     private int easeGUI$modifyTransparentBgBottomColor(int originalColor) {
-        if (easeGUI$isWorldLoadingScreen()) {
+        if (easeGUI$isWorldLoadingScreen() || WatutCompat.isWatutRendering()) {
             return originalColor;
         }
         return BackgroundAnimator.getAnimatedColor(originalColor);
