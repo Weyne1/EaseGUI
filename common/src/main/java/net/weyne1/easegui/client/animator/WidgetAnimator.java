@@ -5,7 +5,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.weyne1.easegui.client.EaseGUIWidget;
+import net.weyne1.easegui.client.extension.WidgetExtension;
 import net.weyne1.easegui.client.animation.*;
 import net.weyne1.easegui.client.config.ConfigManager;
 import net.weyne1.easegui.client.config.UIElementCategory;
@@ -30,25 +30,8 @@ public class WidgetAnimator {
             return null;
         }
 
-        long elapsed = now - state.startTime - state.delay;
-
-        if (elapsed >= profile.duration) return null;
-
-        float progress = 0.0f;
-        if (elapsed > 0) {
-            progress = AnimationMath.calculateProgress(elapsed, profile.duration, profile.easing);
-        }
-
-        return AnimationSystem.begin(
-                gg,
-                widget.getX(),
-                widget.getY(),
-                widget.getWidth(),
-                widget.getHeight(),
-                profile,
-                progress,
-                ((EaseGUIWidget) widget).easeGUI$getAlpha()
-        );
+        return AnimationSystem.begin(gg, widget.getX(), widget.getY(), widget.getWidth(), widget.getHeight(), profile,
+                state.startTime, state.delay, ((WidgetExtension) widget).easeGUI$getAlpha());
     }
 
     private static void updateAnimationState(AbstractWidget widget, AnimationState state, long now, AnimationProfile profile) {

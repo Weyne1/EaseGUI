@@ -4,7 +4,7 @@ import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.*;
-import net.weyne1.easegui.client.EaseGUIWidget;
+import net.weyne1.easegui.client.extension.WidgetExtension;
 import net.weyne1.easegui.client.animation.AnimationScope;
 import net.weyne1.easegui.client.animation.AnimationState;
 import net.weyne1.easegui.client.animator.WidgetAnimator;
@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(AbstractWidget.class)
-public abstract class AbstractWidgetMixin implements EaseGUIWidget {
+public abstract class AbstractWidgetMixin implements WidgetExtension {
 
     @Shadow protected float alpha;
 

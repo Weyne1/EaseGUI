@@ -5,8 +5,8 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
-import net.weyne1.easegui.client.accessor.ContainerScreenAccessor;
-import net.weyne1.easegui.client.accessor.RecipeBookAccessor;
+import net.weyne1.easegui.client.extension.ContainerScreenExtension;
+import net.weyne1.easegui.client.extension.RecipeBookExtension;
 import net.weyne1.easegui.client.animation.AnimationMath;
 import net.weyne1.easegui.client.animation.AnimationScope;
 import net.weyne1.easegui.client.animation.AnimationSystem;
@@ -17,7 +17,7 @@ import net.weyne1.easegui.client.state.ScreenStateTracker;
 public class ContainerAnimator {
 
     public static AnimationScope beginAnimation(Screen screen, GuiGraphics gg) {
-        if (!(screen instanceof ContainerScreenAccessor container)) {
+        if (!(screen instanceof ContainerScreenExtension container)) {
             return null;
         }
 
@@ -29,8 +29,8 @@ public class ContainerAnimator {
         if (screen instanceof RecipeUpdateListener listener) {
             RecipeBookComponent book = listener.getRecipeBookComponent();
 
-            if (((RecipeBookAccessor) book).easeGUI$isVisible()) {
-                RecipeBookAccessor accessor = (RecipeBookAccessor) book;
+            if (((RecipeBookExtension) book).easeGUI$isVisible()) {
+                RecipeBookExtension accessor = (RecipeBookExtension) book;
 
                 int bookWidth = accessor.easeGUI$getBookWidth();
                 int bookHeight = accessor.easeGUI$getBookHeight();

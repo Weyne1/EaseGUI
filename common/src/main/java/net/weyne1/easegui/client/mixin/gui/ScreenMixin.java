@@ -6,7 +6,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.weyne1.easegui.client.accessor.ContainerScreenAccessor;
+import net.weyne1.easegui.client.extension.ContainerScreenExtension;
 import net.weyne1.easegui.client.animation.AnimationContext;
 import net.weyne1.easegui.client.animation.AnimationScope;
 import net.weyne1.easegui.client.animator.BackgroundAnimator;
@@ -31,7 +31,7 @@ public abstract class ScreenMixin {
 
     @WrapMethod(method = "renderWithTooltip")
     private void easeGUI$wrapScreenRender(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, Operation<Void> original) {
-        if (RenderSystem.isOnRenderThread() && this instanceof ContainerScreenAccessor && !WatutCompat.isWatutRendering()) {
+        if (RenderSystem.isOnRenderThread() && this instanceof ContainerScreenExtension && !WatutCompat.isWatutRendering()) {
             try (AnimationScope ignored = ContainerAnimator.beginAnimation((Screen) (Object) this, guiGraphics)) {
                 AnimationContext.pushParentAnimation();
 
