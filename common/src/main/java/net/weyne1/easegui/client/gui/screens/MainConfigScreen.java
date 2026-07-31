@@ -42,6 +42,20 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
         leftList.setX(leftX);
         leftList.setY(50);
 
+        leftList.addHeader(Component.translatable("easegui.config.title.general").getString());
+
+        Component animationsState = Component.translatable(config.global.enabled ? "easegui.generic.on" : "easegui.generic.off");
+        leftList.addButton(Button.builder(
+                Component.translatable("easegui.main.enable_animations", animationsState),
+                button -> {
+                    config.global.enabled = !config.global.enabled;
+                    Component updatedState = Component.translatable(config.global.enabled ? "easegui.generic.on" : "easegui.generic.off");
+                    button.setMessage(Component.translatable("easegui.main.enable_animations", updatedState));
+
+                    ConfigManager.save();
+                }
+        ).build());
+
         leftList.addHeader(Component.translatable("easegui.config.title.blur").getString());
 
         EditBox blurDurationField = createTextField(String.valueOf(config.global.blurDuration));
