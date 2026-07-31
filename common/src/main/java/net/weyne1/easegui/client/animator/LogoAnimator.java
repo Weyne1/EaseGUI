@@ -48,7 +48,7 @@ public class LogoAnimator {
         }
 
         var logoConfig = titleSettings.logo;
-        float finalAlpha = keepLogoThroughFade ? 1.0f : transparency;
+        float finalAlpha = 1.0f;
         int startX = screenWidth / 2 - (LogoRendererAccessor.easeGUI$getLogoWidth() / 2);
 
         ResourceLocation logoTexture = showEasterEgg ? LogoRenderer.EASTER_EGG_LOGO : LogoRenderer.MINECRAFT_LOGO;
