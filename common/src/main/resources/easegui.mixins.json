@@ -33,6 +33,7 @@
     "requireAnnotations": true
   },
   "mixins": [
-    "compat.EmiCompatMixin"
+    "compat.EmiCompatMixin",
+    "compat.WatutCompatMixin"
   ]
 }
