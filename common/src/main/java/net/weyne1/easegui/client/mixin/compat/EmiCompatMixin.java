@@ -25,7 +25,7 @@ public class EmiCompatMixin {
     }
 
     @Dynamic
-    @Inject(method = {"render", "drawBackground", "drawForeground"}, at = @At("TAIL"), require = 0)
+    @Inject(method = {"render", "drawBackground", "drawForeground"}, at = @At("RETURN"), require = 0)
     private static void easeGUI$onEmiRenderEnd(CallbackInfo ci) {
         AnimationScope scope = AnimationContext.getCurrentScope();
         if (scope != null) scope.resume();
