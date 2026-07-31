@@ -11,7 +11,6 @@ import net.weyne1.easegui.client.animation.AnimationContext;
 import net.weyne1.easegui.client.animation.AnimationScope;
 import net.weyne1.easegui.client.animator.BackgroundAnimator;
 import net.weyne1.easegui.client.animator.ContainerAnimator;
-import net.weyne1.easegui.client.compat.WatutCompat;
 import net.weyne1.easegui.client.config.ConfigManager;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -31,15 +30,17 @@ public abstract class ScreenMixin {
 
     @WrapMethod(method = "renderWithTooltip")
     private void easeGUI$wrapScreenRender(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, Operation<Void> original) {
-        if (RenderSystem.isOnRenderThread() && this instanceof ContainerScreenExtension && !WatutCompat.isWatutRendering()) {
+        if (RenderSystem.isOnRenderThread()
+                && this instanceof ContainerScreenExtension
+                && !AnimationContext.isAnimationDisabled()) {
             try (AnimationScope ignored = ContainerAnimator.beginAnimation((Screen) (Object) this, guiGraphics)) {
                 AnimationContext.pushParentAnimation();
-
-                original.call(guiGraphics, mouseX, mouseY, partialTick);
-
-                AnimationContext.popParentAnimation();
+                try {
+                    original.call(guiGraphics, mouseX, mouseY, partialTick);
+                } finally {
+                    AnimationContext.popParentAnimation();
+                }
             }
-
         } else {
             original.call(guiGraphics, mouseX, mouseY, partialTick);
         }
@@ -49,10 +50,6 @@ public abstract class ScreenMixin {
 
     @WrapMethod(method = "renderTransparentBackground")
     private void easeGUI$wrapTransparentBackground(GuiGraphics guiGraphics, Operation<Void> original) {
-        if (WatutCompat.isWatutRendering()) {
-            original.call(guiGraphics);
-        }
-
         AnimationScope currentScope = AnimationContext.getCurrentScope();
         if (currentScope != null) currentScope.suspend();
 
@@ -77,10 +74,6 @@ public abstract class ScreenMixin {
 
     @WrapMethod(method = "renderMenuBackground(Lnet/minecraft/client/gui/GuiGraphics;)V")
     private void easeGUI$wrapMenuBackground(GuiGraphics guiGraphics, Operation<Void> original) {
-        if (WatutCompat.isWatutRendering()) {
-            original.call(guiGraphics);
-        }
-
         AnimationScope currentScope = AnimationContext.getCurrentScope();
         if (currentScope != null) currentScope.suspend();
 
@@ -99,7 +92,7 @@ public abstract class ScreenMixin {
     )
     private void easeGUI$modifyTransparentBgColors(Args args) {
         Screen currentScreen = (Screen) (Object) this;
-        if (!BackgroundAnimator.shouldAnimateBackground(currentScreen) || WatutCompat.isWatutRendering()) {
+        if (!BackgroundAnimator.shouldAnimateBackground(currentScreen)) {
             return;
         }
 

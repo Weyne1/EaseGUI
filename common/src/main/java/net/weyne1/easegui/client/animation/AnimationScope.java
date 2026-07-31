@@ -3,20 +3,26 @@ package net.weyne1.easegui.client.animation;
 import net.minecraft.client.gui.GuiGraphics;
 import net.weyne1.easegui.client.EaseGUIDebug;
 
-public final class AnimationScope implements AutoCloseable {
+public class AnimationScope implements AutoCloseable {
+    public static final AnimationScope NO_OP = new NoOpAnimationScope();
     private static final float MIN_SCALE = 0.001f;
 
     private final GuiGraphics guiGraphics;
     private final float alpha;
 
     private boolean isClosed = false;
-    private boolean isSuspended = false;
+    private int suspendDepth = 0;
 
     private float offsetX, offsetY;
     private float scaleX = 1.0f, scaleY = 1.0f;
     private float pivotX, pivotY;
 
-    public AnimationScope(GuiGraphics guiGraphics, float alpha) {
+    protected AnimationScope() {
+        this.guiGraphics = null;
+        this.alpha = 1.0f;
+    }
+
+    AnimationScope(GuiGraphics guiGraphics, float alpha) {
         this.guiGraphics = guiGraphics;
         this.alpha = alpha;
 
@@ -42,30 +48,51 @@ public final class AnimationScope implements AutoCloseable {
         }
     }
 
+    public void applyPivotScale(float pivotX, float pivotY, float scale) {
+        if (this.guiGraphics == null) return;
+
+        this.scaleX = clampScale(scale);
+        this.scaleY = clampScale(scale);
+        this.pivotX = pivotX;
+        this.pivotY = pivotY;
+
+        guiGraphics.pose().translate(pivotX, pivotY, 0.0f);
+        guiGraphics.pose().scale(this.scaleX, this.scaleY, 1.0f);
+        guiGraphics.pose().translate(-pivotX, -pivotY, 0.0f);
+    }
+
     public void suspend() {
-        if (isClosed || isSuspended) return;
+        if (isClosed) return;
 
-        this.guiGraphics.flush();
-        guiGraphics.pose().pushPose();
+        if (suspendDepth == 0) {
+            this.guiGraphics.flush();
+            guiGraphics.pose().pushPose();
 
-        if (scaleX != 1.0f || scaleY != 1.0f) {
-            guiGraphics.pose().translate(pivotX, pivotY, 0.0f);
-            guiGraphics.pose().scale(1.0f / scaleX, 1.0f / scaleY, 1.0f);
-            guiGraphics.pose().translate(-(offsetX + pivotX), -(offsetY + pivotY), 0.0f);
-        } else {
-            guiGraphics.pose().translate(-offsetX, -offsetY, 0.0f);
+            if (scaleX != 1.0f || scaleY != 1.0f) {
+                guiGraphics.pose().translate(pivotX, pivotY, 0.0f);
+                guiGraphics.pose().scale(1.0f / scaleX, 1.0f / scaleY, 1.0f);
+                guiGraphics.pose().translate(-(offsetX + pivotX), -(offsetY + pivotY), 0.0f);
+            } else {
+                guiGraphics.pose().translate(-offsetX, -offsetY, 0.0f);
+            }
         }
 
-        isSuspended = true;
+        suspendDepth++;
     }
 
     public void resume() {
-        if (isClosed || !isSuspended) return;
+        if (isClosed) return;
+        if (suspendDepth == 0) {
+            EaseGUIDebug.reportError("suspend_depth_underflow", () -> "resume() called without matching suspend()!");
+            return;
+        }
 
-        this.guiGraphics.flush();
-        guiGraphics.pose().popPose();
+        suspendDepth--;
 
-        isSuspended = false;
+        if (suspendDepth == 0) {
+            this.guiGraphics.flush();
+            guiGraphics.pose().popPose();
+        }
     }
 
     @Override
@@ -75,9 +102,12 @@ public final class AnimationScope implements AutoCloseable {
 
         this.guiGraphics.flush();
 
-        if (isSuspended) {
+        if (suspendDepth > 0) {
+            EaseGUIDebug.reportError("scope_closed_while_suspended",
+                    () -> "AnimationScope closed while still suspended (depth=" + suspendDepth + ")! " +
+                            "A layer likely leaked a suspend() without a matching resume().");
             guiGraphics.pose().popPose();
-            isSuspended = false;
+            suspendDepth = 0;
         }
 
         try {
@@ -94,7 +124,7 @@ public final class AnimationScope implements AutoCloseable {
     }
 
     public boolean isSuspended() {
-        return isSuspended;
+        return suspendDepth > 0;
     }
 
     public float getAlpha() {
@@ -103,5 +133,16 @@ public final class AnimationScope implements AutoCloseable {
 
     private static float clampScale(float scale) {
         return Math.max(MIN_SCALE, Math.abs(scale));
+    }
+
+    private static final class NoOpAnimationScope extends AnimationScope {
+        @Override void setTransformParams(float oX, float oY, float sX, float sY, float pX, float pY) {}
+        @Override public void applyPivotScale(float pX, float pY, float s) {}
+        @Override public void suspend() {}
+        @Override public void resume() {}
+        @Override public void close() {}
+        @Override public boolean isClosed() { return true; }
+        @Override public boolean isSuspended() { return false; }
+        @Override public float getAlpha() { return 1.0f; }
     }
 }

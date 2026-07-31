@@ -40,11 +40,7 @@ public class SplashAnimator {
         float finalAlpha = AnimationMath.clamp(baseAlpha * progress * parentAlpha, 0.0f, 1.0f);
 
         AnimationScope scope = AnimationSystem.beginAlphaOnly(gg, finalAlpha);
-
-        gg.pose().translate(x, y, 0);
-        gg.pose().scale(progress, progress, 1.0f);
-        gg.pose().translate(-x, -y, 0);
-
+        scope.applyPivotScale(x, y, progress);
         return scope;
     }
 }

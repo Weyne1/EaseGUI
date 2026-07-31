@@ -2,6 +2,7 @@ package net.weyne1.easegui.client.animator;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.*;
+import net.weyne1.easegui.client.animation.AnimationContext;
 import net.weyne1.easegui.client.animation.AnimationScope;
 import net.weyne1.easegui.client.animation.AnimationSystem;
 import net.weyne1.easegui.client.config.ConfigManager;
@@ -33,6 +34,10 @@ public class BackgroundAnimator {
     }
 
     public static boolean shouldAnimateBackground(Screen screen) {
+        if (AnimationContext.isAnimationDisabled()) {
+            return false;
+        }
+
         if (screen == null || isIgnoredScreen(screen)) {
             return false;
         }
