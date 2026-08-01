@@ -5,9 +5,6 @@ import net.weyne1.easegui.client.animation.AnimationContext;
 import net.weyne1.easegui.client.extension.PipExtension;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
-import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin({
         GuiSkinRenderState.class,
@@ -18,14 +15,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 })
 public abstract class PipRenderStateMixin implements PipExtension {
 
-    @Unique private float easegui$alpha = 1.0f;
-
-    @Inject(method = "<init>*", at = @At("RETURN"))
-    private void easeGUI$captureAlpha(CallbackInfo ci) {
-        if (AnimationContext.isActive()) {
-            this.easegui$alpha = AnimationContext.getCurrentAlpha();
-        }
-    }
+    @Unique
+    private final float easegui$alpha = AnimationContext.isActive() ? AnimationContext.getCurrentAlpha() : 1.0f;
 
     @Override
     public float easegui$getAlpha() {
