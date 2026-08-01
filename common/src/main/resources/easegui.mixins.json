@@ -16,6 +16,8 @@
     "gui.GuiItemRenderStateMixin",
     "gui.GuiRendererMixin",
     "gui.GuiTextRenderStateMixin",
+    "gui.pip.PictureInPictureRendererMixin",
+    "gui.pip.PipRenderStateMixin",
     "gui.ScreenLifecycleMixin",
     "gui.ScreenMixin",
     "gui.container.AbstractContainerScreenMixin",
