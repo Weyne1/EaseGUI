@@ -1,4 +1,4 @@
-package net.weyne1.easegui.client.mixin.gui;
+package net.weyne1.easegui.client.mixin.gui.components;
 
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;

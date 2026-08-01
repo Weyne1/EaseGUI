@@ -1,4 +1,4 @@
-package net.weyne1.easegui.client.mixin.gui.title;
+package net.weyne1.easegui.client.mixin.gui.components;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.LogoRenderer;

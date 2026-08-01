@@ -1,4 +1,4 @@
-package net.weyne1.easegui.client.mixin;
+package net.weyne1.easegui.client.mixin.renderer;
 
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.renderer.GameRenderer;
