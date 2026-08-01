@@ -18,6 +18,7 @@ public class EaseGUIConfig {
     public Map<String, ScreenSettings> screens = new HashMap<>();
 
     public static class GlobalSettings {
+        public boolean enabled = true;
         public boolean enableSmoothBlur = true;
         public long blurDuration = 300L;
         public boolean blurContainers = true;

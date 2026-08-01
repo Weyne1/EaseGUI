@@ -15,6 +15,10 @@ import net.weyne1.easegui.client.state.ScreenStateTracker;
 public class ContainerAnimator {
 
     public static AnimationScope beginAnimation(Screen screen, GuiGraphics gg) {
+        if (!ConfigManager.getConfig().global.enabled) {
+            return null;
+        }
+
         if (!(screen instanceof ContainerScreenExtension container)) {
             return null;
         }

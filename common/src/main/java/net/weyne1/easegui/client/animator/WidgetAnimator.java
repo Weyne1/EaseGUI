@@ -21,6 +21,10 @@ public class WidgetAnimator {
             return null;
         }
 
+        if (!ConfigManager.getConfig().global.enabled) {
+            return null;
+        }
+
         var profile = ConfigManager.getProfileForCurrentContext(category);
         if (profile == null || !profile.isEnabled()) return null;
 
