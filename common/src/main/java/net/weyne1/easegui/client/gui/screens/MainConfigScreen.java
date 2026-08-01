@@ -15,7 +15,6 @@ import net.weyne1.easegui.client.gui.components.FieldValidator;
 import net.weyne1.easegui.client.gui.components.SettingsScrollList;
 
 import java.util.Comparator;
-import java.util.EnumSet;
 import java.util.List;
 
 public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
@@ -107,8 +106,17 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
                 rightList.addHeader(Component.translatable(category.getTranslationKey()).getString());
 
                 for (EaseGUIScreenType type : categoryScreens) {
-                    rightList.addButton(Button.builder(type.getDisplayName(), b -> openScreenConfig(type, config)
-                    ).build());
+                    if (type.getGroup() == EaseGUIScreenGroup.CONTAINERS) {
+                        var settings = config.screens.get(type.getId());
+                        if (settings != null) {
+                            addCategoryOverrideRow(rightList, type.getDisplayName(), WidgetCategory.CONTAINERS, settings, config);
+                        }
+                    } else {
+                        rightList.addButton(Button.builder(
+                                type.getDisplayName(),
+                                b -> mc.setScreen(new ScreenSpecificConfigScreen(this, type))
+                        ).build());
+                    }
                 }
             }
         }
@@ -128,31 +136,6 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
         ).bounds(halfWidth - 100, this.height - 30, 200, 20).build());
     }
 
-    private void openScreenConfig(EaseGUIScreenType type, EaseGUIConfig config) {
-        if (type.getGroup() == EaseGUIScreenGroup.CONTAINERS) {
-            var screenConfig = config.screens.get(type.getId());
-            var defaultScreenConfig = EaseGUIConfigFactory.DEFAULT_CONFIG.screens.get(type.getId());
-
-            AnimationProfile originalProfile = screenConfig.customProfiles.get(WidgetCategory.CONTAINERS);
-            if (originalProfile == null) {
-                originalProfile = config.global.elementProfiles.get(WidgetCategory.CONTAINERS);
-            }
-
-            AnimationProfile defaultProfile = defaultScreenConfig.customProfiles.get(WidgetCategory.CONTAINERS);
-            if (defaultProfile == null) {
-                defaultProfile = EaseGUIConfigFactory.DEFAULT_CONFIG.global.elementProfiles.get(WidgetCategory.CONTAINERS);
-            }
-
-            EnumSet<ProfileFeature> allowedFeatures = WidgetCategory.CONTAINERS.getAllowedFeatures();
-
-            this.minecraft.setScreen(new ProfileEditorScreen(this, originalProfile, defaultProfile, allowedFeatures,
-                    updatedProfile -> {screenConfig.customProfiles.put(WidgetCategory.CONTAINERS, updatedProfile); ConfigManager.save(); }
-            ));
-        } else {
-            this.minecraft.setScreen(new ScreenSpecificConfigScreen(this, type));
-        }
-    }
-
     private void addGlobalProfileButton(SettingsScrollList list, EaseGUIConfig config, Minecraft mc, WidgetCategory category, String translationKey) {
         AnimationProfile cleanDefault = EaseGUIConfigFactory.DEFAULT_CONFIG.global.elementProfiles.get(category);
         if (cleanDefault == null) cleanDefault = new AnimationProfile();
@@ -160,7 +143,7 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
 
         list.addButton(Button.builder(
                 Component.translatable(translationKey),
-                button -> mc.setScreen(new ProfileEditorScreen(
+                b -> mc.setScreen(new ProfileEditorScreen(
                         this,
                         config.global.elementProfiles.getOrDefault(category, new AnimationProfile()),
                         finalCleanDefault,
