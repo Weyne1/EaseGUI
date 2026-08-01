@@ -9,7 +9,6 @@
     "renderer.GameRendererMixin",
     "renderer.state.gui.GuiTextRenderStateMixin",
     "renderer.state.gui.GuiItemRenderStateMixin",
-    "accessor.AdvancementTabAccessor",
     "accessor.LogoRendererAccessor",
     "screens.ScreenLifecycleMixin",
     "screens.ScreenMixin",
