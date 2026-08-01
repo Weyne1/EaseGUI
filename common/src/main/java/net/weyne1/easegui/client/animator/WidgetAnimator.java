@@ -6,7 +6,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.weyne1.easegui.api.animation.AnimationProfile;
-import net.weyne1.easegui.client.extension.WidgetExtension;
 import net.weyne1.easegui.client.animation.*;
 import net.weyne1.easegui.client.config.ConfigManager;
 import net.weyne1.easegui.api.WidgetCategory;
@@ -35,7 +34,7 @@ public class WidgetAnimator {
         }
 
         return AnimationSystem.begin(gg, widget.getX(), widget.getY(), widget.getWidth(), widget.getHeight(), profile,
-                state.startTime, state.delay, ((WidgetExtension) widget).easeGUI$getAlpha());
+                state.startTime, state.delay, widget.getAlpha());
     }
 
     /**

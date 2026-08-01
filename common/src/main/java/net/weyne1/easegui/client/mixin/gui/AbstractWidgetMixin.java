@@ -25,11 +25,6 @@ public abstract class AbstractWidgetMixin implements WidgetExtension {
     @Unique private WidgetCategory easeGUI$cachedCategory = null;
 
     @Override
-    public float easeGUI$getAlpha() {
-        return this.alpha;
-    }
-
-    @Override
     public WidgetCategory easeGUI$getCategory() {
         if (this.easeGUI$cachedCategory == null) {
             this.easeGUI$cachedCategory = WidgetCategory.fromClass(this.getClass());
