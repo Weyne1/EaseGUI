@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[2,)"
+loaderVersion = "[47,)"
 license = "LGPLv3"
 issueTrackerURL = "https://github.com/Weyne1/EaseGUI/issues"
 
@@ -13,15 +13,15 @@ displayURL = "https://modrinth.com/mod/easegui"
 logoFile = "icon.png"
 
 [[dependencies.easegui]]
-modId = "neoforge"
-type = "required"
-versionRange = "[${neoforge_version},)"
+modId = "forge"
+mandatory = true
+versionRange = "[${forge_version},)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.easegui]]
 modId = "minecraft"
-type = "required"
+mandatory = true
 versionRange = "[${minecraft_version},)"
 ordering = "NONE"
 side = "BOTH"

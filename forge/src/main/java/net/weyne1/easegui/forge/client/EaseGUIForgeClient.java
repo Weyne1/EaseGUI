@@ -1,4 +1,4 @@
-package net.weyne1.easegui.neoforge.client;
+package net.weyne1.easegui.forge.client;
 
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModLoadingContext;
@@ -9,9 +9,9 @@ import net.weyne1.easegui.client.EaseGUIClient;
 import net.weyne1.easegui.client.gui.screens.MainConfigScreen;
 
 @Mod(EaseGUIClient.MOD_ID)
-public class EaseGUINeoForgeClient {
+public class EaseGUIForgeClient {
 
-    public EaseGUINeoForgeClient(IEventBus modEventBus) {
+    public EaseGUIForgeClient(IEventBus modEventBus) {
         modEventBus.addListener(this::onClientSetup);
         ModLoadingContext.get().registerExtensionPoint(IConfigScreenFactory.class,
                 () -> (container, parentScreen) -> new MainConfigScreen(parentScreen)
