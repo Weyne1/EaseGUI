@@ -9,6 +9,7 @@ import net.minecraft.client.gui.render.state.BlitRenderState;
 import net.minecraft.client.gui.render.state.GuiItemRenderState;
 import net.minecraft.client.gui.render.GuiRenderer;
 import net.weyne1.easegui.client.extension.ItemExtension;
+import net.weyne1.easegui.client.util.ColorUtils;
 import org.joml.Matrix3x2f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -27,16 +28,10 @@ public class GuiRendererMixin {
             ScreenRectangle scissorArea, ScreenRectangle bounds,
             Operation<BlitRenderState> original,
             GuiItemRenderState renderState, float x, float y, int itemSize, int atlasSize) {
+
         float alpha = ((ItemExtension) (Object) renderState).easegui$getAlpha();
+        int finalColor = ColorUtils.multiplyPremultiplied(color, alpha);
 
-        if (alpha >= 1.0f) {
-            return original.call(pipeline, textureSetup, pose, x0, y0, x1, y1, u0, u1, v0, v1, color, scissorArea, bounds);
-        }
-
-        int a = (int) (alpha * 255) & 0xFF;
-
-        int premultipliedColor = (a << 24) | (a << 16) | (a << 8) | a;
-
-        return original.call(pipeline, textureSetup, pose, x0, y0, x1, y1, u0, u1, v0, v1, premultipliedColor, scissorArea, bounds);
+        return original.call(pipeline, textureSetup, pose, x0, y0, x1, y1, u0, u1, v0, v1, finalColor, scissorArea, bounds);
     }
 }
