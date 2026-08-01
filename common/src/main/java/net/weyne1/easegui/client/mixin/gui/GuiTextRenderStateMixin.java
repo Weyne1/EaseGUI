@@ -16,4 +16,10 @@ public class GuiTextRenderStateMixin {
         if (!AnimationContext.isActive()) return color;
         return ColorUtils.getAnimatedColor(color);
     }
+
+    @ModifyVariable(method = "<init>", at = @At("HEAD"), argsOnly = true, ordinal = 3)
+    private static int easeGUI$modifyTextStateBackgroundColor(int backgroundColor) {
+        if (!AnimationContext.isActive() || backgroundColor == 0) return backgroundColor;
+        return ColorUtils.getAnimatedColor(backgroundColor);
+    }
 }
