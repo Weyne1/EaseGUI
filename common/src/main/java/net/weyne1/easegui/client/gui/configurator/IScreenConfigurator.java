@@ -20,14 +20,14 @@ public interface IScreenConfigurator {
     void populate(SettingsScrollList list, EaseGUIConfig.ScreenSettings settings, Screen parentScreen);
 
     default EditBox createLongField(Minecraft mc, String value, long min, long max, Consumer<Long> onSuccess) {
-        EditBox editBox = new EditBox(mc.font, 0, 0, 60, 16, Component.empty());
+        EditBox editBox = new EditBox(mc.font, 0, 0, 60, 18, Component.empty());
         editBox.setValue(value);
         FieldValidator.registerLongValidator(editBox, min, max, onSuccess);
         return editBox;
     }
 
     default EditBox createFloatField(Minecraft mc, String value, float min, float max, Consumer<Float> onSuccess) {
-        EditBox editBox = new EditBox(mc.font, 0, 0, 60, 16, Component.empty());
+        EditBox editBox = new EditBox(mc.font, 0, 0, 60, 18, Component.empty());
         editBox.setValue(value);
         FieldValidator.registerFloatValidator(editBox, min, max, onSuccess);
         return editBox;

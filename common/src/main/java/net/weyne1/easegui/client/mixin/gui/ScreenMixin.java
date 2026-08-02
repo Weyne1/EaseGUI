@@ -6,25 +6,25 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.weyne1.easegui.client.extension.ContainerScreenExtension;
 import net.weyne1.easegui.client.animation.AnimationContext;
 import net.weyne1.easegui.client.animation.AnimationScope;
 import net.weyne1.easegui.client.animator.BackgroundAnimator;
 import net.weyne1.easegui.client.animator.ContainerAnimator;
 import net.weyne1.easegui.client.config.ConfigManager;
+import net.weyne1.easegui.client.extension.ContainerScreenExtension;
+import net.weyne1.easegui.client.state.ScreenAnimationTracker;
+import net.weyne1.easegui.client.util.Blur;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyArgs;
-import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
+import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 @Mixin(Screen.class)
 @SuppressWarnings("ConstantConditions")
 public abstract class ScreenMixin {
 
     @Shadow @Nullable protected Minecraft minecraft;
-    @Shadow protected abstract void renderBlurredBackground(float partialTick);
 
     // Container lifecycle
 
@@ -46,39 +46,35 @@ public abstract class ScreenMixin {
         }
     }
 
-    // Transparent background (blur / dim)
+    // Menu background
 
-    @WrapMethod(method = "renderTransparentBackground")
-    private void easeGUI$wrapTransparentBackground(GuiGraphics guiGraphics, Operation<Void> original) {
+    @WrapMethod(method = "renderBackground")
+    private void easeGUI$wrapBackground(GuiGraphics guiGraphics, Operation<Void> original) {
         AnimationScope currentScope = AnimationContext.getCurrentScope();
         if (currentScope != null) currentScope.suspend();
 
         try {
             Screen currentScreen = (Screen) (Object) this;
-            boolean blurContainers = ConfigManager.getConfig().global.blurContainers;
+            boolean blurBackground = ConfigManager.getConfig().global.blurBackground;
+            boolean enableSmoothBlur = ConfigManager.getConfig().global.enableSmoothFade;
 
-            if (this.minecraft != null && this.minecraft.level != null && this.minecraft.screen == (Object) this
-                    && blurContainers && BackgroundAnimator.shouldAnimateBackground(currentScreen))
-            {
-                float partialTick = this.minecraft.getTimer().getGameTimeDeltaTicks();
-                this.renderBlurredBackground(partialTick);
+            boolean isRealScreenFrame = this.minecraft != null && this.minecraft.level != null
+                    && this.minecraft.screen == (Object) this;
+
+            if (isRealScreenFrame && blurBackground) {
+                try {
+                    guiGraphics.flush();
+                    float progress = enableSmoothBlur && BackgroundAnimator.shouldAnimateBackground(currentScreen) ? ScreenAnimationTracker.getProgress() : 1.0f;
+                    float partialTick = this.minecraft.getFrameTime();
+
+                    Blur.renderBlur(progress, partialTick);
+                } catch (Exception ignored) {
+                }
             }
 
-            original.call(guiGraphics);
-        } finally {
-            if (currentScope != null) currentScope.resume();
-        }
-    }
-
-    // Menu background
-
-    @WrapMethod(method = "renderMenuBackground(Lnet/minecraft/client/gui/GuiGraphics;)V")
-    private void easeGUI$wrapMenuBackground(GuiGraphics guiGraphics, Operation<Void> original) {
-        AnimationScope currentScope = AnimationContext.getCurrentScope();
-        if (currentScope != null) currentScope.suspend();
-
-        try (AnimationScope ignored = BackgroundAnimator.beginRenderMenu((Screen) (Object) this, guiGraphics)) {
-            original.call(guiGraphics);
+            try (AnimationScope ignored = BackgroundAnimator.beginRenderMenu(currentScreen, guiGraphics)) {
+                original.call(guiGraphics);
+            }
         } finally {
             if (currentScope != null) currentScope.resume();
         }
@@ -86,17 +82,29 @@ public abstract class ScreenMixin {
 
     // Gradient color
 
-    @ModifyArgs(
-            method = "renderTransparentBackground(Lnet/minecraft/client/gui/GuiGraphics;)V",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;fillGradient(IIIIII)V")
+    @ModifyArg(
+            method = "renderBackground",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;fillGradient(IIIIII)V"),
+            index = 4
     )
-    private void easeGUI$modifyTransparentBgColors(Args args) {
+    private int easeGUI$modifyTransparentBgStartColor(int startColor) {
         Screen currentScreen = (Screen) (Object) this;
         if (!BackgroundAnimator.shouldAnimateBackground(currentScreen)) {
-            return;
+            return startColor;
         }
+        return BackgroundAnimator.getAnimatedColor(currentScreen, startColor);
+    }
 
-        args.set(4, BackgroundAnimator.getAnimatedColor(currentScreen, args.get(4)));
-        args.set(5, BackgroundAnimator.getAnimatedColor(currentScreen, args.get(5)));
+    @ModifyArg(
+            method = "renderBackground",
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;fillGradient(IIIIII)V"),
+            index = 5
+    )
+    private int easeGUI$modifyTransparentBgEndColor(int endColor) {
+        Screen currentScreen = (Screen) (Object) this;
+        if (!BackgroundAnimator.shouldAnimateBackground(currentScreen)) {
+            return endColor;
+        }
+        return BackgroundAnimator.getAnimatedColor(currentScreen, endColor);
     }
 }

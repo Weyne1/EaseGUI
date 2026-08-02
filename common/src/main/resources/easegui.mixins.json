@@ -1,6 +1,7 @@
 {
   "required": true,
   "package": "net.weyne1.easegui.client.mixin",
+  "plugin": "net.weyne1.easegui.client.mixin.EaseGUIMixinPlugin",
   "compatibilityLevel": "JAVA_17",
   "minVersion": "0.8",
   "client": [
@@ -8,6 +9,7 @@
     "MinecraftMixin",
     "accessor.AdvancementTabAccessor",
     "accessor.LogoRendererAccessor",
+    "accessor.PostChainAccessor",
     "blaze3d.VertexBufferMixin",
     "gui.AbstractSelectionListMixin",
     "gui.AbstractWidgetMixin",

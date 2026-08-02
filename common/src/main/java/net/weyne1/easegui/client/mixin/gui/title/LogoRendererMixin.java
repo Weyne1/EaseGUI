@@ -14,7 +14,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class LogoRendererMixin {
 
     @Shadow @Final private boolean showEasterEgg;
-    @Shadow @Final private boolean keepLogoThroughFade;
 
     @Inject(
             method = "renderLogo(Lnet/minecraft/client/gui/GuiGraphics;IFI)V",
@@ -22,7 +21,7 @@ public class LogoRendererMixin {
             cancellable = true
     )
     private void easeGUI$overrideLogo(GuiGraphics guiGraphics, int screenWidth, float transparency, int height, CallbackInfo ci) {
-        if (LogoAnimator.render(guiGraphics, screenWidth, transparency, height, showEasterEgg, keepLogoThroughFade)) {
+        if (LogoAnimator.render(guiGraphics, screenWidth, height, showEasterEgg)) {
             ci.cancel();
         }
     }

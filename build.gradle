@@ -30,22 +30,8 @@ subprojects {
 	apply plugin: 'architectury-plugin'
 	apply plugin: 'maven-publish'
 
-	version = ""
-
 	base {
-		archivesName = "${rootProject.archives_name}-${rootProject.mod_version}-${project.name}-${rootProject.minecraft_version}"
-	}
-
-	tasks.withType(Jar).configureEach {
-		archiveVersion.set("")
-
-		if (name == "sourcesJar") {
-			archiveClassifier.set("sources")
-		}
-	}
-
-	tasks.named('remapJar') {
-		archiveVersion.set("")
+		archivesName = "${rootProject.archives_name}-${project.name}"
 	}
 
 	loom {
@@ -79,23 +65,6 @@ subprojects {
 
 	tasks.withType(JavaCompile).configureEach {
 		it.options.release = 17
-	}
-
-	processResources {
-		def replaceProperties = [
-				minecraft_version : rootProject.minecraft_version,
-				mod_version : rootProject.mod_version,
-				fabric_loader_version : rootProject.fabric_loader_version,
-				fabric_api_version : rootProject.fabric_api_version,
-				mod_menu_version : rootProject.mod_menu_version,
-				forge_version : rootProject.forge_version
-		]
-
-		inputs.properties replaceProperties
-
-		filesMatching(["fabric.mod.json", "META-INF/mods.toml"]) {
-			expand replaceProperties
-		}
 	}
 
 	publishing {

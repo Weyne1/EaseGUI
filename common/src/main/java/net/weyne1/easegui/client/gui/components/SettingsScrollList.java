@@ -23,8 +23,13 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
     private static final int COLOR_HEADER = 0xFFAAAAAA;
     private static final int MAX_ROW_WIDTH = 310;
 
+    public SettingsScrollList(Minecraft mc, int width, int height, int top, int bottom, int itemHeight) {
+        super(mc, width, height, top, bottom, itemHeight);
+        this.setRenderTopAndBottom(false);
+    }
+
     public SettingsScrollList(Minecraft mc, int width, int height, int top, int itemHeight) {
-        super(mc, width, height, top, itemHeight);
+        this(mc, width, height, top, top + height, itemHeight);
     }
 
     @Override
@@ -34,13 +39,13 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
 
     @Override
     protected int getScrollbarPosition() {
-        return this.getX() + this.width - 6;
+        return this.x0 + this.width - 6;
     }
 
     public void addHeader(String text) { this.addEntry(new HeaderEntry(text)); }
 
     public void addButton(Button btn) { this.addEntry(new ButtonEntry(btn)); }
-    public void addTwoButtons(Button btn1, Button btn2) {this.addTwoButtons(btn1, btn2, 0.60f); }
+    public void addTwoButtons(Button btn1, Button btn2) { this.addTwoButtons(btn1, btn2, 0.60f); }
     public void addTwoButtons(Button btn1, Button btn2, float firstButtonRatio) { this.addEntry(new TwoButtonsEntry(this.getRowWidth(), btn1, btn2, firstButtonRatio)); }
 
     public void addField(String label, EditBox box) { this.addEntry(new FieldEntry(this.getRowWidth(), label, box)); }
@@ -104,11 +109,9 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
 
             this.button1 = button1;
             this.button1.setWidth(btn1W);
-            this.button1.setHeight(WIDGET_HEIGHT);
 
             this.button2 = button2;
             this.button2.setWidth(btn2W);
-            this.button2.setHeight(WIDGET_HEIGHT);
         }
 
         @Override
@@ -146,7 +149,6 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
 
             this.field = field;
             this.field.setWidth(fldW);
-            this.field.setHeight(WIDGET_HEIGHT);
             this.field.setValue(this.field.getValue());
         }
 
@@ -187,12 +189,10 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
 
             this.field1 = field1;
             this.field1.setWidth(subFldW);
-            this.field1.setHeight(WIDGET_HEIGHT);
             this.field1.setValue(this.field1.getValue());
 
             this.field2 = field2;
             this.field2.setWidth(fieldsArea - subFldW - ELEMENT_SPACING);
-            this.field2.setHeight(WIDGET_HEIGHT);
             this.field2.setValue(this.field2.getValue());
         }
 

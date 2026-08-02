@@ -41,10 +41,12 @@ public class ScreenSpecificConfigScreen extends EaseGUIAbstractSplitScreen {
 
         boolean hasSpecificOptions = false;
 
+        int listTop = 50;
+        int listBottom = this.height - 40;
+
         // ================= СЛЕВА =================
-        SettingsScrollList leftScrollList = new SettingsScrollList(this.minecraft, listWidth, listHeight, 50, 24);
-        leftScrollList.setX(leftX);
-        leftScrollList.setY(50);
+        SettingsScrollList leftScrollList = new SettingsScrollList(this.minecraft, listWidth, listHeight, listTop, listBottom, 24);
+        leftScrollList.setLeftPos(leftX);
 
         IScreenConfigurator configurator = IScreenConfigurator.get(screenType.getId());
         if (configurator != null) {
@@ -74,9 +76,8 @@ public class ScreenSpecificConfigScreen extends EaseGUIAbstractSplitScreen {
         }
 
         // ================= СПРАВА =================
-        SettingsScrollList rightScrollList = new SettingsScrollList(this.minecraft, listWidth, listHeight, 50, 24);
-        rightScrollList.setX(rightX);
-        rightScrollList.setY(50);
+        SettingsScrollList rightScrollList = new SettingsScrollList(this.minecraft, listWidth, listHeight, listTop, listBottom, 24);
+        rightScrollList.setLeftPos(rightX);
 
         Component onOffState = Component.translatable(settings.enabled ? "easegui.generic.on" : "easegui.generic.off");
         rightScrollList.addButton(Button.builder(Component.translatable("easegui.gui.animate_screen", onOffState), btn -> {

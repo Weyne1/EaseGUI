@@ -26,16 +26,16 @@ public class AdvancementsScreenMixin {
             method = "render",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/advancements/AdvancementsScreen;renderInside(Lnet/minecraft/client/gui/GuiGraphics;IIII)V")
     )
-    private void easeGUI$wrapWindowScope(AdvancementsScreen instance, GuiGraphics guiGraphics, int mouseX, int mouseY, int x, int y, Operation<Void> original) {
+    private void easeGUI$wrapWindowScope(AdvancementsScreen instance, GuiGraphics guiGraphics, int mouseX, int mouseY, int offsetX, int offsetY, Operation<Void> original) {
         try (AnimationScope scope = AdvancementsAnimator.beginRenderWindow(instance, guiGraphics)) {
             boolean hasParent = (scope != null);
             if (hasParent) {
                 AnimationContext.pushParentAnimation();
             }
             try {
-                original.call(instance, guiGraphics, mouseX, mouseY, x, y);
-                instance.renderWindow(guiGraphics, x, y);
-                this.renderTooltips(guiGraphics, mouseX, mouseY, x, y);
+                original.call(instance, guiGraphics, mouseX, mouseY, offsetX, offsetY);
+                instance.renderWindow(guiGraphics, offsetX, offsetY);
+                this.renderTooltips(guiGraphics, mouseX, mouseY, offsetX, offsetY);
             } finally {
                 if (hasParent) {
                     AnimationContext.popParentAnimation();
@@ -48,13 +48,13 @@ public class AdvancementsScreenMixin {
             method = "render",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/advancements/AdvancementsScreen;renderWindow(Lnet/minecraft/client/gui/GuiGraphics;II)V")
     )
-    private void easeGUI$skipRenderWindow(AdvancementsScreen instance, GuiGraphics guiGraphics, int x, int y, Operation<Void> original) { }
+    private void easeGUI$skipRenderWindow(AdvancementsScreen instance, GuiGraphics guiGraphics, int offsetX, int offsetY, Operation<Void> original) { }
 
     @WrapOperation(
             method = "render",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/advancements/AdvancementsScreen;renderTooltips(Lnet/minecraft/client/gui/GuiGraphics;IIII)V")
     )
-    private void easeGUI$skipRenderTooltips(AdvancementsScreen instance, GuiGraphics guiGraphics, int mouseX, int mouseY, int x, int y, Operation<Void> original) { }
+    private void easeGUI$skipRenderTooltips(AdvancementsScreen instance, GuiGraphics guiGraphics, int mouseX, int mouseY, int offsetX, int offsetY, Operation<Void> original) { }
 
     // Tab animation (bg)
     @WrapOperation(

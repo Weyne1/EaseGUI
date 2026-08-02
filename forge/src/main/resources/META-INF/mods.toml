@@ -2,6 +2,7 @@ modLoader = "javafml"
 loaderVersion = "[47,)"
 license = "LGPLv3"
 issueTrackerURL = "https://github.com/Weyne1/EaseGUI/issues"
+mixinConfig="easegui.mixins.json"
 
 [[mods]]
 modId = "easegui"
@@ -25,6 +26,3 @@ mandatory = true
 versionRange = "[${minecraft_version},)"
 ordering = "NONE"
 side = "BOTH"
-
-[[mixins]]
-config = "easegui.mixins.json"

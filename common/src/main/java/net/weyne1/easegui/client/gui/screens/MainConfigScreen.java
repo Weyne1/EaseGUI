@@ -36,11 +36,12 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
     protected void initScreen() {
         EaseGUIConfig config = ConfigManager.getConfig();
         Minecraft mc = Minecraft.getInstance();
+        int listTop = 50;
+        int listBottom = this.height - 40;
 
         // ================= СЛЕВА: ГЛОБАЛЬНЫЕ НАСТРОЙКИ =================
-        SettingsScrollList leftList = new SettingsScrollList(this.minecraft, listWidth, listHeight, 50, 24);
-        leftList.setX(leftX);
-        leftList.setY(50);
+        SettingsScrollList leftList = new SettingsScrollList(this.minecraft, listWidth, listHeight, listTop, listBottom, 24);
+        leftList.setLeftPos(leftX);
 
         leftList.addHeader(Component.translatable("easegui.config.title.general").getString());
 
@@ -58,34 +59,34 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
 
         leftList.addHeader(Component.translatable("easegui.config.title.blur").getString());
 
-        EditBox blurDurationField = createTextField(String.valueOf(config.global.blurDuration));
+        EditBox blurDurationField = createTextField(String.valueOf(config.global.fadeDuration));
         FieldValidator.registerLongValidator(blurDurationField, 0L, 5000L, val -> {
-            config.global.blurDuration = val;
+            config.global.fadeDuration = val;
             ConfigManager.save();
         });
-        blurDurationField.setEditable(config.global.enableSmoothBlur);
+        blurDurationField.setEditable(config.global.enableSmoothFade);
 
-        Component blurState = Component.translatable(config.global.enableSmoothBlur ? "easegui.generic.on" : "easegui.generic.off");
+        Component blurState = Component.translatable(config.global.enableSmoothFade ? "easegui.generic.on" : "easegui.generic.off");
         leftList.addButton(Button.builder(
-                Component.translatable("easegui.main.smooth_blur", blurState),
+                Component.translatable("easegui.main.smooth_fade", blurState),
                 button -> {
-                    config.global.enableSmoothBlur = !config.global.enableSmoothBlur;
-                    Component updatedState = Component.translatable(config.global.enableSmoothBlur ? "easegui.generic.on" : "easegui.generic.off");
-                    button.setMessage(Component.translatable("easegui.main.smooth_blur", updatedState));
+                    config.global.enableSmoothFade = !config.global.enableSmoothFade;
+                    Component updatedState = Component.translatable(config.global.enableSmoothFade ? "easegui.generic.on" : "easegui.generic.off");
+                    button.setMessage(Component.translatable("easegui.main.smooth_fade", updatedState));
 
-                    blurDurationField.setEditable(config.global.enableSmoothBlur);
+                    blurDurationField.setEditable(config.global.enableSmoothFade);
                     ConfigManager.save();
                 }
         ).build());
 
-        leftList.addField(Component.translatable("easegui.main.blur_duration").getString(), blurDurationField);
+        leftList.addField(Component.translatable("easegui.main.fade_duration").getString(), blurDurationField);
 
-        Component containersBlurState = Component.translatable(config.global.blurContainers ? "easegui.generic.on" : "easegui.generic.off");
+        Component containersBlurState = Component.translatable(config.global.blurBackground ? "easegui.generic.on" : "easegui.generic.off");
         leftList.addButton(Button.builder(
                 Component.translatable("easegui.main.blur_containers", containersBlurState),
                 button -> {
-                    config.global.blurContainers = !config.global.blurContainers;
-                    Component updatedContainersState = Component.translatable(config.global.blurContainers ? "easegui.generic.on" : "easegui.generic.off");
+                    config.global.blurBackground = !config.global.blurBackground;
+                    Component updatedContainersState = Component.translatable(config.global.blurBackground ? "easegui.generic.on" : "easegui.generic.off");
                     button.setMessage(Component.translatable("easegui.main.blur_containers", updatedContainersState));
 
                     ConfigManager.save();
@@ -104,9 +105,8 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
 
 
         // ================= СПРАВА: ОТДЕЛЬНЫЕ ЭКРАНЫ =================
-        SettingsScrollList rightList = new SettingsScrollList(this.minecraft, listWidth, listHeight, 50, 24);
-        rightList.setX(rightX);
-        rightList.setY(50);
+        SettingsScrollList rightList = new SettingsScrollList(this.minecraft, listWidth, listHeight, listTop, listBottom, 24);
+        rightList.setLeftPos(rightX);
 
         for (EaseGUIScreenGroup category : EaseGUIScreenGroup.values()) {
             List<EaseGUIScreenType> categoryScreens = EaseGUIScreenRegistry.getRegisteredTypes().stream()
@@ -171,7 +171,7 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
 
     private EditBox createTextField(String value) {
         assert this.minecraft != null;
-        EditBox editBox = new EditBox(this.minecraft.font, 0, 0, 60, 16, Component.empty());
+        EditBox editBox = new EditBox(this.minecraft.font, 0, 0, 60, 18, Component.empty());
         editBox.setValue(value);
         return editBox;
     }

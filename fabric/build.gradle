@@ -39,6 +39,7 @@ processResources {
     def replaceProperties = [
             mod_version : rootProject.mod_version,
             fabric_loader_version : rootProject.fabric_loader_version,
+            fabric_api_version : rootProject.fabric_api_version,
             minecraft_version : rootProject.minecraft_version,
             mod_menu_version : rootProject.mod_menu_version
     ]

@@ -2,6 +2,12 @@ plugins {
     id 'com.gradleup.shadow'
 }
 
+loom {
+    forge {
+        mixinConfig "easegui.mixins.json"
+    }
+}
+
 architectury {
     platformSetupLoomIde()
     forge()
@@ -25,7 +31,9 @@ configurations {
 dependencies {
     forge "net.minecraftforge:forge:$rootProject.forge_version"
 
-    localRuntime "dev.emi:emi-forge:${rootProject.emi_version}"
+    implementation(include("io.github.llamalad7:mixinextras-forge:0.4.1"))
+
+    modLocalRuntime "dev.emi:emi-forge:${rootProject.emi_version}"
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive = false }
     shadowBundle project(path: ':common', configuration: 'transformProductionForge')
@@ -39,7 +47,7 @@ processResources {
     ]
     inputs.properties replaceProperties
 
-    filesMatching(['META-INF/mods.toml']) {
+    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
         expand replaceProperties
     }
 }

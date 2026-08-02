@@ -17,9 +17,9 @@
   "easegui.main.subtitle.global": "Global Settings",
   "easegui.main.subtitle.screens": "Screen Specifics",
   "easegui.main.enable_animations": "Enable Animations: %s",
-  "easegui.main.smooth_blur": "Smooth Blur: %s",
-  "easegui.main.blur_duration": "Blur Duration (ms)",
-  "easegui.main.blur_containers": "Blur in Containers: %s",
+  "easegui.main.smooth_fade": "Smooth BG Fade: %s",
+  "easegui.main.fade_duration": "Fade Duration (ms)",
+  "easegui.main.blur_containers": "Background Blur: %s",
 
   "easegui.main.button.scrollable": "Scrollable Panels Animation...",
   "easegui.main.button.list_entry": "List Entries Animation...",
@@ -75,7 +75,7 @@
   "easegui.category.containers": "Containers",
 
   "easegui.config.title.general": "General",
-  "easegui.config.title.blur": "Background blur",
+  "easegui.config.title.blur": "Background & Blur",
   "easegui.config.title.elements": "Individual Elements Animation",
   "easegui.config.title.logo.header": "Logo Settings",
   "easegui.config.title.logo.edit_anim": "Configure logo animation...",

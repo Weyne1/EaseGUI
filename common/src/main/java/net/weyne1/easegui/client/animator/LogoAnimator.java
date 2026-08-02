@@ -18,15 +18,15 @@ import net.weyne1.easegui.client.state.ScreenStateTracker;
 public class LogoAnimator {
 
     private static final ResourceLocation[] LETTER_TEXTURES = new ResourceLocation[] {
-            ResourceLocation.fromNamespaceAndPath("easegui", "textures/gui/title/letters/m.png"),
-            ResourceLocation.fromNamespaceAndPath("easegui", "textures/gui/title/letters/i.png"),
-            ResourceLocation.fromNamespaceAndPath("easegui", "textures/gui/title/letters/n.png"),
-            ResourceLocation.fromNamespaceAndPath("easegui", "textures/gui/title/letters/e.png"),
-            ResourceLocation.fromNamespaceAndPath("easegui", "textures/gui/title/letters/t.png"),
-            ResourceLocation.fromNamespaceAndPath("easegui", "textures/gui/title/letters/f.png"),
-            ResourceLocation.fromNamespaceAndPath("easegui", "textures/gui/title/letters/a.png"),
-            ResourceLocation.fromNamespaceAndPath("easegui", "textures/gui/title/letters/r.png"),
-            ResourceLocation.fromNamespaceAndPath("easegui", "textures/gui/title/letters/c.png")
+            new ResourceLocation("easegui", "textures/gui/title/letters/m.png"),
+            new ResourceLocation("easegui", "textures/gui/title/letters/i.png"),
+            new ResourceLocation("easegui", "textures/gui/title/letters/n.png"),
+            new ResourceLocation("easegui", "textures/gui/title/letters/e.png"),
+            new ResourceLocation("easegui", "textures/gui/title/letters/t.png"),
+            new ResourceLocation("easegui", "textures/gui/title/letters/f.png"),
+            new ResourceLocation("easegui", "textures/gui/title/letters/a.png"),
+            new ResourceLocation("easegui", "textures/gui/title/letters/r.png"),
+            new ResourceLocation("easegui", "textures/gui/title/letters/c.png")
     };
 
     /**
@@ -35,7 +35,7 @@ public class LogoAnimator {
      */
     private static final int[] LOGICAL_INDICES = new int[] { 0, 1, 2, 3, 8, 7, 6, 5, 4 };
 
-    public static boolean render(GuiGraphics gg, int screenWidth, float transparency, int height, boolean showEasterEgg, boolean keepLogoThroughFade) {
+    public static boolean render(GuiGraphics gg, int screenWidth, int height, boolean showEasterEgg) {
         EaseGUIConfig config = ConfigManager.getConfig();
 
         if (!config.global.enabled) {

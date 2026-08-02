@@ -84,6 +84,7 @@ public abstract class EaseGUIAbstractSplitScreen extends Screen {
 
     @Override
     public void render(GuiGraphics gg, int mouseX, int mouseY, float partialTick) {
+        this.renderDirtBackground(gg);
         super.render(gg, mouseX, mouseY, partialTick);
 
         // Вертикальный разделитель по центру экрана

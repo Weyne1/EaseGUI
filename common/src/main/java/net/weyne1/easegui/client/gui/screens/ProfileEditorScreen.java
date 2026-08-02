@@ -40,9 +40,11 @@ public class ProfileEditorScreen extends EaseGUIAbstractSplitScreen {
 
     @Override
     protected void initScreen() {
-        SettingsScrollList leftScrollList = new SettingsScrollList(this.minecraft, listWidth, listHeight, 50, 24);
-        leftScrollList.setX(leftX);
-        leftScrollList.setY(50);
+        int listTop = 50;
+        int listBottom = this.height - 40;
+
+        SettingsScrollList leftScrollList = new SettingsScrollList(this.minecraft, listWidth, listHeight, listTop, listBottom, 24);
+        leftScrollList.setLeftPos(leftX);
 
         // --- 0. Переключатель "Включено / Выключено" + кнопка "Reset" ---
         Component statusComp = workingCopy.isEnabled() ? Component.translatable("easegui.generic.on") : Component.translatable("easegui.generic.off");
@@ -150,7 +152,7 @@ public class ProfileEditorScreen extends EaseGUIAbstractSplitScreen {
 
     private EditBox createTextField(String value) {
         assert this.minecraft != null;
-        EditBox editBox = new EditBox(this.minecraft.font, 0, 0, 60, 16, Component.empty());
+        EditBox editBox = new EditBox(this.minecraft.font, 0, 0, 60, 18, Component.empty());
         editBox.setValue(value);
         return editBox;
     }

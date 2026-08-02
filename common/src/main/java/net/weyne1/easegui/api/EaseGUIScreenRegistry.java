@@ -6,10 +6,9 @@ import net.minecraft.client.gui.screens.achievement.StatsScreen;
 import net.minecraft.client.gui.screens.advancements.AdvancementsScreen;
 import net.minecraft.client.gui.screens.inventory.*;
 import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
-import net.minecraft.client.gui.screens.multiplayer.ServerReconfigScreen;
 import net.minecraft.client.gui.screens.multiplayer.WarningScreen;
-import net.minecraft.client.gui.screens.options.OptionsScreen;
-import net.minecraft.client.gui.screens.options.OptionsSubScreen;
+import net.minecraft.client.gui.screens.OptionsScreen;
+import net.minecraft.client.gui.screens.OptionsSubScreen;
 import net.minecraft.client.gui.screens.packs.PackSelectionScreen;
 import net.minecraft.client.gui.screens.social.SocialInteractionsScreen;
 import net.minecraft.client.gui.screens.worldselection.*;
@@ -77,7 +76,6 @@ public final class EaseGUIScreenRegistry {
         register("experiments", ExperimentsScreen.class, 1000, EaseGUIScreenGroup.WORLDS);
         register("connecting", ConnectScreen.class, 1000, EaseGUIScreenGroup.WORLDS);
         register("disconnected", DisconnectedScreen.class, 1000, EaseGUIScreenGroup.WORLDS);
-        register("server_reconfig", ServerReconfigScreen.class, 1000, EaseGUIScreenGroup.WORLDS);
         register("credits", CreditsAndAttributionScreen.class, 1000, EaseGUIScreenGroup.WORLDS);
 
         // Containers / inventories
@@ -89,7 +87,6 @@ public final class EaseGUIScreenRegistry {
         register("smithing", SmithingScreen.class, 500, EaseGUIScreenGroup.CONTAINERS);
         register("dispenser", DispenserScreen.class, 500, EaseGUIScreenGroup.CONTAINERS);
         register("beacon", BeaconScreen.class, 500, EaseGUIScreenGroup.CONTAINERS);
-        register("crafter", CrafterScreen.class, 500, EaseGUIScreenGroup.CONTAINERS);
         register("crafting", CraftingScreen.class, 500, EaseGUIScreenGroup.CONTAINERS);
         register("brewing_stand", BrewingStandScreen.class, 500, EaseGUIScreenGroup.CONTAINERS);
         register("cartography_table", CartographyTableScreen.class, 500, EaseGUIScreenGroup.CONTAINERS);
