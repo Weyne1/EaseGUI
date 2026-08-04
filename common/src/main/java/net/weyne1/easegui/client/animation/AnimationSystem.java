@@ -75,6 +75,10 @@ public final class AnimationSystem {
             float rawProgress,
             float baseAlpha
     ) {
+        if (AnimationContext.isAnimationDisabled()) {
+            return AnimationScope.NO_OP;
+        }
+
         float clampedRaw = AnimationMath.clamp(rawProgress, 0.0f, 1.0f);
 
         float spatialProgress = profile.getEasing() != null
@@ -101,7 +105,10 @@ public final class AnimationSystem {
         return scope;
     }
 
-    public static AnimationScope beginAlphaOnly(GuiGraphicsExtractor gg, float alpha) {
-        return new AnimationScope(gg, alpha);
+    public static AnimationScope beginAlphaOnly(GuiGraphicsExtractor graphics, float alpha) {
+        if (AnimationContext.isAnimationDisabled()) {
+            return AnimationScope.NO_OP;
+        }
+        return new AnimationScope(graphics, alpha);
     }
 }

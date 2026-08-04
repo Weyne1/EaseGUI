@@ -30,16 +30,17 @@ public abstract class ScreenMixin {
 
     @WrapMethod(method = "extractRenderStateWithTooltipAndSubtitles")
     private void easeGUI$wrapScreenRender(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, Operation<Void> original) {
-        if (RenderSystem.isOnRenderThread() && this instanceof ContainerScreenExtension) {
-
+        if (RenderSystem.isOnRenderThread()
+                && this instanceof ContainerScreenExtension
+                && !AnimationContext.isAnimationDisabled()) {
             try (AnimationScope ignored = ContainerAnimator.beginAnimation((Screen) (Object) this, graphics)) {
                 AnimationContext.pushParentAnimation();
-
-                original.call(graphics, mouseX, mouseY, a);
-
-                AnimationContext.popParentAnimation();
+                try {
+                    original.call(graphics, mouseX, mouseY, a);
+                } finally {
+                    AnimationContext.popParentAnimation();
+                }
             }
-
         } else {
             original.call(graphics, mouseX, mouseY, a);
         }
