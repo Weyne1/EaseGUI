@@ -16,6 +16,7 @@
   "easegui.main.title": "Конфигурация EaseGUI",
   "easegui.main.subtitle.global": "Глобальные настройки",
   "easegui.main.subtitle.screens": "Отдельные экраны",
+  "easegui.main.enable_animations": "Анимации: %s",
   "easegui.main.smooth_blur": "Плавное размытие: %s",
   "easegui.main.blur_duration": "Время размытия (мс)",
   "easegui.main.blur_containers": "Размытие в контейнерах: %s",
@@ -74,6 +75,7 @@
   "easegui.category.list_entry": "Элементы списков",
   "easegui.category.containers": "Контейнеры",
 
+  "easegui.config.title.general": "Основные",
   "easegui.config.title.blur": "Размытие фона",
   "easegui.config.title.elements": "Анимации отдельных элементов",
   "easegui.config.title.logo.header": "Настройки Логотипа",

@@ -12,6 +12,10 @@ import net.weyne1.easegui.client.state.ScreenStateTracker;
 public class ListItemAnimator {
 
     public static AnimationScope beginRender(GuiGraphicsExtractor graphics, int top, int left, int width, int height) {
+        if (!ConfigManager.getConfig().global.enabled) {
+            return null;
+        }
+
         var profile = ConfigManager.getProfileForCurrentContext(WidgetCategory.LIST_ENTRY);
         if (profile == null || !profile.isEnabled()) return null;
 

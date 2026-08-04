@@ -37,7 +37,13 @@ public class LogoAnimator {
     private static final int[] LOGICAL_INDICES = new int[] { 0, 1, 2, 3, 8, 7, 6, 5, 4 };
 
     public static boolean render(GuiGraphicsExtractor graphics, int screenWidth, float transparency, int height, boolean showEasterEgg, boolean keepLogoThroughFade) {
-        var titleSettings = ConfigManager.getConfig().screens.get("title");
+        EaseGUIConfig config = ConfigManager.getConfig();
+
+        if (!config.global.enabled) {
+            return false;
+        }
+
+        var titleSettings = config.screens.get("title");
         if (titleSettings == null || !titleSettings.enabled || titleSettings.logo == null) {
             return false;
         }

@@ -5,12 +5,19 @@ import net.minecraft.util.Util;
 import net.weyne1.easegui.api.animation.EasingType;
 import net.weyne1.easegui.client.animation.AnimationContext;
 import net.weyne1.easegui.client.config.ConfigManager;
+import net.weyne1.easegui.client.config.EaseGUIConfig;
 import net.weyne1.easegui.client.state.ScreenStateTracker;
 
 public class SplashAnimator {
 
     public static ActiveTextCollector.Parameters getAnimatedParameters(ActiveTextCollector.Parameters parameters) {
-        var screenConfig = ConfigManager.getConfig().screens.get("title");
+        EaseGUIConfig config = ConfigManager.getConfig();
+
+        if (!config.global.enabled) {
+            return null;
+        }
+
+        var screenConfig = config.screens.get("title");
 
         if (screenConfig == null || !screenConfig.enabled || screenConfig.splash == null || !screenConfig.splash.enabled) {
             return parameters.withOpacity(AnimationContext.getCurrentAlpha());

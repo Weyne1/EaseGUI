@@ -10,13 +10,20 @@ import net.weyne1.easegui.client.animation.AnimationSystem;
 import net.weyne1.easegui.client.config.ConfigManager;
 import net.weyne1.easegui.api.EaseGUIScreenRegistry;
 import net.weyne1.easegui.api.EaseGUIScreenType;
+import net.weyne1.easegui.client.config.EaseGUIConfig;
 import net.weyne1.easegui.client.state.ScreenStateTracker;
 
 public class AdvancementsAnimator {
 
     public static AnimationScope beginRenderWindow(AdvancementsScreen screen, GuiGraphicsExtractor graphics) {
         EaseGUIScreenType type = EaseGUIScreenRegistry.from(screen);
-        var titleSettings = ConfigManager.getConfig().screens.get(type.getId());
+        EaseGUIConfig config = ConfigManager.getConfig();
+
+        if (!config.global.enabled) {
+            return null;
+        }
+
+        var titleSettings = config.screens.get(type.getId());
 
         if (titleSettings == null || !titleSettings.enabled || titleSettings.advancements == null || !titleSettings.advancements.windowProfile.isEnabled()) {
             return null;
@@ -33,7 +40,13 @@ public class AdvancementsAnimator {
 
     public static AnimationScope beginRenderTab(Screen screen, GuiGraphicsExtractor graphics, int tabIndex) {
         EaseGUIScreenType type = EaseGUIScreenRegistry.from(screen);
-        var titleSettings = ConfigManager.getConfig().screens.get(type.getId());
+        EaseGUIConfig config = ConfigManager.getConfig();
+
+        if (!config.global.enabled) {
+            return null;
+        }
+
+        var titleSettings = config.screens.get(type.getId());
 
         if (titleSettings == null || !titleSettings.enabled || titleSettings.advancements == null || !titleSettings.advancements.tabsProfile.isEnabled()) {
             return null;
