@@ -11,7 +11,7 @@ import net.weyne1.easegui.api.EaseGUIScreenGroup;
 import net.weyne1.easegui.api.EaseGUIScreenType;
 import net.weyne1.easegui.api.animation.AnimationProfile;
 import net.weyne1.easegui.client.config.*;
-import net.weyne1.easegui.client.gui.components.FieldValidator;
+import net.weyne1.easegui.client.gui.components.BlurDurationSlider;
 import net.weyne1.easegui.client.gui.components.SettingsScrollList;
 
 import java.util.Comparator;
@@ -46,7 +46,7 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
         leftList.addHeader(Component.translatable("easegui.config.title.general").getString());
 
         Component animationsState = Component.translatable(config.global.enabled ? "easegui.generic.on" : "easegui.generic.off");
-        leftList.addButton(Button.builder(
+        leftList.addWidget(Button.builder(
                 Component.translatable("easegui.main.enable_animations", animationsState),
                 button -> {
                     config.global.enabled = !config.global.enabled;
@@ -59,36 +59,16 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
 
         leftList.addHeader(Component.translatable("easegui.config.title.blur").getString());
 
-        EditBox blurDurationField = createTextField(String.valueOf(config.global.blurDuration));
-        FieldValidator.registerLongValidator(blurDurationField, 0L, 5000L, val -> {
-            config.global.blurDuration = val;
-            ConfigManager.save();
-        });
-        blurDurationField.setEditable(config.global.enableSmoothBlur);
-
-        Component blurState = Component.translatable(config.global.enableSmoothBlur ? "easegui.generic.on" : "easegui.generic.off");
-        leftList.addButton(Button.builder(
-                Component.translatable("easegui.main.smooth_blur", blurState),
-                button -> {
-                    config.global.enableSmoothBlur = !config.global.enableSmoothBlur;
-                    Component updatedState = Component.translatable(config.global.enableSmoothBlur ? "easegui.generic.on" : "easegui.generic.off");
-                    button.setMessage(Component.translatable("easegui.main.smooth_blur", updatedState));
-
-                    blurDurationField.setEditable(config.global.enableSmoothBlur);
-                    ConfigManager.save();
-                }
-        ).build());
-
-        leftList.addField(Component.translatable("easegui.main.blur_duration").getString(), blurDurationField);
+        BlurDurationSlider blurSlider = new BlurDurationSlider(0, 0, 0, 20, config);
+        leftList.addWidget(blurSlider);
 
         Component containersBlurState = Component.translatable(config.global.blurContainers ? "easegui.generic.on" : "easegui.generic.off");
-        leftList.addButton(Button.builder(
+        leftList.addWidget(Button.builder(
                 Component.translatable("easegui.main.blur_containers", containersBlurState),
                 button -> {
                     config.global.blurContainers = !config.global.blurContainers;
                     Component updatedContainersState = Component.translatable(config.global.blurContainers ? "easegui.generic.on" : "easegui.generic.off");
                     button.setMessage(Component.translatable("easegui.main.blur_containers", updatedContainersState));
-
                     ConfigManager.save();
                 }
         ).build());
@@ -126,7 +106,7 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
                             addCategoryOverrideRow(rightList, type.getDisplayName(), WidgetCategory.CONTAINERS, settings, config);
                         }
                     } else {
-                        rightList.addButton(Button.builder(
+                        rightList.addWidget(Button.builder(
                                 type.getDisplayName(),
                                 _ -> mc.gui.setScreen(new ScreenSpecificConfigScreen(this, type))
                         ).build());
@@ -135,7 +115,7 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
             }
         }
 
-        rightList.addButton(Button.builder(
+        rightList.addWidget(Button.builder(
                 EaseGUIScreenRegistry.OTHER.getDisplayName(),
                 _ -> mc.gui.setScreen(new ScreenSpecificConfigScreen(this, EaseGUIScreenRegistry.OTHER))
         ).build());
@@ -155,7 +135,7 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
         if (cleanDefault == null) cleanDefault = new AnimationProfile();
         AnimationProfile finalCleanDefault = cleanDefault;
 
-        list.addButton(Button.builder(
+        list.addWidget(Button.builder(
                 Component.translatable(translationKey),
                 _ -> mc.gui.setScreen(new ProfileEditorScreen(
                         this,

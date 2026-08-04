@@ -18,7 +18,7 @@
   "easegui.main.subtitle.screens": "Screen Specifics",
   "easegui.main.enable_animations": "Enable Animations: %s",
   "easegui.main.smooth_blur": "Smooth Blur: %s",
-  "easegui.main.blur_duration": "Blur Duration (ms)",
+  "easegui.main.smooth_blur_ms": "Smooth Blur: %s ms.",
   "easegui.main.blur_containers": "Blur in Containers: %s",
 
   "easegui.main.button.scrollable": "Scrollable Panels Animation...",

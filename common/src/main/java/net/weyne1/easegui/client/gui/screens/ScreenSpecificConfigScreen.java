@@ -80,7 +80,7 @@ public class ScreenSpecificConfigScreen extends EaseGUIAbstractSplitScreen {
         rightScrollList.setY(50);
 
         Component onOffState = Component.translatable(settings.enabled ? "easegui.generic.on" : "easegui.generic.off");
-        rightScrollList.addButton(Button.builder(Component.translatable("easegui.gui.animate_screen", onOffState), btn -> {
+        rightScrollList.addWidget(Button.builder(Component.translatable("easegui.gui.animate_screen", onOffState), btn -> {
             settings.enabled = !settings.enabled;
             Component updatedState = Component.translatable(settings.enabled ? "easegui.generic.on" : "easegui.generic.off");
             btn.setMessage(Component.translatable("easegui.gui.animate_screen", updatedState));
