@@ -21,7 +21,6 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
     private static final int ELEMENT_SPACING = 4;
     private static final int WIDGET_HEIGHT = 20;
     private static final float LABEL_WIDTH_RATIO = 0.55f;
-    private static final int COLOR_HEADER = 0xFFAAAAAA;
     private static final int MAX_ROW_WIDTH = 310;
 
     public SettingsScrollList(Minecraft mc, int width, int height, int top, int itemHeight) {
@@ -69,6 +68,9 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
 
     public static class HeaderEntry extends Entry {
         private final Component text;
+        private static final int HEADER_COLOR = 0xFFAAAAAA;
+        private static final int HEADER_PADDING = 6;
+        private static final int HEADER_HEIGHT = 24;
 
         public HeaderEntry(String text) {
             this.text = Component.literal(text);
@@ -77,7 +79,9 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
         @Override
         public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean isHovered, float partialTick) {
             Font font = Minecraft.getInstance().font;
-            graphics.centeredText(font, this.text, this.getContentXMiddle(), this.getContentYMiddle() - 4, COLOR_HEADER);
+            int startY = this.getContentY() + HEADER_HEIGHT - font.lineHeight - HEADER_PADDING;
+            String textStr = this.text.getString();
+            graphics.centeredText(font, Component.literal(textStr), this.getContentXMiddle(), startY, HEADER_COLOR);
         }
 
         @Override
