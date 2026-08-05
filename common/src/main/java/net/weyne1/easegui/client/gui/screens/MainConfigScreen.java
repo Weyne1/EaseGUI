@@ -106,19 +106,23 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
                             addCategoryOverrideRow(rightList, type.getDisplayName(), WidgetCategory.CONTAINERS, settings, config);
                         }
                     } else {
-                        rightList.addWidget(Button.builder(
-                                type.getDisplayName(),
+                        Button settingsBtn = Button.builder(
+                                Component.translatable("easegui.generic.edit"),
                                 _ -> mc.gui.setScreen(new ScreenSpecificConfigScreen(this, type))
-                        ).build());
+                        ).build();
+
+                        rightList.addLabelAndButton(type.getDisplayName().getString(), settingsBtn);
                     }
                 }
             }
         }
 
-        rightList.addWidget(Button.builder(
-                EaseGUIScreenRegistry.OTHER.getDisplayName(),
+        Button settingsBtn = Button.builder(
+                Component.translatable("easegui.generic.edit"),
                 _ -> mc.gui.setScreen(new ScreenSpecificConfigScreen(this, EaseGUIScreenRegistry.OTHER))
-        ).build());
+        ).build();
+
+        rightList.addLabelAndButton(EaseGUIScreenRegistry.OTHER.getDisplayName().getString(), settingsBtn);
 
         this.addRenderableWidget(rightList);
 
@@ -136,7 +140,7 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
         AnimationProfile finalCleanDefault = cleanDefault;
 
         Button settingsButton = Button.builder(
-                Component.translatable("easegui.generic.configure"),
+                Component.translatable("easegui.generic.edit"),
                 _ -> mc.gui.setScreen(new ProfileEditorScreen(
                         this,
                         config.global.elementProfiles.getOrDefault(category, new AnimationProfile()),
