@@ -18,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 
 import java.util.List;
+import java.util.function.IntConsumer;
 
 public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScrollList.Entry> {
 
@@ -26,9 +27,22 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
     private static final int WIDGET_HEIGHT = 20;
     private static final float LABEL_WIDTH_RATIO = 0.55f;
     private static final int MAX_ROW_WIDTH = 350;
+    private IntConsumer scrollListener;
 
     public SettingsScrollList(Minecraft mc, int width, int height, int top, int itemHeight) {
         super(mc, width, height, top, itemHeight);
+    }
+
+    public void setScrollListener(IntConsumer listener) {
+        this.scrollListener = listener;
+    }
+
+    @Override
+    public void setScrollAmount(double amount) {
+        super.setScrollAmount(amount);
+        if (this.scrollListener != null) {
+            this.scrollListener.accept((int) amount);
+        }
     }
 
     @Override
