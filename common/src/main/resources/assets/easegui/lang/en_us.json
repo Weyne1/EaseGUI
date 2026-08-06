@@ -23,6 +23,9 @@
   "easegui.main.enable_animations": "Enable Animations: %s",
   "easegui.main.smooth_blur": "Smooth Blur: %s",
   "easegui.main.smooth_blur_ms": "Smooth Blur: %s ms.",
+  "easegui.main.dimming_intensity": "Background Dimming: %s",
+  "easegui.main.dimming_intensity_vanilla": "Background Dimming: Vanilla",
+  "easegui.main.dimming_intensity_max": "Background Dimming: Extra Dark!",
   "easegui.main.blur_containers": "Blur in Containers: %s",
 
   "easegui.main.button.scrollable": "Scrollable Panels Animation",

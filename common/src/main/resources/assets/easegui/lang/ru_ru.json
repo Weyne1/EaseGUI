@@ -23,6 +23,9 @@
   "easegui.main.enable_animations": "Анимации: %s",
   "easegui.main.smooth_blur": "Плавное размытие: %s",
   "easegui.main.smooth_blur_ms": "Плавное размытие: %s мс.",
+  "easegui.main.dimming_intensity": "Затемнение фона: %s",
+  "easegui.main.dimming_intensity_vanilla": "Затемнение фона: Vanilla",
+  "easegui.main.dimming_intensity_max": "Затемнение фона: Очень темно!",
   "easegui.main.blur_containers": "Размытие в контейнерах: %s",
 
   "easegui.main.button.scrollable": "Анимация панелей списков",
