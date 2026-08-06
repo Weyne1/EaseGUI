@@ -15,6 +15,7 @@ import net.weyne1.easegui.client.config.ConfigManager;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
@@ -96,7 +97,19 @@ public abstract class ScreenMixin {
             return;
         }
 
-        args.set(4, BackgroundAnimator.getAnimatedColor(currentScreen, args.get(4)));
-        args.set(5, BackgroundAnimator.getAnimatedColor(currentScreen, args.get(5)));
+        float intensityMultiplier = ConfigManager.getConfig().global.dimmingIntensity / 0.50f;
+
+        int color1 = easeGUI$applyDimmingIntensity(args.get(4), intensityMultiplier);
+        int color2 = easeGUI$applyDimmingIntensity(args.get(5), intensityMultiplier);
+
+        args.set(4, BackgroundAnimator.getAnimatedColor(currentScreen, color1));
+        args.set(5, BackgroundAnimator.getAnimatedColor(currentScreen, color2));
+    }
+
+    @Unique
+    private static int easeGUI$applyDimmingIntensity(int color, float multiplier) {
+        int alpha = (color >> 24) & 0xFF;
+        int targetAlpha = Math.clamp(Math.round(alpha * multiplier), 0, 255);
+        return (targetAlpha << 24) | (color & 0x00FFFFFF);
     }
 }
