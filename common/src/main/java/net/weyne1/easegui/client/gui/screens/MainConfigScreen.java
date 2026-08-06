@@ -13,6 +13,7 @@ import net.weyne1.easegui.api.EaseGUIScreenType;
 import net.weyne1.easegui.api.animation.AnimationProfile;
 import net.weyne1.easegui.client.config.*;
 import net.weyne1.easegui.client.gui.components.BlurDurationSlider;
+import net.weyne1.easegui.client.gui.components.DimmingIntensitySlider;
 import net.weyne1.easegui.client.gui.components.SettingsScrollList;
 
 import java.util.Comparator;
@@ -65,6 +66,9 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
 
         BlurDurationSlider blurSlider = new BlurDurationSlider(0, 0, 0, 20, config);
         leftList.addWidget(blurSlider);
+
+        DimmingIntensitySlider dimmingSlider = new DimmingIntensitySlider(0, 0, 0, 20, config);
+        leftList.addWidget(dimmingSlider);
 
         Component containersBlurState = Component.translatable(config.global.blurContainers ? "easegui.generic.on" : "easegui.generic.off");
         leftList.addWidget(Button.builder(
