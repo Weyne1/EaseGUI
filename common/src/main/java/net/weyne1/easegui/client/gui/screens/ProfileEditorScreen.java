@@ -110,11 +110,11 @@ public class ProfileEditorScreen extends EaseGUIAbstractSplitScreen {
 
         // --- 5.1. Направление каскада
         if (activeFeatures.contains(ProfileFeature.CASCADE_DIRECTION)) {
-            Component dirComp = getCascadeDirectionComponent(workingCopy.getCascadeDirection());
+            Component dirComp = workingCopy.getCascadeDirection().getDisplayName();
             leftScrollList.addWidget(Button.builder(Component.translatable("easegui.editor.button.cascade_dir", dirComp), b -> {
                 CascadeDirection[] v = CascadeDirection.values();
                 workingCopy.cascadeDirection(v[(workingCopy.getCascadeDirection().ordinal() + 1) % v.length]);
-                b.setMessage(Component.translatable("easegui.editor.button.cascade_dir", getCascadeDirectionComponent(workingCopy.getCascadeDirection())));
+                b.setMessage(Component.translatable("easegui.editor.button.cascade_dir", workingCopy.getCascadeDirection().getDisplayName()));
             }).build());
         }
 
@@ -153,15 +153,6 @@ public class ProfileEditorScreen extends EaseGUIAbstractSplitScreen {
         EditBox editBox = new EditBox(this.minecraft.font, 0, 0, 60, 16, Component.empty());
         editBox.setValue(value);
         return editBox;
-    }
-
-    private Component getCascadeDirectionComponent(CascadeDirection dir) {
-        return Component.translatable(switch (dir) {
-            case TOP_TO_BOTTOM -> "easegui.cascade.top_to_bottom";
-            case BOTTOM_TO_TOP -> "easegui.cascade.bottom_to_top";
-            case LEFT_TO_RIGHT -> "easegui.cascade.left_to_right";
-            case RIGHT_TO_LEFT -> "easegui.cascade.right_to_left";
-        });
     }
 
     private void saveAndClose() {
