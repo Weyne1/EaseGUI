@@ -174,7 +174,7 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
                     .toList();
 
             if (!matchingScreens.isEmpty()) {
-                this.dynamicList.addHeader(Component.translatable(category.getTranslationKey()).getString());
+                this.dynamicList.addHeader(category.getDisplayName().getString());
 
                 for (EaseGUIScreenType type : matchingScreens) {
                     if (type.getGroup() == EaseGUIScreenGroup.CONTAINERS) {

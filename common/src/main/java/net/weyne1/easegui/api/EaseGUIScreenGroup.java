@@ -1,5 +1,7 @@
 package net.weyne1.easegui.api;
 
+import net.minecraft.network.chat.Component;
+
 public enum EaseGUIScreenGroup {
     BASIC("easegui.screen_group.basic"),
     EDITORS("easegui.screen_group.editors"),
@@ -13,7 +15,7 @@ public enum EaseGUIScreenGroup {
         this.translationKey = translationKey;
     }
 
-    public String getTranslationKey() {
-        return translationKey;
+    public Component getDisplayName() {
+        return Component.translatable(this.translationKey);
     }
 }
