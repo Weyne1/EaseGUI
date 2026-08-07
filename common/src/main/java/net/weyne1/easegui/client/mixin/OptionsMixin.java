@@ -14,9 +14,9 @@ public class OptionsMixin {
 
     @Inject(method = "getMenuBackgroundBlurriness", at = @At("RETURN"), cancellable = true)
     private void easeGUI$animateMenuBlurriness(CallbackInfoReturnable<Integer> cir) {
-        boolean enableSmoothBlur = ConfigManager.getConfig().global.enableSmoothBlur;
+        boolean smoothBlurEnabled = ConfigManager.getConfig().global.blurDuration > 0;
 
-        if (!enableSmoothBlur || BackgroundAnimator.skipBackgroundFade) {
+        if (!smoothBlurEnabled || BackgroundAnimator.skipBackgroundFade) {
             return;
         }
 

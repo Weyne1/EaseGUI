@@ -19,7 +19,6 @@ public class EaseGUIConfig {
 
     public static class GlobalSettings {
         public boolean enabled = true;
-        public boolean enableSmoothBlur = true;
         public long blurDuration = 300L;
         public boolean blurContainers = true;
         public float dimmingIntensity = 0.20f;

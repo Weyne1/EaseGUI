@@ -15,7 +15,7 @@ public class BlurDurationSlider extends AbstractSliderButton {
     }
 
     private static double calculateInitialValue(EaseGUIConfig config) {
-        if (!config.global.enableSmoothBlur || config.global.blurDuration <= 0) {
+        if (config.global.blurDuration <= 0) {
             return 0.0;
         }
         int steps = Math.round((float) config.global.blurDuration / 100.0f);
@@ -37,14 +37,7 @@ public class BlurDurationSlider extends AbstractSliderButton {
     @Override
     protected void applyValue() {
         int steps = (int) Math.round(this.value * 10.0);
-
-        if (steps == 0) {
-            config.global.enableSmoothBlur = false;
-            config.global.blurDuration = 0;
-        } else {
-            config.global.enableSmoothBlur = true;
-            config.global.blurDuration = steps * 100L;
-        }
+        config.global.blurDuration = steps * 100L;
 
         ConfigManager.save();
     }

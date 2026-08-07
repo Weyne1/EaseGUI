@@ -9,7 +9,7 @@ public class ScreenAnimationTracker {
     public static float getProgress() {
         var globalConfig = ConfigManager.getConfig().global;
 
-        if (!globalConfig.enableSmoothBlur || BackgroundAnimator.skipBackgroundFade) {
+        if (globalConfig.blurDuration <= 0 || BackgroundAnimator.skipBackgroundFade) {
             return 1.0f;
         }
 
