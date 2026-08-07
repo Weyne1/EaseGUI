@@ -16,7 +16,7 @@ import net.weyne1.easegui.client.state.ScreenStateTracker;
  */
 public class WidgetAnimator {
 
-    public static AnimationScope beginRender(AbstractWidget widget, GuiGraphicsExtractor graphics, WidgetCategory category, AnimationState state) {
+    public static AnimationScope beginRender(AbstractWidget widget, GuiGraphicsExtractor graphics, WidgetCategory category, WidgetAnimationState state) {
         if (Minecraft.getInstance().gui.screen() instanceof AbstractContainerScreen) {
             return null;
         }
@@ -45,7 +45,7 @@ public class WidgetAnimator {
      * Initializes animation state when a widget appears and
      * recalculates cascade timing if needed.
      */
-    private static void updateAnimationState(AbstractWidget widget, AnimationState state, long now, AnimationProfile profile) {
+    private static void updateAnimationState(AbstractWidget widget, WidgetAnimationState state, long now, AnimationProfile profile) {
         int currentFrame = ScreenStateTracker.getCurrentFrameId();
 
         if (state.init && currentFrame > state.lastRenderFrame + 1) {
