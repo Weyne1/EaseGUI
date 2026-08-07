@@ -4,7 +4,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.weyne1.easegui.api.animation.AnimationProfile;
+import net.weyne1.easegui.api.animation.DirectionalAnimationProfile;
 import net.weyne1.easegui.client.config.ConfigManager;
 import net.weyne1.easegui.client.config.EaseGUIConfig;
 import net.weyne1.easegui.client.config.EaseGUIConfigFactory;
@@ -24,9 +24,10 @@ public class AdvancementsScreenConfigurator implements IScreenConfigurator {
 
         list.addHeader(Component.translatable("easegui.config.advancements.window.header").getString());
 
-        var defaultSettings = EaseGUIConfigFactory.DEFAULT_CONFIG.screens.get("advancements").advancements;
-        AnimationProfile defaultWindow = defaultSettings.windowProfile;
-        AnimationProfile defaultTabs = defaultSettings.tabsProfile;
+        var defaultAdv = EaseGUIConfigFactory.DEFAULT_CONFIG.screens.get("advancements");
+        var defaultSettings = defaultAdv != null ? defaultAdv.advancements : null;
+        DirectionalAnimationProfile defaultWindow = defaultSettings != null ? defaultSettings.windowProfile : null;
+        DirectionalAnimationProfile defaultTabs = defaultSettings != null ? defaultSettings.tabsProfile : null;
 
         list.addWidget(Button.builder(Component.translatable("easegui.config.advancements.window.edit_anim"), _ ->
                 mc.gui.setScreen(new ProfileEditorScreen(parentScreen, adv.windowProfile, defaultWindow, EnumSet.of(ProfileFeature.OFFSET, ProfileFeature.SCALE, ProfileFeature.ALPHA, ProfileFeature.PIVOT), updated -> {

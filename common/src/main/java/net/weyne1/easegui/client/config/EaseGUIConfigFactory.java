@@ -4,6 +4,7 @@ import net.weyne1.easegui.api.WidgetCategory;
 import net.weyne1.easegui.api.EaseGUIScreenRegistry;
 import net.weyne1.easegui.api.EaseGUIScreenType;
 import net.weyne1.easegui.api.animation.AnimationProfile;
+import net.weyne1.easegui.api.animation.DirectionalAnimationProfile;
 import net.weyne1.easegui.api.animation.PivotPoint;
 import java.util.EnumMap;
 import java.util.HashMap;
@@ -129,23 +130,27 @@ public final class EaseGUIConfigFactory {
     private static EaseGUIConfig.LogoSettings createLogoSettings() {
         EaseGUIConfig.LogoSettings settings = new EaseGUIConfig.LogoSettings();
         settings.animateWholeText = false;
-        settings.logoProfile = new AnimationProfile()
+
+        AnimationProfile logoIn = new AnimationProfile()
                 .duration(400L)
-                .offsetY(10f)
-                .startScale(0.8f)
-                .startAlpha(0.0f)
+                .initialOffsetY(10f)
+                .initialScale(0.8f)
+                .initialAlpha(0.0f)
                 .cascadeDelay(60L)
                 .cascadeDirection(LEFT_TO_RIGHT)
                 .easing(EASE_OUT_BACK)
                 .pivot(PivotPoint.CENTER);
 
-        settings.editionProfile = new AnimationProfile()
+        AnimationProfile editionIn = new AnimationProfile()
                 .duration(400L)
-                .offsetY(5f)
-                .startScale(0.9f)
-                .startAlpha(0.0f)
+                .initialOffsetY(5f)
+                .initialScale(0.9f)
+                .initialAlpha(0.0f)
                 .easing(EASE_OUT_QUAD)
                 .pivot(PivotPoint.CENTER);
+
+        settings.logoProfile = inOnly(logoIn);
+        settings.editionProfile = inOnly(editionIn);
         return settings;
     }
 
@@ -160,60 +165,73 @@ public final class EaseGUIConfigFactory {
 
     private static EaseGUIConfig.AdvancementsSettings createAdvancementsSettings() {
         EaseGUIConfig.AdvancementsSettings settings = new EaseGUIConfig.AdvancementsSettings();
-        settings.windowProfile = new AnimationProfile()
+
+        AnimationProfile windowIn = new AnimationProfile()
                 .duration(250)
-                .startAlpha(0.0f)
-                .startScale(0.8f)
+                .initialAlpha(0.0f)
+                .initialScale(0.8f)
                 .easing(EASE_OUT_CUBIC);
 
-        settings.tabsProfile = new AnimationProfile()
+        AnimationProfile tabsIn = new AnimationProfile()
                 .duration(400L)
-                .offsetX(-40f)
-                .startAlpha(0.0f)
+                .initialOffsetX(-40f)
+                .initialAlpha(0.0f)
                 .cascadeDelay(45L)
                 .cascadeDirection(LEFT_TO_RIGHT)
                 .easing(EASE_OUT_BACK);
+
+        settings.windowProfile = inOnly(windowIn);
+        settings.tabsProfile = inOnly(tabsIn);
         return settings;
     }
 
-    private static AnimationProfile createButtonProfile() {
-        return new AnimationProfile()
+    private static DirectionalAnimationProfile createButtonProfile() {
+        AnimationProfile in = new AnimationProfile()
                 .duration(400)
-                .offsetY(15f)
-                .startAlpha(0.0f)
+                .initialOffsetY(15f)
+                .initialAlpha(0.0f)
                 .cascadeDelay(45L)
                 .cascadeDirection(BOTTOM_TO_TOP)
                 .easing(EASE_OUT_BACK);
+        return inOnly(in);
     }
 
-    private static AnimationProfile createTextProfile() {
-        return new AnimationProfile()
+    private static DirectionalAnimationProfile createTextProfile() {
+        AnimationProfile in = new AnimationProfile()
                 .duration(300)
-                .startAlpha(0.0f)
+                .initialAlpha(0.0f)
                 .easing(LINEAR);
+        return inOnly(in);
     }
 
-    private static AnimationProfile createScrollableProfile() {
-        return new AnimationProfile()
+    private static DirectionalAnimationProfile createScrollableProfile() {
+        AnimationProfile in = new AnimationProfile()
                 .duration(300)
-                .startAlpha(0.0f)
+                .initialAlpha(0.0f)
                 .easing(EASE_OUT_BACK);
+        return inOnly(in);
     }
 
-    private static AnimationProfile createListEntryProfile() {
-        return new AnimationProfile()
+    private static DirectionalAnimationProfile createListEntryProfile() {
+        AnimationProfile in = new AnimationProfile()
                 .duration(350)
-                .offsetY(15f)
-                .startAlpha(0.0f)
+                .initialOffsetY(15f)
+                .initialAlpha(0.0f)
                 .cascadeDelay(45L)
                 .easing(EASE_OUT_CUBIC);
+        return inOnly(in);
     }
 
-    private static AnimationProfile createContainerProfile() {
-        return new AnimationProfile()
+    private static DirectionalAnimationProfile createContainerProfile() {
+        AnimationProfile in = new AnimationProfile()
                 .duration(250)
-                .offsetY(20f)
-                .startAlpha(0.0f)
+                .initialOffsetY(20f)
+                .initialAlpha(0.0f)
                 .easing(EASE_OUT_CUBIC);
+        return inOnly(in);
+    }
+
+    private static DirectionalAnimationProfile inOnly(AnimationProfile in) {
+        return new DirectionalAnimationProfile(in, null);
     }
 }

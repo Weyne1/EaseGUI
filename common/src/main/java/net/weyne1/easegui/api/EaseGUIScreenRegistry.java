@@ -13,7 +13,7 @@ import net.minecraft.client.gui.screens.options.OptionsSubScreen;
 import net.minecraft.client.gui.screens.packs.PackSelectionScreen;
 import net.minecraft.client.gui.screens.social.SocialInteractionsScreen;
 import net.minecraft.client.gui.screens.worldselection.*;
-import net.weyne1.easegui.api.animation.AnimationProfile;
+import net.weyne1.easegui.api.animation.DirectionalAnimationProfile;
 import net.weyne1.easegui.client.config.EaseGUIConfig;
 import net.weyne1.easegui.client.gui.screens.EaseGUIAbstractSplitScreen;
 
@@ -159,7 +159,7 @@ public final class EaseGUIScreenRegistry {
 
         boolean changed = false;
 
-        for (Map.Entry<WidgetCategory, AnimationProfile> entry : defaultSettings.customProfiles.entrySet()) {
+        for (Map.Entry<WidgetCategory, DirectionalAnimationProfile> entry : defaultSettings.customProfiles.entrySet()) {
             if (!settings.customProfiles.containsKey(entry.getKey())) {
                 settings.customProfiles.put(entry.getKey(), entry.getValue());
                 changed = true;

@@ -3,6 +3,8 @@ package net.weyne1.easegui.client.config;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import java.util.HashSet;
+
 public class ConfigMigrator {
 
     /**
@@ -111,5 +113,80 @@ public class ConfigMigrator {
         }
 
         return changed;
+    }
+
+    /**
+     * Migrates configuration schema from v2 to v3.
+     * Wraps single AnimationProfile structures into DirectionalAnimationProfile ("in" / "out").
+     */
+    static boolean runMigrationV2toV3(JsonObject jsonConfig) {
+        boolean changed = false;
+
+        if (jsonConfig.has("global") && jsonConfig.get("global").isJsonObject()) {
+            JsonObject global = jsonConfig.getAsJsonObject("global");
+            if (global.has("elementProfiles") && global.get("elementProfiles").isJsonObject()) {
+                changed |= migrateProfileMap(global.getAsJsonObject("elementProfiles"));
+            }
+        }
+
+        if (jsonConfig.has("screens") && jsonConfig.get("screens").isJsonObject()) {
+            JsonObject screens = jsonConfig.getAsJsonObject("screens");
+
+            for (String screenId : screens.keySet()) {
+                JsonElement screenElement = screens.get(screenId);
+                if (screenElement != null && screenElement.isJsonObject()) {
+                    JsonObject screenObj = screenElement.getAsJsonObject();
+
+                    if (screenObj.has("customProfiles") && screenObj.get("customProfiles").isJsonObject()) {
+                        changed |= migrateProfileMap(screenObj.getAsJsonObject("customProfiles"));
+                    }
+
+                    if ("title".equals(screenId) && screenObj.has("logo") && screenObj.get("logo").isJsonObject()) {
+                        JsonObject logoObj = screenObj.getAsJsonObject("logo");
+                        changed |= wrapIfV2Profile(logoObj, "logoProfile");
+                        changed |= wrapIfV2Profile(logoObj, "editionProfile");
+                    }
+
+                    if ("advancements".equals(screenId) && screenObj.has("advancements") && screenObj.get("advancements").isJsonObject()) {
+                        JsonObject advObj = screenObj.getAsJsonObject("advancements");
+                        changed |= wrapIfV2Profile(advObj, "windowProfile");
+                        changed |= wrapIfV2Profile(advObj, "tabsProfile");
+                    }
+                }
+            }
+        }
+
+        return changed;
+    }
+
+    private static boolean migrateProfileMap(JsonObject mapObj) {
+        boolean changed = false;
+        for (String key : new HashSet<>(mapObj.keySet())) {
+            JsonElement elem = mapObj.get(key);
+            if (elem != null && elem.isJsonObject()) {
+                if (wrapSingleProfileToDirectional(elem.getAsJsonObject())) {
+                    changed = true;
+                }
+            }
+        }
+        return changed;
+    }
+
+    private static boolean wrapIfV2Profile(JsonObject parent, String key) {
+        if (!parent.has(key) || !parent.get(key).isJsonObject()) return false;
+        return wrapSingleProfileToDirectional(parent.getAsJsonObject(key));
+    }
+
+    private static boolean wrapSingleProfileToDirectional(JsonObject profileObj) {
+        if (profileObj.has("in") || profileObj.has("out") || profileObj.keySet().isEmpty()) {
+            return false;
+        }
+
+        JsonObject inObj = profileObj.deepCopy();
+        for (String k : new HashSet<>(profileObj.keySet())) {
+            profileObj.remove(k);
+        }
+        profileObj.add("in", inObj);
+        return true;
     }
 }

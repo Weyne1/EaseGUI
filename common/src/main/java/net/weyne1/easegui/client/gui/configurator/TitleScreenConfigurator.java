@@ -5,15 +5,15 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.weyne1.easegui.api.animation.DirectionalAnimationProfile;
 import net.weyne1.easegui.api.animation.EasingType;
-import net.weyne1.easegui.client.config.EaseGUIConfigFactory;
-import net.weyne1.easegui.client.util.StringUtils;
-import net.weyne1.easegui.api.animation.AnimationProfile;
 import net.weyne1.easegui.client.config.ConfigManager;
 import net.weyne1.easegui.client.config.EaseGUIConfig;
+import net.weyne1.easegui.client.config.EaseGUIConfigFactory;
 import net.weyne1.easegui.client.config.ProfileFeature;
 import net.weyne1.easegui.client.gui.components.SettingsScrollList;
 import net.weyne1.easegui.client.gui.screens.ProfileEditorScreen;
+import net.weyne1.easegui.client.util.StringUtils;
 
 import java.util.EnumSet;
 
@@ -27,9 +27,10 @@ public class TitleScreenConfigurator implements IScreenConfigurator {
             var logo = settings.logo;
             list.addHeader(Component.translatable("easegui.config.title.logo.header").getString());
 
-            var defaultSettings = EaseGUIConfigFactory.DEFAULT_CONFIG.screens.get("title").logo;
-            AnimationProfile defaultLogo = defaultSettings.logoProfile;
-            AnimationProfile defaultEdition = defaultSettings.editionProfile;
+            var defaultTitle = EaseGUIConfigFactory.DEFAULT_CONFIG.screens.get("title");
+            var defaultSettings = defaultTitle != null ? defaultTitle.logo : null;
+            DirectionalAnimationProfile defaultLogo = defaultSettings != null ? defaultSettings.logoProfile : null;
+            DirectionalAnimationProfile defaultEdition = defaultSettings != null ? defaultSettings.editionProfile : null;
 
             // Настройка анимации букв
             list.addWidget(Button.builder(Component.translatable("easegui.config.title.logo.edit_anim"), _ ->

@@ -6,11 +6,12 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.weyne1.easegui.api.WidgetCategory;
-import net.weyne1.easegui.api.EaseGUIScreenRegistry;
 import net.weyne1.easegui.api.EaseGUIScreenGroup;
+import net.weyne1.easegui.api.EaseGUIScreenRegistry;
 import net.weyne1.easegui.api.EaseGUIScreenType;
+import net.weyne1.easegui.api.WidgetCategory;
 import net.weyne1.easegui.api.animation.AnimationProfile;
+import net.weyne1.easegui.api.animation.DirectionalAnimationProfile;
 import net.weyne1.easegui.client.config.*;
 import net.weyne1.easegui.client.gui.components.BlurDurationSlider;
 import net.weyne1.easegui.client.gui.components.DimmingIntensitySlider;
@@ -135,22 +136,31 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
     }
 
     private void addGlobalProfileButton(SettingsScrollList list, EaseGUIConfig config, Minecraft mc, WidgetCategory category, String translationKey) {
-        AnimationProfile cleanDefault = EaseGUIConfigFactory.DEFAULT_CONFIG.global.elementProfiles.get(category);
-        if (cleanDefault == null) cleanDefault = new AnimationProfile();
-        AnimationProfile finalCleanDefault = cleanDefault;
+        DirectionalAnimationProfile cleanDefault = EaseGUIConfigFactory.DEFAULT_CONFIG.global.elementProfiles.get(category);
+        if (cleanDefault == null) {
+            cleanDefault = new DirectionalAnimationProfile(new AnimationProfile(), new AnimationProfile());
+        }
+        DirectionalAnimationProfile finalCleanDefault = cleanDefault;
 
         Button settingsButton = Button.builder(
                 Component.translatable("easegui.generic.edit"),
-                _ -> mc.gui.setScreen(new ProfileEditorScreen(
-                        this,
-                        config.global.elementProfiles.getOrDefault(category, new AnimationProfile()),
-                        finalCleanDefault,
-                        category.getAllowedFeatures(),
-                        updated -> {
-                            config.global.elementProfiles.put(category, updated);
-                            ConfigManager.save();
-                        }
-                ))
+                _ -> {
+                    DirectionalAnimationProfile profile = config.global.elementProfiles.get(category);
+                    if (profile == null) {
+                        profile = new DirectionalAnimationProfile(new AnimationProfile(), new AnimationProfile());
+                    }
+
+                    mc.gui.setScreen(new ProfileEditorScreen(
+                            this,
+                            profile,
+                            finalCleanDefault,
+                            category.getAllowedFeatures(),
+                            updated -> {
+                                config.global.elementProfiles.put(category, updated);
+                                ConfigManager.save();
+                            }
+                    ));
+                }
         ).build();
 
         list.addLabelAndButton(Component.translatable(translationKey).getString(), settingsButton);

@@ -62,4 +62,16 @@ public enum EasingType {
     public float ease(float t) {
         return function.apply(t);
     }
+
+    public EasingType getInverse() {
+        return switch (this) {
+            case EASE_IN_QUAD -> EASE_OUT_QUAD;
+            case EASE_OUT_QUAD -> EASE_IN_QUAD;
+            case EASE_IN_CUBIC -> EASE_OUT_CUBIC;
+            case EASE_OUT_CUBIC -> EASE_IN_CUBIC;
+            case EASE_IN_BACK -> EASE_OUT_BACK;
+            case EASE_OUT_BACK -> EASE_IN_BACK;
+            default -> this;
+        };
+    }
 }

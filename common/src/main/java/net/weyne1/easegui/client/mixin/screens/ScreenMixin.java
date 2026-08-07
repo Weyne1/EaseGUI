@@ -12,6 +12,7 @@ import net.weyne1.easegui.client.animation.AnimationScope;
 import net.weyne1.easegui.client.animator.BackgroundAnimator;
 import net.weyne1.easegui.client.animator.ContainerAnimator;
 import net.weyne1.easegui.client.config.ConfigManager;
+import net.weyne1.easegui.client.state.ScreenStateTracker;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -27,10 +28,11 @@ public abstract class ScreenMixin {
     @Final @Shadow protected Minecraft minecraft;
     @Shadow protected abstract void extractBlurredBackground(GuiGraphicsExtractor graphics);
 
-    // Container lifecycle
-
     @WrapMethod(method = "extractRenderStateWithTooltipAndSubtitles")
     private void easeGUI$wrapScreenRender(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, Operation<Void> original) {
+        ScreenStateTracker.checkClosingProgress();
+
+        // Container lifecycle
         if (RenderSystem.isOnRenderThread()
                 && this instanceof ContainerScreenExtension
                 && !AnimationContext.isAnimationDisabled()) {

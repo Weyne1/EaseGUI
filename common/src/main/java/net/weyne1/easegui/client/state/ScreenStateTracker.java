@@ -1,6 +1,7 @@
 package net.weyne1.easegui.client.state;
 
 import net.minecraft.util.Util;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 
 import java.lang.ref.WeakReference;
@@ -16,6 +17,12 @@ public class ScreenStateTracker {
 
     private static WeakReference<Screen> lastScreenRef = new WeakReference<>(null);
 
+    private static boolean closing = false;
+    private static long closingStartTime = -1L;
+    private static long maxOutDuration = 0L;
+    private static Screen pendingScreen = null;
+    private static boolean bypassInterceptor = false;
+
     public static boolean checkAndTrackNewScreen(Screen screen) {
         Screen lastScreen = lastScreenRef.get();
         if (lastScreen == screen) {
@@ -28,6 +35,56 @@ public class ScreenStateTracker {
     public static void markScreenOpened() {
         screenOpenTime = -1;
         resizeGraceFrames = 0;
+        closing = false;
+        pendingScreen = null;
+    }
+
+    public static boolean isClosing() {
+        return closing;
+    }
+
+    public static long getClosingStartTime() {
+        return closingStartTime;
+    }
+
+    public static boolean isBypassInterceptor() {
+        return bypassInterceptor;
+    }
+
+    public static void setPendingScreen(Screen screen) {
+        pendingScreen = screen;
+    }
+
+    public static boolean startClosingProcedure(Screen nextScreen, long maxOutTime) {
+        if (bypassInterceptor) return false;
+
+        if (maxOutTime <= 0) {
+            return false;
+        }
+
+        closing = true;
+        pendingScreen = nextScreen;
+        closingStartTime = Util.getMillis();
+        maxOutDuration = maxOutTime;
+
+        return true;
+    }
+
+    public static void checkClosingProgress() {
+        if (!closing) return;
+
+        long elapsed = Util.getMillis() - closingStartTime;
+        if (elapsed >= maxOutDuration) {
+            finishClosing();
+        }
+    }
+
+    private static void finishClosing() {
+        closing = false;
+        bypassInterceptor = true;
+        Minecraft.getInstance().gui.setScreen(pendingScreen);
+        bypassInterceptor = false;
+        pendingScreen = null;
     }
 
     public static boolean isResizeFrame() {
@@ -37,7 +94,7 @@ public class ScreenStateTracker {
     public static void incrementFrame() {
         currentFrameId++;
 
-        var minecraft = net.minecraft.client.Minecraft.getInstance();
+        var minecraft = Minecraft.getInstance();
         int width = minecraft.getWindow().getGuiScaledWidth();
         int height = minecraft.getWindow().getGuiScaledHeight();
 

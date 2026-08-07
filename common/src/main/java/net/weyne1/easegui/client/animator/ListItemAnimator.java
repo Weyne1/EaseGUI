@@ -2,11 +2,12 @@ package net.weyne1.easegui.client.animator;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.weyne1.easegui.api.WidgetCategory;
+import net.weyne1.easegui.api.animation.AnimationDirection;
 import net.weyne1.easegui.api.animation.AnimationProfile;
 import net.weyne1.easegui.client.animation.AnimationScope;
 import net.weyne1.easegui.client.animation.AnimationSystem;
 import net.weyne1.easegui.client.config.ConfigManager;
-import net.weyne1.easegui.api.WidgetCategory;
 import net.weyne1.easegui.client.state.ScreenStateTracker;
 
 public class ListItemAnimator {
@@ -16,13 +17,26 @@ public class ListItemAnimator {
             return null;
         }
 
-        var profile = ConfigManager.getProfileForCurrentContext(WidgetCategory.LIST_ENTRY);
+        AnimationDirection direction = ScreenStateTracker.isClosing() ? AnimationDirection.OUT : AnimationDirection.IN;
+
+        var profile = ConfigManager.getProfileForCurrentContext(WidgetCategory.LIST_ENTRY, direction);
         if (profile == null || !profile.isEnabled()) return null;
 
         long delay = getDelay(top, left, profile);
-        long startTime = ScreenStateTracker.getScreenOpenTime();
+        long startTime = ScreenStateTracker.isClosing() ? ScreenStateTracker.getClosingStartTime() : ScreenStateTracker.getScreenOpenTime();
 
-        return AnimationSystem.begin(graphics, left, top, width, height, profile, startTime, delay, 1.0f);
+        return AnimationSystem.begin(
+                graphics,
+                profile,
+                direction,
+                left,
+                top,
+                width,
+                height,
+                startTime,
+                delay,
+                1.0f
+        );
     }
 
     private static long getDelay(int top, int left, AnimationProfile profile) {

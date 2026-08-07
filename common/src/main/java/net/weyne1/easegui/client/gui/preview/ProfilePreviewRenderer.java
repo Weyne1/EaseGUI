@@ -1,8 +1,10 @@
 package net.weyne1.easegui.client.gui.preview;
 
+import net.minecraft.util.Util;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
+import net.weyne1.easegui.api.animation.AnimationDirection;
 import net.weyne1.easegui.api.animation.AnimationProfile;
 import net.weyne1.easegui.api.animation.CascadeDirection;
 import net.weyne1.easegui.client.animation.AnimationScope;
@@ -33,7 +35,7 @@ public class ProfilePreviewRenderer {
 
     private static final Component DISABLED_BADGE = Component.translatable("easegui.editor.preview.disabled");
 
-    public static void render(GuiGraphicsExtractor graphics, Font font, int screenWidth, int screenHeight, AnimationProfile profile, EnumSet<ProfileFeature> activeFeatures) {
+    public static void render(GuiGraphicsExtractor graphics, Font font, int screenWidth, int screenHeight, AnimationProfile profile, AnimationDirection direction, EnumSet<ProfileFeature> activeFeatures) {
         int rightCenterX = (screenWidth / 2) + (screenWidth / 4);
         int rightCenterY = screenHeight / 2;
 
@@ -47,7 +49,7 @@ public class ProfilePreviewRenderer {
         int boxWidth = (isHorizontal && isCascadeActive) ? 40 : 120;
 
         renderStaticBounds(graphics, rightCenterX, rightCenterY, isCascadeActive, itemCount, isEnabled, isHorizontal, boxWidth);
-        renderAnimatedElements(graphics, font, rightCenterX, rightCenterY, profile, isCascadeActive, itemCount, isHorizontal, boxWidth);
+        renderAnimatedElements(graphics, font, rightCenterX, rightCenterY, profile, direction, isCascadeActive, itemCount, isHorizontal, boxWidth);
 
         if (!isEnabled) {
             renderDisabledStatus(graphics, font, rightCenterX, rightCenterY, isCascadeActive, itemCount, isHorizontal);
@@ -63,25 +65,20 @@ public class ProfilePreviewRenderer {
         }
     }
 
-    private static void renderAnimatedElements(GuiGraphicsExtractor graphics, Font font, int centerX, int centerY, AnimationProfile profile, boolean isCascade, int count, boolean isHorizontal, int boxWidth) {
+    private static void renderAnimatedElements(GuiGraphicsExtractor graphics, Font font, int centerX, int centerY, AnimationProfile profile, AnimationDirection direction, boolean isCascade, int count, boolean isHorizontal, int boxWidth) {
         boolean isEnabled = profile.isEnabled();
         long duration = Math.max(profile.getDuration(), 50L);
         long totalLoopTime = duration + (isCascade ? (2 * profile.getCascadeDelay()) : 0L) + LOOP_PADDING_MS;
-        long currentTime = isEnabled ? (System.currentTimeMillis() % totalLoopTime) : 0L;
+
+        long now = Util.getMillis();
+        long currentTime = isEnabled ? (now % totalLoopTime) : 0L;
+        long fakeStartTime = now - currentTime;
 
         int halfW = boxWidth / 2;
         int halfH = BOX_HEIGHT / 2;
 
         for (int i = 0; i < count; i++) {
-            float rawProgress;
-
-            if (!isEnabled) {
-                rawProgress = 1.0f;
-            } else {
-                long itemDelay = isCascade ? calculateCascadeDelay(profile, i) : 0L;
-                long itemTime = currentTime - itemDelay;
-                rawProgress = itemTime >= duration ? 1.0f : (itemTime > 0 ? (float) itemTime / duration : 0.0f);
-            }
+            long itemDelay = isCascade ? calculateCascadeDelay(profile, i) : 0L;
 
             int targetX = getTargetX(centerX, isCascade, isHorizontal, i);
             int targetY = getTargetY(centerY, isCascade, isHorizontal, i);
@@ -89,8 +86,8 @@ public class ProfilePreviewRenderer {
             int x = targetX - halfW;
             int y = targetY - halfH;
 
-            try (AnimationScope scope = AnimationSystem.begin(graphics, x, y, boxWidth, BOX_HEIGHT, profile, rawProgress, 1.0f)) {
-                float currentAlpha = scope.getAlpha();
+            try (AnimationScope scope = AnimationSystem.begin(graphics, profile, direction, x, y, boxWidth, BOX_HEIGHT, fakeStartTime, itemDelay, 1.0f)) {
+                float currentAlpha = scope != null ? scope.getAlpha() : 1.0f;
                 int bgAlpha = (int) (currentAlpha * 255.0f);
 
                 int boxColor = isEnabled ? 0x353535 : 0x222222;

@@ -8,7 +8,9 @@ import net.minecraft.client.gui.screens.Screen;
 import net.weyne1.easegui.api.WidgetCategory;
 import net.weyne1.easegui.api.EaseGUIScreenRegistry;
 import net.weyne1.easegui.api.EaseGUIScreenType;
+import net.weyne1.easegui.api.animation.AnimationDirection;
 import net.weyne1.easegui.api.animation.AnimationProfile;
+import net.weyne1.easegui.api.animation.DirectionalAnimationProfile;
 
 import java.io.File;
 import java.io.FileReader;
@@ -19,12 +21,10 @@ import static net.weyne1.easegui.client.EaseGUIClient.LOGGER;
 
 public class ConfigManager {
     private static final File CONFIG_FILE = new File(".", "config/easegui.json");
-
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     private static EaseGUIConfig currentConfig = EaseGUIConfigFactory.createDefaultConfig();
     private static boolean isLoaded = false;
-
     private static Screen cachedScreenInstance = null;
     private static EaseGUIScreenType cachedScreenType = EaseGUIScreenRegistry.OTHER;
 
@@ -49,6 +49,9 @@ public class ConfigManager {
                     } else if (version == 1) {
                         migrated |= ConfigMigrator.runMigrationV1toV2(jsonConfig);
                         version = 2;
+                    } else if (version == 2) {
+                        migrated |= ConfigMigrator.runMigrationV2toV3(jsonConfig);
+                        version = 3;
                     } else {
                         break;
                     }
@@ -94,7 +97,15 @@ public class ConfigManager {
         return currentConfig;
     }
 
-    public static AnimationProfile getProfileForCurrentContext(WidgetCategory category) {
+    public static AnimationProfile getProfileForCurrentContext(WidgetCategory category, AnimationDirection direction) {
+        DirectionalAnimationProfile directionalProfile = getDirectionalProfileForCurrentContext(category);
+        if (directionalProfile == null) return null;
+
+        AnimationProfile profile = directionalProfile.getForDirection(direction);
+        return (profile != null && profile.isEnabled()) ? profile : null;
+    }
+
+    public static DirectionalAnimationProfile getDirectionalProfileForCurrentContext(WidgetCategory category) {
         if (category == null || category == WidgetCategory.UNKNOWN) return null;
         if (!isLoaded) load();
 
@@ -110,9 +121,9 @@ public class ConfigManager {
         if (screenSettings != null) {
             if (!screenSettings.enabled) return null;
 
-            AnimationProfile customProfile = screenSettings.customProfiles.get(category);
+            DirectionalAnimationProfile customProfile = screenSettings.customProfiles.get(category);
             if (customProfile != null) {
-                return customProfile.isEnabled() ? customProfile : null;
+                return customProfile;
             }
         }
 

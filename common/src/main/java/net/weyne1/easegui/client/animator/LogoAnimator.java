@@ -5,6 +5,7 @@ import net.minecraft.util.Util;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.LogoRenderer;
 import net.minecraft.resources.Identifier;
+import net.weyne1.easegui.api.animation.AnimationDirection;
 import net.weyne1.easegui.api.animation.AnimationProfile;
 import net.weyne1.easegui.client.animation.AnimationScope;
 import net.weyne1.easegui.client.animation.AnimationSystem;
@@ -51,31 +52,40 @@ public class LogoAnimator {
         var logoConfig = titleSettings.logo;
         float finalAlpha = keepLogoThroughFade ? 1.0f : transparency;
         int startX = screenWidth / 2 - (LogoRendererAccessor.easeGUI$getLogoWidth() / 2);
-
         Identifier logoTexture = showEasterEgg ? LogoRenderer.EASTER_EGG_LOGO : LogoRenderer.MINECRAFT_LOGO;
-        if (logoConfig.animateWholeText) {
-            renderWholeLogo(graphics, logoTexture, logoConfig.logoProfile, startX, height, finalAlpha);
+
+        AnimationDirection direction = ScreenStateTracker.isClosing() ? AnimationDirection.OUT : AnimationDirection.IN;
+        AnimationProfile logoProfile = logoConfig.logoProfile != null ? logoConfig.logoProfile.getForDirection(direction) : null;
+
+        if (logoProfile == null || !logoProfile.isEnabled()) {
+            drawStaticLogo(graphics, logoTexture, startX, height, finalAlpha);
+        } else if (logoConfig.animateWholeText) {
+            renderWholeLogo(graphics, logoTexture, logoProfile, direction, startX, height, finalAlpha);
         } else {
-            renderCascadedLetters(graphics, logoConfig.logoProfile, startX, height, finalAlpha);
+            renderCascadedLetters(graphics, logoProfile, direction, startX, height, finalAlpha);
         }
 
-        renderEditionText(graphics, logoConfig, screenWidth, height, finalAlpha);
+        renderEditionText(graphics, logoConfig, logoProfile, direction, screenWidth, height, finalAlpha);
 
         return true;
     }
 
-    private static void renderWholeLogo(GuiGraphicsExtractor graphics, Identifier texture, AnimationProfile profile, int startX, int height, float finalAlpha) {
+    private static void renderWholeLogo(GuiGraphicsExtractor graphics, Identifier texture, AnimationProfile profile,
+                                        AnimationDirection direction, int startX, int height, float finalAlpha) {
         long actualStartTime = ScreenStateTracker.getTitleActualStartTime();
         long elapsed = Util.getMillis() - actualStartTime;
         int logoWidth = LogoRendererAccessor.easeGUI$getLogoWidth();
         int logoHeight = LogoRendererAccessor.easeGUI$getLogoHeight();
 
-        try (AnimationScope ignored = AnimationSystem.begin(graphics, startX, height, logoWidth, logoHeight, profile, elapsed, finalAlpha)) {
+        try (AnimationScope ignored = AnimationSystem.begin(
+                graphics, profile, direction, startX, height, logoWidth, logoHeight, elapsed, finalAlpha
+        )) {
             drawLogoTexture(graphics, texture, startX, height);
         }
     }
 
-    private static void renderCascadedLetters(GuiGraphicsExtractor graphics, AnimationProfile profile, int startX, int height, float finalAlpha) {
+    private static void renderCascadedLetters(GuiGraphicsExtractor graphics, AnimationProfile profile,
+                                              AnimationDirection direction, int startX, int height, float finalAlpha) {
         long now = Util.getMillis();
         long actualStartTime = ScreenStateTracker.getTitleActualStartTime();
         int logoWidth = LogoRendererAccessor.easeGUI$getLogoWidth();
@@ -88,34 +98,46 @@ public class LogoAnimator {
             long cascadeDelay = calculateCascadeDelay(profile, logicalIndex);
             long elapsed = now - actualStartTime - cascadeDelay;
 
-            try (AnimationScope ignored = AnimationSystem.begin(graphics, startX, height, logoWidth, logoHeight, profile, elapsed, finalAlpha)) {
+            try (AnimationScope ignored = AnimationSystem.begin(
+                    graphics, profile, direction, startX, height, logoWidth, logoHeight, elapsed, finalAlpha
+            )) {
                 drawLogoTexture(graphics, texture, startX, height);
             }
         }
     }
 
-    private static void renderEditionText(GuiGraphicsExtractor graphics, EaseGUIConfig.LogoSettings config, int screenWidth, int height, float finalAlpha) {
+    private static void renderEditionText(GuiGraphicsExtractor graphics, EaseGUIConfig.LogoSettings config, AnimationProfile logoProfile,
+                                          AnimationDirection direction, int screenWidth, int height, float finalAlpha) {
         int editionWidth = LogoRendererAccessor.easeGUI$getEditionWidth();
         int editionHeight = LogoRendererAccessor.easeGUI$getEditionHeight();
         int logoHeight = LogoRendererAccessor.easeGUI$getLogoHeight();
         int x = screenWidth / 2 - (editionWidth / 2);
         int y = height + logoHeight - 7;
-        var profile = config.editionProfile;
+
+        AnimationProfile profile = config.editionProfile != null ? config.editionProfile.getForDirection(direction) : null;
 
         if (profile == null || !profile.isEnabled()) {
             drawStaticEdition(graphics, x, y, finalAlpha);
             return;
         }
 
-        long elapsed = getEditionElapsed(config);
+        long elapsed = getEditionElapsed(config, logoProfile);
 
         if (elapsed >= profile.getDuration()) {
             drawStaticEdition(graphics, x, y, finalAlpha);
             return;
         }
 
-        try (AnimationScope ignored = AnimationSystem.begin(graphics, x, y, editionWidth, editionHeight, profile, elapsed, finalAlpha)) {
+        try (AnimationScope ignored = AnimationSystem.begin(
+                graphics, profile, direction, x, y, editionWidth, editionHeight, elapsed, finalAlpha
+        )) {
             drawEditionTexture(graphics, x, y);
+        }
+    }
+
+    private static void drawStaticLogo(GuiGraphicsExtractor graphics, Identifier texture, int x, int y, float finalAlpha) {
+        try (AnimationScope ignored = AnimationSystem.beginAlphaOnly(graphics, finalAlpha)) {
+            drawLogoTexture(graphics, texture, x, y);
         }
     }
 
@@ -133,12 +155,18 @@ public class LogoAnimator {
         };
     }
 
-    private static long getEditionElapsed(EaseGUIConfig.LogoSettings config) {
+    private static long getEditionElapsed(EaseGUIConfig.LogoSettings config, AnimationProfile logoProfile) {
         long actualStartTime = ScreenStateTracker.getTitleActualStartTime();
-        long maxLogoDelay = config.animateWholeText ? 0L : switch (config.logoProfile.getCascadeDirection()) {
-            case LEFT_TO_RIGHT, RIGHT_TO_LEFT -> (LETTER_TEXTURES.length - 1) * config.logoProfile.getCascadeDelay();
+
+        if (config.animateWholeText || logoProfile == null) {
+            return Util.getMillis() - actualStartTime;
+        }
+
+        long maxLogoDelay = switch (logoProfile.getCascadeDirection()) {
+            case LEFT_TO_RIGHT, RIGHT_TO_LEFT -> (LETTER_TEXTURES.length - 1) * logoProfile.getCascadeDelay();
             case TOP_TO_BOTTOM, BOTTOM_TO_TOP -> 0L;
         };
+
         return Util.getMillis() - actualStartTime - maxLogoDelay;
     }
 

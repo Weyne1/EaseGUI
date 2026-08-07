@@ -1,7 +1,7 @@
 package net.weyne1.easegui.client.config;
 
 import net.weyne1.easegui.api.WidgetCategory;
-import net.weyne1.easegui.api.animation.AnimationProfile;
+import net.weyne1.easegui.api.animation.DirectionalAnimationProfile;
 import net.weyne1.easegui.api.animation.EasingType;
 
 import java.util.EnumMap;
@@ -11,7 +11,7 @@ import java.util.Map;
 import static net.weyne1.easegui.api.animation.EasingType.EASE_OUT_CUBIC;
 
 public class EaseGUIConfig {
-    public static final int CURRENT_SCHEMA_VERSION = 2;
+    public static final int CURRENT_SCHEMA_VERSION = 3;
 
     public int schemaVersion = CURRENT_SCHEMA_VERSION;
     public GlobalSettings global = new GlobalSettings();
@@ -24,12 +24,12 @@ public class EaseGUIConfig {
         public boolean blurContainers = true;
         public float dimmingIntensity = 0.20f;
         public EasingType dimmingEasing = EASE_OUT_CUBIC;
-        public final Map<WidgetCategory, AnimationProfile> elementProfiles = new EnumMap<>(WidgetCategory.class);
+        public final Map<WidgetCategory, DirectionalAnimationProfile> elementProfiles = new EnumMap<>(WidgetCategory.class);
     }
 
     public static class ScreenSettings {
         public boolean enabled = true;
-        public Map<WidgetCategory, AnimationProfile> customProfiles = new EnumMap<>(WidgetCategory.class);
+        public Map<WidgetCategory, DirectionalAnimationProfile> customProfiles = new EnumMap<>(WidgetCategory.class);
 
         public LogoSettings logo = null;
         public SplashSettings splash = null;
@@ -38,8 +38,8 @@ public class EaseGUIConfig {
 
     public static class LogoSettings {
         public boolean animateWholeText = false;
-        public AnimationProfile logoProfile;
-        public AnimationProfile editionProfile;
+        public DirectionalAnimationProfile logoProfile;
+        public DirectionalAnimationProfile editionProfile;
     }
 
     public static class SplashSettings {
@@ -50,7 +50,7 @@ public class EaseGUIConfig {
     }
 
     public static class AdvancementsSettings {
-        public AnimationProfile windowProfile;
-        public AnimationProfile tabsProfile;
+        public DirectionalAnimationProfile windowProfile;
+        public DirectionalAnimationProfile tabsProfile;
     }
 }

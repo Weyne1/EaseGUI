@@ -9,6 +9,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.weyne1.easegui.api.WidgetCategory;
 import net.weyne1.easegui.api.animation.AnimationProfile;
+import net.weyne1.easegui.api.animation.DirectionalAnimationProfile;
 import net.weyne1.easegui.client.config.ConfigManager;
 import net.weyne1.easegui.client.config.EaseGUIConfig;
 import net.weyne1.easegui.client.config.EaseGUIConfigFactory;
@@ -100,13 +101,18 @@ public abstract class EaseGUIAbstractSplitScreen extends Screen {
 
         Component modeLabel = Component.translatable(hasCustom ? "easegui.generic.custom" : "easegui.generic.global");
 
-        AnimationProfile cleanDefault = EaseGUIConfigFactory.DEFAULT_CONFIG.global.elementProfiles.get(category);
-        if (cleanDefault == null) cleanDefault = new AnimationProfile();
-        AnimationProfile finalCleanDefault = cleanDefault;
+        DirectionalAnimationProfile cleanDefault = EaseGUIConfigFactory.DEFAULT_CONFIG.global.elementProfiles.get(category);
+        if (cleanDefault == null) {
+            cleanDefault = new DirectionalAnimationProfile(new AnimationProfile(), new AnimationProfile());
+        }
+        DirectionalAnimationProfile finalCleanDefault = cleanDefault;
 
         // Кнопка Настройки
         Button editBtn = Button.builder(Component.translatable("easegui.generic.edit"), _ -> {
-            var profile = settings.customProfiles.getOrDefault(category, new AnimationProfile());
+            DirectionalAnimationProfile profile = settings.customProfiles.get(category);
+            if (profile == null) {
+                profile = new DirectionalAnimationProfile(new AnimationProfile(), new AnimationProfile());
+            }
 
             EnumSet<ProfileFeature> allowedFeatures = category.getAllowedFeatures();
 
@@ -126,8 +132,8 @@ public abstract class EaseGUIAbstractSplitScreen extends Screen {
                 Component globalState = Component.translatable("easegui.generic.global");
                 btn.setMessage(Component.translatable("easegui.generic.toggle_format", label, globalState));
             } else {
-                AnimationProfile globalProfile = config.global.elementProfiles.get(category);
-                settings.customProfiles.put(category, cloneProfile(globalProfile));
+                DirectionalAnimationProfile globalProfile = config.global.elementProfiles.get(category);
+                settings.customProfiles.put(category, cloneDirectionalProfile(globalProfile));
                 editBtn.active = true;
 
                 Component customState = Component.translatable("easegui.generic.custom");
@@ -140,6 +146,15 @@ public abstract class EaseGUIAbstractSplitScreen extends Screen {
         list.addTwoButtons(toggleBtn, editBtn);
     }
 
+    protected DirectionalAnimationProfile cloneDirectionalProfile(DirectionalAnimationProfile source) {
+        if (source == null) {
+            return new DirectionalAnimationProfile(new AnimationProfile(), new AnimationProfile());
+        }
+        AnimationProfile inCopy = source.getIn() != null ? cloneProfile(source.getIn()) : null;
+        AnimationProfile outCopy = source.getOut() != null ? cloneProfile(source.getOut()) : null;
+        return new DirectionalAnimationProfile(inCopy, outCopy);
+    }
+
     protected AnimationProfile applyProfileValues(AnimationProfile target, AnimationProfile source) {
         if (target == null) target = new AnimationProfile();
         if (source == null) return target;
@@ -147,9 +162,9 @@ public abstract class EaseGUIAbstractSplitScreen extends Screen {
         return target
                 .enabled(source.isEnabled())
                 .duration(source.getDuration())
-                .offset(source.getOffsetX(), source.getOffsetY())
-                .startScale(source.getStartScaleX(), source.getStartScaleY())
-                .startAlpha(source.getStartAlpha())
+                .initialOffset(source.getInitialOffsetX(), source.getInitialOffsetY())
+                .initialScale(source.getInitialScaleX(), source.getInitialScaleY())
+                .initialAlpha(source.getInitialAlpha())
                 .cascadeDelay(source.getCascadeDelay())
                 .easing(source.getEasing())
                 .pivot(source.getPivot())
