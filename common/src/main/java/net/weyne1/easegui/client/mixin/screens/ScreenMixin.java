@@ -95,19 +95,18 @@ public abstract class ScreenMixin {
             return;
         }
 
-        float intensityMultiplier = ConfigManager.getConfig().global.dimmingIntensity / 0.50f;
+        float intensity = ConfigManager.getConfig().global.dimmingIntensity;
 
-        int color1 = easeGUI$applyDimmingIntensity(args.get(4), intensityMultiplier);
-        int color2 = easeGUI$applyDimmingIntensity(args.get(5), intensityMultiplier);
+        int color1 = easeGUI$applyDimmingIntensity(args.get(4), intensity);
+        int color2 = easeGUI$applyDimmingIntensity(args.get(5), intensity);
 
         args.set(4, BackgroundAnimator.getAnimatedColor(currentScreen, color1));
         args.set(5, BackgroundAnimator.getAnimatedColor(currentScreen, color2));
     }
 
     @Unique
-    private static int easeGUI$applyDimmingIntensity(int color, float multiplier) {
-        int alpha = (color >> 24) & 0xFF;
-        int targetAlpha = Math.clamp(Math.round(alpha * multiplier), 0, 255);
+    private static int easeGUI$applyDimmingIntensity(int color, float intensity) {
+        int targetAlpha = Math.clamp(Math.round(intensity * 255.0f), 0, 255);
         return (targetAlpha << 24) | (color & 0x00FFFFFF);
     }
 }
