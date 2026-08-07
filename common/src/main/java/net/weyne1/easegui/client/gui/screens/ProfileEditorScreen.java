@@ -72,30 +72,30 @@ public class ProfileEditorScreen extends EaseGUIAbstractSplitScreen {
 
         // --- 2. Смещение (Лимит: от -1000 до 1000 пикселей) ---
         if (activeFeatures.contains(ProfileFeature.OFFSET)) {
-            EditBox ox = createTextField(String.valueOf(workingCopy.getOffsetX()));
-            FieldValidator.registerFloatValidator(ox, -1000f, 1000f, workingCopy::offsetX);
+            EditBox ox = createTextField(String.valueOf(workingCopy.getInitialOffsetX()));
+            FieldValidator.registerFloatValidator(ox, -1000f, 1000f, workingCopy::initialOffsetX);
 
-            EditBox oy = createTextField(String.valueOf(workingCopy.getOffsetY()));
-            FieldValidator.registerFloatValidator(oy, -1000f, 1000f, workingCopy::offsetY);
+            EditBox oy = createTextField(String.valueOf(workingCopy.getInitialOffsetY()));
+            FieldValidator.registerFloatValidator(oy, -1000f, 1000f, workingCopy::initialOffsetY);
 
             leftScrollList.addTwoFields(Component.translatable("easegui.editor.field.offset").getString(), ox, oy);
         }
 
         // --- 3. Масштаб (Лимит: от 0.0 до 10.0 крат) ---
         if (activeFeatures.contains(ProfileFeature.SCALE)) {
-            EditBox sx = createTextField(String.valueOf(workingCopy.getStartScaleX()));
-            FieldValidator.registerFloatValidator(sx, 0.0f, 10.0f, workingCopy::startScaleX);
+            EditBox sx = createTextField(String.valueOf(workingCopy.getInitialScaleX()));
+            FieldValidator.registerFloatValidator(sx, 0.0f, 10.0f, workingCopy::initialScaleX);
 
-            EditBox sy = createTextField(String.valueOf(workingCopy.getStartScaleY()));
-            FieldValidator.registerFloatValidator(sy, 0.0f, 10.0f, workingCopy::startScaleY);
+            EditBox sy = createTextField(String.valueOf(workingCopy.getInitialScaleY()));
+            FieldValidator.registerFloatValidator(sy, 0.0f, 10.0f, workingCopy::initialScaleY);
 
             leftScrollList.addTwoFields(Component.translatable("easegui.editor.field.scale").getString(), sx, sy);
         }
 
         // --- 4. Прозрачность (Лимит: от 0.0 до 1.0) ---
         if (activeFeatures.contains(ProfileFeature.ALPHA)) {
-            EditBox alphaField = createTextField(String.valueOf(workingCopy.getStartAlpha()));
-            FieldValidator.registerFloatValidator(alphaField, 0.0f, 1.0f, workingCopy::startAlpha);
+            EditBox alphaField = createTextField(String.valueOf(workingCopy.getInitialAlpha()));
+            FieldValidator.registerFloatValidator(alphaField, 0.0f, 1.0f, workingCopy::initialAlpha);
             leftScrollList.addField(Component.translatable("easegui.editor.field.alpha").getString(), alphaField);
         }
 

@@ -7,61 +7,27 @@ import org.joml.Vector2f;
  */
 @SuppressWarnings({"unused", "UnusedReturnValue"})
 public class AnimationProfile {
-
     private boolean enabled = true;
     private long duration = 400;
-    private final Vector2f offset = new Vector2f();
-    private final Vector2f startScale = new Vector2f(1f, 1f);
-    private float startAlpha = 0.0f;
+    private final Vector2f initialOffset = new Vector2f();
+    private final Vector2f initialScale = new Vector2f(1f, 1f);
+    private float initialAlpha = 0.0f;
     private long cascadeDelay = 0L;
-
     private PivotPoint pivot = PivotPoint.CENTER;
     private EasingType easing = EasingType.EASE_OUT_QUAD;
     private CascadeDirection cascadeDirection = CascadeDirection.TOP_TO_BOTTOM;
 
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public long getDuration() {
-        return duration;
-    }
-
-    public float getOffsetX() {
-        return offset.x;
-    }
-
-    public float getOffsetY() {
-        return offset.y;
-    }
-
-    public float getStartScaleX() {
-        return startScale.x;
-    }
-
-    public float getStartScaleY() {
-        return startScale.y;
-    }
-
-    public float getStartAlpha() {
-        return startAlpha;
-    }
-
-    public long getCascadeDelay() {
-        return cascadeDelay;
-    }
-
-    public PivotPoint getPivot() {
-        return pivot;
-    }
-
-    public EasingType getEasing() {
-        return easing;
-    }
-
-    public CascadeDirection getCascadeDirection() {
-        return cascadeDirection;
-    }
+    public boolean isEnabled() { return enabled;}
+    public long getDuration() { return duration; }
+    public float getInitialAlpha() { return initialAlpha; }
+    public float getInitialScaleX() { return initialScale.x; }
+    public float getInitialScaleY() { return initialScale.y; }
+    public float getInitialOffsetX() { return initialOffset.x; }
+    public float getInitialOffsetY() { return initialOffset.y; }
+    public long getCascadeDelay() { return cascadeDelay; }
+    public PivotPoint getPivot() { return pivot; }
+    public EasingType getEasing() { return easing; }
+    public CascadeDirection getCascadeDirection() { return cascadeDirection; }
 
     public AnimationProfile enabled(boolean enabled) {
         this.enabled = enabled;
@@ -77,46 +43,46 @@ public class AnimationProfile {
         return this;
     }
 
-    public AnimationProfile offset(float x, float y) {
-        this.offset.set(x, y);
+    public AnimationProfile initialOffset(float x, float y) {
+        this.initialOffset.set(x, y);
         return this;
     }
 
-    public AnimationProfile offsetX(float x) {
-        this.offset.x = x;
+    public AnimationProfile initialOffsetX(float x) {
+        this.initialOffset.x = x;
         return this;
     }
 
-    public AnimationProfile offsetY(float y) {
-        this.offset.y = y;
+    public AnimationProfile initialOffsetY(float y) {
+        this.initialOffset.y = y;
         return this;
     }
 
-    public AnimationProfile startAlpha(float startAlpha) {
+    public AnimationProfile initialAlpha(float startAlpha) {
         if (startAlpha < 0.0f || startAlpha > 1.0f) {
-            throw new IllegalArgumentException("Start alpha must be between 0.0 and 1.0.");
+            throw new IllegalArgumentException("Alpha must be between 0.0 and 1.0.");
         }
 
-        this.startAlpha = startAlpha;
+        this.initialAlpha = startAlpha;
         return this;
     }
 
-    public AnimationProfile startScale(float x, float y) {
-        this.startScale.set(x, y);
+    public AnimationProfile initialScale(float x, float y) {
+        this.initialScale.set(x, y);
         return this;
     }
 
-    public AnimationProfile startScale(float scale) {
-        return startScale(scale, scale);
+    public AnimationProfile initialScale(float scale) {
+        return initialScale(scale, scale);
     }
 
-    public AnimationProfile startScaleX(float x) {
-        this.startScale.x = x;
+    public AnimationProfile initialScaleX(float x) {
+        this.initialScale.x = x;
         return this;
     }
 
-    public AnimationProfile startScaleY(float y) {
-        this.startScale.y = y;
+    public AnimationProfile initialScaleY(float y) {
+        this.initialScale.y = y;
         return this;
     }
 
@@ -164,9 +130,9 @@ public class AnimationProfile {
 
         copy.enabled = this.enabled;
         copy.duration = this.duration;
-        copy.offset.set(this.offset);
-        copy.startScale.set(this.startScale);
-        copy.startAlpha = this.startAlpha;
+        copy.initialOffset.set(this.initialOffset);
+        copy.initialScale.set(this.initialScale);
+        copy.initialAlpha = this.initialAlpha;
         copy.cascadeDelay = this.cascadeDelay;
         copy.pivot = this.pivot;
         copy.easing = this.easing;
