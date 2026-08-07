@@ -20,7 +20,7 @@ public class DimmingIntensitySlider extends AbstractSliderButton {
 
         Component component = switch (percent) {
             case 100 -> Component.translatable("easegui.main.dimming_intensity_max");
-            case 50 -> Component.translatable("easegui.main.dimming_intensity_vanilla");
+            case 75 -> Component.translatable("easegui.main.dimming_intensity_vanilla");
             case 0 -> Component.translatable("easegui.main.dimming_intensity", Component.translatable("easegui.generic.off"));
             default -> Component.translatable("easegui.main.dimming_intensity", percent + "%");
         };
