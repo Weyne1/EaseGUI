@@ -20,15 +20,6 @@ public class BackgroundAnimator {
 
     private static final Set<Class<? extends Screen>> IGNORED_SCREEN_CLASSES = ConcurrentHashMap.newKeySet();
 
-    static {
-        IGNORED_SCREEN_CLASSES.add(TitleScreen.class);
-        IGNORED_SCREEN_CLASSES.add(LevelLoadingScreen.class);
-        IGNORED_SCREEN_CLASSES.add(ProgressScreen.class);
-        IGNORED_SCREEN_CLASSES.add(ConnectScreen.class);
-        IGNORED_SCREEN_CLASSES.add(GenericWaitingScreen.class);
-        IGNORED_SCREEN_CLASSES.add(BackupConfirmScreen.class);
-    }
-
     @SuppressWarnings("unused")
     public static void registerIgnoredScreen(Class<? extends Screen> screenClass) {
         IGNORED_SCREEN_CLASSES.add(screenClass);
