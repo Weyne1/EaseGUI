@@ -1,11 +1,9 @@
 package net.weyne1.easegui.client.gui.components;
 
-import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.network.chat.Component;
-import net.weyne1.easegui.client.config.ConfigManager;
 import net.weyne1.easegui.client.config.EaseGUIConfig;
 
-public class BlurDurationSlider extends AbstractSliderButton {
+public class BlurDurationSlider extends EaseGUISlider {
     private final EaseGUIConfig config;
 
     public BlurDurationSlider(int x, int y, int width, int height, EaseGUIConfig config) {
@@ -38,7 +36,5 @@ public class BlurDurationSlider extends AbstractSliderButton {
     protected void applyValue() {
         int steps = (int) Math.round(this.value * 10.0);
         config.global.blurDuration = steps * 100L;
-
-        ConfigManager.save();
     }
 }
