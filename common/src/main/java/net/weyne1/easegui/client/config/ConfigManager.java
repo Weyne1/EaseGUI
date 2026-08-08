@@ -1,5 +1,6 @@
 package net.weyne1.easegui.client.config;
 
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
@@ -19,12 +20,15 @@ import static net.weyne1.easegui.client.EaseGUIClient.LOGGER;
 
 public class ConfigManager {
     private static final File CONFIG_FILE = new File(".", "config/easegui.json");
-
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+    private static final Gson GSON = new GsonBuilder()
+            .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+            .registerTypeAdapterFactory(new LowercaseEnumTypeAdapterFactory())
+            .enableComplexMapKeySerialization()
+            .setPrettyPrinting()
+            .create();
 
     private static EaseGUIConfig currentConfig = EaseGUIConfigFactory.createDefaultConfig();
     private static boolean isLoaded = false;
-
     private static Screen cachedScreenInstance = null;
     private static EaseGUIScreenType cachedScreenType = EaseGUIScreenRegistry.OTHER;
 
@@ -40,7 +44,13 @@ public class ConfigManager {
                 }
 
                 boolean migrated = false;
-                int version = jsonConfig.has("schemaVersion") ? jsonConfig.get("schemaVersion").getAsInt() : 0;
+
+                int version = 0;
+                if (jsonConfig.has("schemaVersion")) {
+                    version = jsonConfig.get("schemaVersion").getAsInt();
+                } else if (jsonConfig.has("schema_version")) {
+                    version = jsonConfig.get("schema_version").getAsInt();
+                }
 
                 while (version < EaseGUIConfig.CURRENT_SCHEMA_VERSION) {
                     if (version == 0) {
@@ -49,6 +59,9 @@ public class ConfigManager {
                     } else if (version == 1) {
                         migrated |= ConfigMigrator.runMigrationV1toV2(jsonConfig);
                         version = 2;
+                    } else if (version == 2) {
+                        migrated |= ConfigMigrator.runMigrationV2toV3(jsonConfig);
+                        version = 3;
                     } else {
                         break;
                     }

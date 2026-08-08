@@ -2,6 +2,13 @@ package net.weyne1.easegui.client.config;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import net.weyne1.easegui.client.util.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public class ConfigMigrator {
 
@@ -112,4 +119,130 @@ public class ConfigMigrator {
 
         return changed;
     }
+
+    /**
+     * Migrates the configuration schema from v2 to v3.
+     * <ul>
+     *     <li>Removes legacy {@code enableSmoothBlur} in favor of {@code blur_duration}.</li>
+     *     <li>Removes nesting of advancements within advancements</li>
+     *     <li>Renames profile fields: {@code offset} -> {@code initial_offset}, {@code startScale} -> {@code initial_scale}, {@code startAlpha} -> {@code initial_alpha}.</li>
+     *     <li>Converts all JSON keys and enum strings to snake_case.</li>
+     * </ul>
+     */
+    static boolean runMigrationV2toV3(JsonObject jsonConfig) {
+        boolean changed = false;
+
+        if (jsonConfig.has("global") && jsonConfig.get("global").isJsonObject()) {
+            JsonObject global = jsonConfig.getAsJsonObject("global");
+            if (global.has("enableSmoothBlur")) {
+                boolean enabled = global.get("enableSmoothBlur").getAsBoolean();
+                if (!enabled) {
+                    global.addProperty("blurDuration", 0);
+                }
+                global.remove("enableSmoothBlur");
+                changed = true;
+            }
+        }
+
+        if (jsonConfig.has("screens") && jsonConfig.get("screens").isJsonObject()) {
+            JsonObject screens = jsonConfig.getAsJsonObject("screens");
+            if (screens.has("advancements") && screens.get("advancements").isJsonObject()) {
+                JsonObject advScreen = screens.getAsJsonObject("advancements");
+
+                if (advScreen.has("advancements") && advScreen.get("advancements").isJsonObject()) {
+                    JsonObject innerAdv = advScreen.getAsJsonObject("advancements");
+
+                    if (innerAdv.has("window_profile")) {
+                        advScreen.add("window_profile", innerAdv.get("window_profile"));
+                    } else if (innerAdv.has("windowProfile")) {
+                        advScreen.add("windowProfile", innerAdv.get("windowProfile"));
+                    }
+
+                    if (innerAdv.has("tabs_profile")) {
+                        advScreen.add("tabs_profile", innerAdv.get("tabs_profile"));
+                    } else if (innerAdv.has("tabsProfile")) {
+                        advScreen.add("tabsProfile", innerAdv.get("tabsProfile"));
+                    }
+
+                    advScreen.remove("advancements");
+                    changed = true;
+                }
+            }
+        }
+
+        changed |= migrateProfileFieldNamesRecursive(jsonConfig);
+        changed |= transformKeysAndEnumsToSnakeCase(jsonConfig);
+
+        if (jsonConfig.has("schemaVersion")) {
+            jsonConfig.remove("schemaVersion");
+        }
+        jsonConfig.addProperty("schema_version", 3);
+
+        return changed;
+    }
+
+    private static boolean migrateProfileFieldNamesRecursive(JsonElement element) {
+        boolean changed = false;
+        if (element.isJsonObject()) {
+            JsonObject obj = element.getAsJsonObject();
+
+            if (obj.has("offset")) {
+                obj.add("initialOffset", obj.remove("offset"));
+                changed = true;
+            }
+            if (obj.has("startScale")) {
+                obj.add("initialScale", obj.remove("startScale"));
+                changed = true;
+            }
+            if (obj.has("startAlpha")) {
+                obj.add("initialAlpha", obj.remove("startAlpha"));
+                changed = true;
+            }
+
+            for (Map.Entry<String, JsonElement> entry : obj.entrySet()) {
+                changed |= migrateProfileFieldNamesRecursive(entry.getValue());
+            }
+        } else if (element.isJsonArray()) {
+            for (JsonElement item : element.getAsJsonArray()) {
+                changed |= migrateProfileFieldNamesRecursive(item);
+            }
+        }
+        return changed;
+    }
+
+    private static boolean transformKeysAndEnumsToSnakeCase(JsonElement element) {
+        boolean changed = false;
+        if (element.isJsonObject()) {
+            JsonObject obj = element.getAsJsonObject();
+            List<String> keys = new ArrayList<>(obj.keySet());
+
+            for (String key : keys) {
+                JsonElement child = obj.remove(key);
+
+                String newKey = StringUtils.toSnakeCase(key);
+                if (!newKey.equals(key)) {
+                    changed = true;
+                }
+
+                if (child.isJsonPrimitive() && child.getAsJsonPrimitive().isString()) {
+                    String strVal = child.getAsString();
+                    if (strVal.equals(strVal.toUpperCase(Locale.ROOT)) && !strVal.equals(strVal.toLowerCase(Locale.ROOT))) {
+                        child = new JsonPrimitive(strVal.toLowerCase(Locale.ROOT));
+                        changed = true;
+                    }
+                } else {
+                    changed |= transformKeysAndEnumsToSnakeCase(child);
+                }
+
+                obj.add(newKey, child);
+            }
+        } else if (element.isJsonArray()) {
+            for (JsonElement item : element.getAsJsonArray()) {
+                changed |= transformKeysAndEnumsToSnakeCase(item);
+            }
+        }
+        return changed;
+    }
+
+
 }
