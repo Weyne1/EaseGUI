@@ -1,11 +1,9 @@
 package net.weyne1.easegui.client.gui.components;
 
-import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.network.chat.Component;
-import net.weyne1.easegui.client.config.ConfigManager;
 import net.weyne1.easegui.client.config.EaseGUIConfig;
 
-public class DimmingIntensitySlider extends AbstractSliderButton {
+public class DimmingIntensitySlider extends EaseGUISlider {
     private final EaseGUIConfig config;
 
     public DimmingIntensitySlider(int x, int y, int width, int height, EaseGUIConfig config) {
@@ -28,10 +26,8 @@ public class DimmingIntensitySlider extends AbstractSliderButton {
         this.setMessage(component);
     }
 
-
     @Override
     protected void applyValue() {
         config.global.dimmingIntensity = (float) (Math.round(this.value * 100.0) / 100.0);
-        ConfigManager.save();
     }
 }
