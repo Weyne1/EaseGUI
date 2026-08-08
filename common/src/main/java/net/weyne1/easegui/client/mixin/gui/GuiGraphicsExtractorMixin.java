@@ -45,7 +45,10 @@ public class GuiGraphicsExtractorMixin {
         return ColorUtils.getAnimatedColor(color1);
     }
 
-    @ModifyVariable(method = "innerBlit*", at = @At("HEAD"), argsOnly = true, name = "color")
+    @ModifyVariable(
+            method = "innerBlit(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIIIFFFFI)V",
+            at = @At("HEAD"), argsOnly = true, name = "color"
+    )
     private int easeGUI$modifyBlitColor(int color) {
         if (!AnimationContext.isActive()) return color;
         return ColorUtils.getAnimatedColor(color);
