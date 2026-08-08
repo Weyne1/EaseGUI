@@ -4,6 +4,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.weyne1.easegui.api.WidgetCategory;
@@ -51,16 +52,21 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
         leftList.addHeader(Component.translatable("easegui.config.title.general").getString());
 
         Component animationsState = Component.translatable(config.global.enabled ? "easegui.generic.on" : "easegui.generic.off");
-        leftList.addWidget(Button.builder(
-                Component.translatable("easegui.main.enable_animations", animationsState),
-                button -> {
-                    config.global.enabled = !config.global.enabled;
-                    Component updatedState = Component.translatable(config.global.enabled ? "easegui.generic.on" : "easegui.generic.off");
-                    button.setMessage(Component.translatable("easegui.main.enable_animations", updatedState));
 
-                    ConfigManager.save();
-                }
-        ).build());
+        leftList.addWidget(Button.builder(
+                        Component.translatable("easegui.main.enable_animations", animationsState),
+                        button -> {
+                            config.global.enabled = !config.global.enabled;
+
+                            Component updatedState = Component.translatable(config.global.enabled ? "easegui.generic.on" : "easegui.generic.off");
+                            button.setMessage(Component.translatable("easegui.main.enable_animations", updatedState));
+
+                            ConfigManager.save();
+                        }
+                )
+                .tooltip(Tooltip.create(Component.translatable("easegui.main.enable_animations.tooltip")))
+                .build());
+
 
         leftList.addHeader(Component.translatable("easegui.config.title.blur").getString());
 
