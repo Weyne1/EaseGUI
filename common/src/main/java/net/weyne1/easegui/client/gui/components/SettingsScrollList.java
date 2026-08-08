@@ -26,7 +26,7 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
     private static final int ELEMENT_SPACING = 4;
     private static final int WIDGET_HEIGHT = 20;
     private static final float LABEL_WIDTH_RATIO = 0.55f;
-    private static final int MAX_ROW_WIDTH = 350;
+    private static final int MAX_ROW_WIDTH = 400;
     private IntConsumer scrollListener;
 
     public SettingsScrollList(Minecraft mc, int width, int height, int top, int itemHeight) {
