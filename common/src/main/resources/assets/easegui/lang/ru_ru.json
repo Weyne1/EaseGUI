@@ -143,6 +143,8 @@
   "easegui.screen_type.pack_selection": "Выбор наборов ресурсов/данных",
   "easegui.screen_type.advancements": "Окно достижений",
   "easegui.screen_type.statistics": "Окно статистики",
+  "easegui.screen_type.confirm_link": "Экран перехода по ссылке",
+  "easegui.screen_type.world_options": "Настройки мира",
   "easegui.screen_type.warning": "Предупреждения и уведомления",
   "easegui.screen_type.pause": "Меню паузы",
   "easegui.screen_type.multiplayer_options": "Настройки игры по сети",
