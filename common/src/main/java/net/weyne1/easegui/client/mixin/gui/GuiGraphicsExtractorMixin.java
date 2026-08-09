@@ -27,18 +27,6 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 @Mixin(GuiGraphicsExtractor.class)
 public class GuiGraphicsExtractorMixin {
 
-    @ModifyVariable(method = "fillGradient", at = @At("HEAD"), argsOnly = true, name = "col1")
-    private int easeGUI$modifyColorFrom(int col1) {
-        if (!AnimationContext.isActive()) return col1;
-        return ColorUtils.getAnimatedColor(col1);
-    }
-
-    @ModifyVariable(method = "fillGradient", at = @At("HEAD"), argsOnly = true, name = "col2")
-    private int easeGUI$modifyColorTo(int col2) {
-        if (!AnimationContext.isActive()) return col2;
-        return ColorUtils.getAnimatedColor(col2);
-    }
-
     @ModifyVariable(method = "innerFill", at = @At("HEAD"), argsOnly = true, name = "color1")
     private int easeGUI$modifyFillColor(int color1) {
         if (!AnimationContext.isActive()) return color1;
@@ -46,7 +34,7 @@ public class GuiGraphicsExtractorMixin {
     }
 
     @ModifyVariable(
-            method = "innerBlit(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lnet/minecraft/resources/Identifier;IIIIFFFFI)V",
+            method = "innerBlit(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lcom/mojang/blaze3d/textures/GpuTextureView;Lcom/mojang/blaze3d/textures/GpuSampler;IIIIFFFFI)V",
             at = @At("HEAD"), argsOnly = true, name = "color"
     )
     private int easeGUI$modifyBlitColor(int color) {
