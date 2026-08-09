@@ -153,6 +153,7 @@
   "easegui.screen_type.social_interactions": "Сетевые взаимодействия",
   "easegui.screen_type.sign_edit": "Редактирование таблички",
   "easegui.screen_type.book_edit": "Редактирование книги",
+  "easegui.screen_type.book_sign": "Подписание книги",
   "easegui.screen_type.book_view": "Чтение книги",
   "easegui.screen_type.command_block_edit": "Интерфейс командного блока",
   "easegui.screen_type.structure_block_edit": "Интерфейс структурного блока",
