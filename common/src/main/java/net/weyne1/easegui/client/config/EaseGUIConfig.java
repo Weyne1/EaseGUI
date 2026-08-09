@@ -19,10 +19,10 @@ public class EaseGUIConfig {
 
     public static class GlobalSettings {
         public boolean enabled = true;
-        public long blurDuration = 300L;
-        public boolean blurContainers = true;
-        public float dimmingIntensity = 0.20f;
-        public EasingType dimmingEasing = EASE_OUT_CUBIC;
+        public long backgroundAnimationDuration = 300L;
+        public boolean blurAllTransparentScreens = true;
+        public float backgroundDimmingIntensity = 0.20f;
+        public EasingType backgroundAnimationEasing = EASE_OUT_CUBIC;
         public final Map<WidgetCategory, AnimationProfile> elementProfiles = new EnumMap<>(WidgetCategory.class);
     }
 

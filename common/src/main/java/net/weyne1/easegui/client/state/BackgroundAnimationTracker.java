@@ -4,20 +4,19 @@ import net.minecraft.util.Mth;
 import net.weyne1.easegui.client.animator.BackgroundAnimator;
 import net.weyne1.easegui.client.config.ConfigManager;
 
-public class ScreenAnimationTracker {
+public class BackgroundAnimationTracker {
 
     public static float getProgress() {
         var globalConfig = ConfigManager.getConfig().global;
+        long duration = globalConfig.backgroundAnimationDuration;
 
-        if (globalConfig.blurDuration <= 0 || BackgroundAnimator.skipBackgroundFade) {
+        if (duration <= 0 || BackgroundAnimator.isBackgroundAnimationSkipped()) {
             return 1.0f;
         }
 
         long elapsed = ScreenStateTracker.getScreenElapsed();
-        long duration = globalConfig.blurDuration;
+        float t = Mth.clamp(elapsed / (float) duration, 0f, 1f);
 
-        float t = (duration <= 0) ? 1f : Mth.clamp(elapsed / (float) duration, 0f, 1f);
-
-        return globalConfig.dimmingEasing.ease(t);
+        return globalConfig.backgroundAnimationEasing.ease(t);
     }
 }
