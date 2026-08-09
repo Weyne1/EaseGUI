@@ -171,6 +171,6 @@
   "easegui.screen_type.disconnected": "Экран отключения от сервера",
   "easegui.screen_type.server_reconfig": "Переконфигурация сервера",
   "easegui.screen_type.credits": "Титры и авторы",
-  "easegui.screen_type.container_generic": "Общие контейнеры",
+  "easegui.screen_type.container_generic": "Универсальные контейнеры",
   "easegui.screen_type.ease_gui_config": "Интерфейсы конфигурации EaseGUI"
 }
