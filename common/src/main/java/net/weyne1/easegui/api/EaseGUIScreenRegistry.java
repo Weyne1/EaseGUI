@@ -62,6 +62,7 @@ public final class EaseGUIScreenRegistry {
         // Editors
         register("sign_edit", AbstractSignEditScreen.class, 1000, EaseGUIScreenGroup.EDITORS);
         register("book_edit", BookEditScreen.class, 1000, EaseGUIScreenGroup.EDITORS);
+        register("book_sign", BookSignScreen.class, 1000, EaseGUIScreenGroup.EDITORS);
         register("book_view", BookViewScreen.class, 1000, EaseGUIScreenGroup.EDITORS);
         register("command_block_edit", AbstractCommandBlockEditScreen.class, 1000, EaseGUIScreenGroup.EDITORS);
         register("structure_block_edit", StructureBlockEditScreen.class, 1000, EaseGUIScreenGroup.EDITORS);

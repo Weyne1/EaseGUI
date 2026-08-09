@@ -152,6 +152,7 @@
   "easegui.screen_type.social_interactions": "Social Interactions Screen",
   "easegui.screen_type.sign_edit": "Sign Text Editing",
   "easegui.screen_type.book_edit": "Book Editing",
+  "easegui.screen_type.book_sign": "Book Signing",
   "easegui.screen_type.book_view": "Book Reading/Viewing",
   "easegui.screen_type.command_block_edit": "Command Block UI",
   "easegui.screen_type.structure_block_edit": "Structure Block UI",
