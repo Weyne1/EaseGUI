@@ -34,10 +34,8 @@ subprojects {
 	apply plugin: 'architectury-plugin'
 	apply plugin: 'maven-publish'
 
-	version = ""
-
 	base {
-		archivesName = "${rootProject.archives_name}-${rootProject.mod_version}-${project.name}-${rootProject.minecraft_version}"
+		archivesName = "${rootProject.archives_name}-${project.name}-${rootProject.mod_version}"
 	}
 
 	tasks.withType(Jar).configureEach {
