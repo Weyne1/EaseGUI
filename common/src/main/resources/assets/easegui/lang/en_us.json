@@ -142,6 +142,8 @@
   "easegui.screen_type.pack_selection": "Resource/Data Pack Selection",
   "easegui.screen_type.advancements": "Advancements Screen",
   "easegui.screen_type.statistics": "Statistics Screen",
+  "easegui.screen_type.confirm_link": "Confirm Link Screen",
+  "easegui.screen_type.world_options": "World Options",
   "easegui.screen_type.warning": "Warning & Notification Screens",
   "easegui.screen_type.pause": "Pause Menu",
   "easegui.screen_type.share_to_lan": "LAN World",

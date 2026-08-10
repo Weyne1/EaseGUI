@@ -52,6 +52,7 @@ public final class EaseGUIScreenRegistry {
         register("statistics", StatsScreen.class, 1000, EaseGUIScreenGroup.BASIC);
         register("warning", WarningScreen.class, 1000, EaseGUIScreenGroup.BASIC);
         register("pause", PauseScreen.class, 1000, EaseGUIScreenGroup.BASIC);
+        register("confirm_link", ConfirmLinkScreen.class, 1000, EaseGUIScreenGroup.BASIC);
         register("share_to_lan", ShareToLanScreen.class, 1000, EaseGUIScreenGroup.BASIC);
         register("death", DeathScreen.class, 1000, EaseGUIScreenGroup.BASIC);
         register("social_interactions", SocialInteractionsScreen.class, 1000, EaseGUIScreenGroup.BASIC);
