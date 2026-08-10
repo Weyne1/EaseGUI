@@ -7,7 +7,7 @@ public class DimmingIntensitySlider extends EaseGUISlider {
     private final EaseGUIConfig config;
 
     public DimmingIntensitySlider(int x, int y, int width, int height, EaseGUIConfig config) {
-        super(x, y, width, height, Component.empty(), config.global.dimmingIntensity);
+        super(x, y, width, height, Component.empty(), config.global.backgroundDimmingIntensity);
         this.config = config;
         this.updateMessage();
     }
@@ -28,6 +28,6 @@ public class DimmingIntensitySlider extends EaseGUISlider {
 
     @Override
     protected void applyValue() {
-        config.global.dimmingIntensity = (float) (Math.round(this.value * 100.0) / 100.0);
+        config.global.backgroundDimmingIntensity = (float) (Math.round(this.value * 100.0) / 100.0);
     }
 }

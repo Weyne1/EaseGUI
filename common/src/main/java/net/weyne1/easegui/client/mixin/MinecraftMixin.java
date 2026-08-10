@@ -19,15 +19,16 @@ public class MinecraftMixin {
     private void easeGUI$onScreenTransition(Screen guiScreen, CallbackInfo ci) {
         Screen oldScreen = this.screen;
 
-        if (!BackgroundAnimator.shouldAnimateBackground(guiScreen)) {
-            BackgroundAnimator.skipBackgroundFade = true;
+        ScreenStateTracker.onScreenChange();
+
+        if (!BackgroundAnimator.isBackgroundEffectAllowed(guiScreen)) {
+            BackgroundAnimator.setSkipBackgroundAnimation(true);
             return;
         }
 
         boolean oldScreenWasActuallyShown = ScreenStateTracker.wasScreenRendered(oldScreen);
-        boolean wasBlurred = oldScreenWasActuallyShown && BackgroundAnimator.shouldAnimateBackground(oldScreen);
-        boolean willBeBlurred = BackgroundAnimator.shouldAnimateBackground(guiScreen);
+        boolean wasBlurred = oldScreenWasActuallyShown && ScreenStateTracker.wasLastScreenBlurred();
 
-        BackgroundAnimator.skipBackgroundFade = wasBlurred && willBeBlurred;
+        BackgroundAnimator.setSkipBackgroundAnimation(wasBlurred);
     }
 }
