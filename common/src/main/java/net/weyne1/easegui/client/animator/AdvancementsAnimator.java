@@ -23,13 +23,13 @@ public class AdvancementsAnimator {
             return null;
         }
 
-        var titleSettings = config.screens.get(type.getId());
+        var settings = config.screens.get(type.getId());
 
-        if (titleSettings == null || !titleSettings.enabled || titleSettings.advancements == null || !titleSettings.advancements.windowProfile.isEnabled()) {
+        if (settings == null || !settings.enabled || settings.windowProfile == null || !settings.windowProfile.isEnabled()) {
             return null;
         }
 
-        var profile = titleSettings.advancements.windowProfile;
+        var profile = settings.windowProfile;
         long startTime = ScreenStateTracker.getScreenOpenTime();
         long elapsed = Util.getMillis() - startTime;
 
@@ -46,9 +46,9 @@ public class AdvancementsAnimator {
             return null;
         }
 
-        var titleSettings = config.screens.get(type.getId());
+        var settings = config.screens.get(type.getId());
 
-        if (titleSettings == null || !titleSettings.enabled || titleSettings.advancements == null || !titleSettings.advancements.tabsProfile.isEnabled()) {
+        if (settings == null || !settings.enabled || settings.tabsProfile == null || !settings.tabsProfile.isEnabled()) {
             return null;
         }
 
@@ -58,7 +58,7 @@ public class AdvancementsAnimator {
             return AnimationSystem.beginAlphaOnly(graphics, parentAlpha);
         }
 
-        var profile = titleSettings.advancements.tabsProfile;
+        var profile = settings.tabsProfile;
         long startTime = ScreenStateTracker.getScreenOpenTime();
         long tabDelay = tabIndex * profile.getCascadeDelay();
 
