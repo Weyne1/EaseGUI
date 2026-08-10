@@ -12,6 +12,7 @@ import net.weyne1.easegui.api.WidgetCategory;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
+@SuppressWarnings("NameDoesntMatchTargetClass")
 @Mixin(AbstractWidget.class)
 public abstract class AbstractWidgetMixin implements WidgetExtension {
 
@@ -27,22 +28,22 @@ public abstract class AbstractWidgetMixin implements WidgetExtension {
     }
 
     @WrapMethod(method = "render")
-    private void easeGUI$wrapWidgetRender(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, Operation<Void> original) {
+    private void easeGUI$wrapWidgetRender(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, Operation<Void> original) {
         AbstractWidget widget = (AbstractWidget) (Object) this;
 
         if (!widget.visible) {
-            original.call(guiGraphics, mouseX, mouseY, partialTick);
+            original.call(graphics, mouseX, mouseY, partialTick);
             return;
         }
 
         var category = this.easeGUI$getCategory();
         if (category == null || category == WidgetCategory.UNKNOWN) {
-            original.call(guiGraphics, mouseX, mouseY, partialTick);
+            original.call(graphics, mouseX, mouseY, partialTick);
             return;
         }
 
-        try (AnimationScope ignored = WidgetAnimator.beginRender(widget, guiGraphics, category, this.easeGUI$animationState)) {
-            original.call(guiGraphics, mouseX, mouseY, partialTick);
+        try (AnimationScope ignored = WidgetAnimator.beginRender(widget, graphics, category, this.easeGUI$animationState)) {
+            original.call(graphics, mouseX, mouseY, partialTick);
         }
     }
 }

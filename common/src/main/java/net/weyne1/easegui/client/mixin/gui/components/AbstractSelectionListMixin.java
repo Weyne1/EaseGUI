@@ -19,6 +19,7 @@ public abstract class AbstractSelectionListMixin {
     @Shadow public abstract int getRowLeft();
     @Shadow public abstract int getRowWidth();
 
+    @SuppressWarnings("NameDoesntMatchTargetClass")
     @WrapOperation(
             method = "renderListItems",
             at = @At(
@@ -26,7 +27,7 @@ public abstract class AbstractSelectionListMixin {
                     target = "Lnet/minecraft/client/gui/components/AbstractSelectionList;renderItem(Lnet/minecraft/client/gui/GuiGraphics;IIFLnet/minecraft/client/gui/components/AbstractSelectionList$Entry;)V"
             )
     )
-    private void easeGUI$wrapRenderItem(AbstractSelectionList<?> instance, GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, @Coerce Object item, Operation<Void> original) {
+    private void easeGUI$wrapRenderItem(AbstractSelectionList<?> instance, GuiGraphics graphics, int mouseX, int mouseY, float partialTick, @Coerce Object item, Operation<Void> original) {
         LayoutElement element = (LayoutElement) item;
         int left = this.getRowLeft();
         int width = this.getRowWidth();
@@ -35,8 +36,8 @@ public abstract class AbstractSelectionListMixin {
 
         AnimationContext.pushParentAnimation();
 
-        try (AnimationScope ignored = ListItemAnimator.beginRender(guiGraphics, top, left, width, height)) {
-            original.call(instance, guiGraphics, mouseX, mouseY, partialTick, item);
+        try (AnimationScope ignored = ListItemAnimator.beginRender(graphics, top, left, width, height)) {
+            original.call(instance, graphics, mouseX, mouseY, partialTick, item);
         } finally {
             AnimationContext.popParentAnimation();
         }

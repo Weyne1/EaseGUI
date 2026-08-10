@@ -49,9 +49,9 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
         }
 
         @Override
-        public void renderContent(GuiGraphics gg, int mouseX, int mouseY, boolean isHovered, float partialTick) {
+        public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean isHovered, float partialTick) {
             Font font = Minecraft.getInstance().font;
-            gg.drawCenteredString(font, this.text, this.getContentXMiddle(), this.getContentYMiddle() - 4, COLOR_HEADER);
+            graphics.drawCenteredString(font, this.text, this.getContentXMiddle(), this.getContentYMiddle() - 4, COLOR_HEADER);
         }
 
         @Override
@@ -70,10 +70,10 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
         }
 
         @Override
-        public void renderContent(@NonNull GuiGraphics gg, int mouseX, int mouseY, boolean isHovered, float partialTick) {
+        public void renderContent(@NonNull GuiGraphics graphics, int mouseX, int mouseY, boolean isHovered, float partialTick) {
             button.setX(this.getContentX() + SCROLLBAR_WIDTH_GAP / 2);
             button.setY(this.getContentY());
-            button.render(gg, mouseX, mouseY, partialTick);
+            button.render(graphics, mouseX, mouseY, partialTick);
         }
 
         @Override
@@ -103,15 +103,15 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
         }
 
         @Override
-        public void renderContent(@NonNull GuiGraphics gg, int mouseX, int mouseY, boolean isHovered, float partialTick) {
+        public void renderContent(@NonNull GuiGraphics graphics, int mouseX, int mouseY, boolean isHovered, float partialTick) {
             button1.setX(this.getContentX() + SCROLLBAR_WIDTH_GAP / 2);
             button1.setY(this.getContentY());
 
             button2.setX(button1.getX() + button1.getWidth() + ELEMENT_SPACING);
             button2.setY(this.getContentY());
 
-            button1.render(gg, mouseX, mouseY, partialTick);
-            button2.render(gg, mouseX, mouseY, partialTick);
+            button1.render(graphics, mouseX, mouseY, partialTick);
+            button2.render(graphics, mouseX, mouseY, partialTick);
         }
 
         @Override
@@ -141,14 +141,14 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
         }
 
         @Override
-        public void renderContent(@NonNull GuiGraphics gg, int mouseX, int mouseY, boolean isHovered, float partialTick) {
+        public void renderContent(@NonNull GuiGraphics graphics, int mouseX, int mouseY, boolean isHovered, float partialTick) {
             label.setX(this.getContentX() + SCROLLBAR_WIDTH_GAP / 2);
             label.setY(this.getContentY());
             field.setX(label.getX() + label.getWidth() + ELEMENT_SPACING);
             field.setY(this.getContentY());
 
-            label.render(gg, mouseX, mouseY, partialTick);
-            field.render(gg, mouseX, mouseY, partialTick);
+            label.render(graphics, mouseX, mouseY, partialTick);
+            field.render(graphics, mouseX, mouseY, partialTick);
         }
 
         @Override
@@ -185,7 +185,7 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
         }
 
         @Override
-        public void renderContent(@NonNull GuiGraphics gg, int mouseX, int mouseY, boolean isHovered, float partialTick) {
+        public void renderContent(@NonNull GuiGraphics graphics, int mouseX, int mouseY, boolean isHovered, float partialTick) {
             label.setX(this.getContentX() + SCROLLBAR_WIDTH_GAP / 2);
             label.setY(this.getContentY());
 
@@ -195,9 +195,9 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
             field2.setX(field1.getX() + field1.getWidth() + ELEMENT_SPACING);
             field2.setY(this.getContentY());
 
-            label.render(gg, mouseX, mouseY, partialTick);
-            field1.render(gg, mouseX, mouseY, partialTick);
-            field2.render(gg, mouseX, mouseY, partialTick);
+            label.render(graphics, mouseX, mouseY, partialTick);
+            field1.render(graphics, mouseX, mouseY, partialTick);
+            field2.render(graphics, mouseX, mouseY, partialTick);
         }
 
         @Override

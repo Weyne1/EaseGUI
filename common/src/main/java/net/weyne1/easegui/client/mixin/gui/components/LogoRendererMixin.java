@@ -16,13 +16,14 @@ public class LogoRendererMixin {
     @Shadow @Final private boolean showEasterEgg;
     @Shadow @Final private boolean keepLogoThroughFade;
 
+    @SuppressWarnings("NameDoesntMatchTargetClass")
     @Inject(
             method = "renderLogo(Lnet/minecraft/client/gui/GuiGraphics;IFI)V",
             at = @At("HEAD"),
             cancellable = true
     )
-    private void easeGUI$overrideLogo(GuiGraphics guiGraphics, int screenWidth, float transparency, int height, CallbackInfo ci) {
-        if (LogoAnimator.render(guiGraphics, screenWidth, transparency, height, showEasterEgg, keepLogoThroughFade)) {
+    private void easeGUI$overrideLogo(GuiGraphics graphics, int screenWidth, float transparency, int height, CallbackInfo ci) {
+        if (LogoAnimator.render(graphics, screenWidth, transparency, height, showEasterEgg, keepLogoThroughFade)) {
             ci.cancel();
         }
     }

@@ -75,7 +75,7 @@ public class BackgroundAnimator {
         return (originalColor & 0x00FFFFFF) | (finalAlpha << 24);
     }
 
-    public static AnimationScope beginRenderMenu(Screen screen, GuiGraphics gg) {
+    public static AnimationScope beginRenderMenu(Screen screen, GuiGraphics graphics) {
         if (!shouldAnimateBackground(screen) || skipBackgroundFade) {
             return null;
         }
@@ -87,7 +87,7 @@ public class BackgroundAnimator {
         }
 
         float progress = Math.max(0.0f, Math.min(1.0f, ScreenAnimationTracker.getProgress()));
-        return AnimationSystem.beginAlphaOnly(gg, progress);
+        return AnimationSystem.beginAlphaOnly(graphics, progress);
     }
 
     private static boolean isIgnoredScreen(Screen screen) {

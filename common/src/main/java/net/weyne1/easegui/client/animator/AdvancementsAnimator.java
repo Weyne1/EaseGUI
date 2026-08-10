@@ -15,7 +15,7 @@ import net.weyne1.easegui.client.state.ScreenStateTracker;
 
 public class AdvancementsAnimator {
 
-    public static AnimationScope beginRenderWindow(AdvancementsScreen screen, GuiGraphics gg) {
+    public static AnimationScope beginRenderWindow(AdvancementsScreen screen, GuiGraphics graphics) {
         EaseGUIScreenType type = EaseGUIScreenRegistry.from(screen);
         EaseGUIConfig config = ConfigManager.getConfig();
 
@@ -35,10 +35,10 @@ public class AdvancementsAnimator {
 
         if (elapsed >= profile.getDuration()) return null;
 
-        return AnimationSystem.begin(gg, 0, 0, screen.width, screen.height, profile, elapsed, 1.0f);
+        return AnimationSystem.begin(graphics, 0, 0, screen.width, screen.height, profile, elapsed, 1.0f);
     }
 
-    public static AnimationScope beginRenderTab(Screen screen, GuiGraphics gg, int tabIndex) {
+    public static AnimationScope beginRenderTab(Screen screen, GuiGraphics graphics, int tabIndex) {
         EaseGUIScreenType type = EaseGUIScreenRegistry.from(screen);
         EaseGUIConfig config = ConfigManager.getConfig();
 
@@ -55,7 +55,7 @@ public class AdvancementsAnimator {
         float parentAlpha = AnimationContext.getCurrentAlpha();
 
         if (tabIndex == 0) {
-            return AnimationSystem.beginAlphaOnly(gg, parentAlpha);
+            return AnimationSystem.beginAlphaOnly(graphics, parentAlpha);
         }
 
         var profile = titleSettings.advancements.tabsProfile;
@@ -66,6 +66,6 @@ public class AdvancementsAnimator {
 
         if (elapsed >= profile.getDuration()) return null;
 
-        return AnimationSystem.begin(gg, 0, 0, 28, 32, profile, elapsed, parentAlpha);
+        return AnimationSystem.begin(graphics, 0, 0, 28, 32, profile, elapsed, parentAlpha);
     }
 }

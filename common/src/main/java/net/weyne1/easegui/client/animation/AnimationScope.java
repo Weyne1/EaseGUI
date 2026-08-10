@@ -8,7 +8,7 @@ public class AnimationScope implements AutoCloseable {
     public static final AnimationScope NO_OP = new NoOpAnimationScope();
     private static final float MIN_SCALE = 0.001f;
 
-    private final GuiGraphics guiGraphics;
+    private final GuiGraphics graphics;
     private final float alpha;
 
     private boolean isClosed = false;
@@ -40,16 +40,16 @@ public class AnimationScope implements AutoCloseable {
     }
 
     protected AnimationScope() {
-        this.guiGraphics = null;
+        this.graphics = null;
         this.alpha = 1.0f;
     }
 
-    AnimationScope(GuiGraphics guiGraphics, float alpha) {
-        this.guiGraphics = guiGraphics;
+    AnimationScope(GuiGraphics graphics, float alpha) {
+        this.graphics = graphics;
         this.alpha = alpha;
 
         AnimationContext.pushScope(this);
-        this.guiGraphics.pose().pushMatrix();
+        this.graphics.pose().pushMatrix();
     }
 
     void setTransformParams(float offsetX, float offsetY, float scaleX, float scaleY, float pivotX, float pivotY) {
@@ -60,7 +60,7 @@ public class AnimationScope implements AutoCloseable {
         this.pivotX = pivotX;
         this.pivotY = pivotY;
 
-        Matrix3x2fStack poseStack = guiGraphics.pose();
+        Matrix3x2fStack poseStack = graphics.pose();
 
         if (this.scaleX != 1.0f || this.scaleY != 1.0f) {
             poseStack.translate(offsetX + pivotX, offsetY + pivotY);
@@ -72,14 +72,14 @@ public class AnimationScope implements AutoCloseable {
     }
 
     public void applyPivotScale(float pivotX, float pivotY, float scale) {
-        if (this.guiGraphics == null) return;
+        if (this.graphics == null) return;
 
         this.scaleX = clampScale(scale);
         this.scaleY = clampScale(scale);
         this.pivotX = pivotX;
         this.pivotY = pivotY;
 
-        Matrix3x2fStack poseStack = guiGraphics.pose();
+        Matrix3x2fStack poseStack = graphics.pose();
 
         poseStack.translate(pivotX, pivotY);
         poseStack.scale(this.scaleX, this.scaleY);
@@ -90,7 +90,7 @@ public class AnimationScope implements AutoCloseable {
         if (isClosed) return;
 
         if (suspendDepth == 0) {
-            Matrix3x2fStack poseStack = guiGraphics.pose();
+            Matrix3x2fStack poseStack = graphics.pose();
             poseStack.pushMatrix();
 
             if (scaleX != 1.0f || scaleY != 1.0f) {
@@ -115,7 +115,7 @@ public class AnimationScope implements AutoCloseable {
         suspendDepth--;
 
         if (suspendDepth == 0) {
-            guiGraphics.pose().popMatrix();
+            graphics.pose().popMatrix();
         }
     }
 
@@ -128,12 +128,12 @@ public class AnimationScope implements AutoCloseable {
             EaseGUIDebug.reportError("scope_closed_while_suspended",
                     () -> "AnimationScope closed while still suspended (depth=" + suspendDepth + ")! " +
                             "A layer likely leaked a suspend() without a matching resume().");
-            guiGraphics.pose().popMatrix();
+            graphics.pose().popMatrix();
             suspendDepth = 0;
         }
 
         try {
-            guiGraphics.pose().popMatrix();
+            graphics.pose().popMatrix();
         } catch (IllegalStateException e) {
             EaseGUIDebug.reportError("pose_stack_underflow", () -> "PoseStack underflow inside AnimationScope close!");
         }

@@ -36,7 +36,7 @@ public class LogoAnimator {
      */
     private static final int[] LOGICAL_INDICES = new int[] { 0, 1, 2, 3, 8, 7, 6, 5, 4 };
 
-    public static boolean render(GuiGraphics gg, int screenWidth, float transparency, int height, boolean showEasterEgg, boolean keepLogoThroughFade) {
+    public static boolean render(GuiGraphics graphics, int screenWidth, float transparency, int height, boolean showEasterEgg, boolean keepLogoThroughFade) {
         EaseGUIConfig config = ConfigManager.getConfig();
 
         if (!config.global.enabled) {
@@ -54,28 +54,28 @@ public class LogoAnimator {
 
         Identifier logoTexture = showEasterEgg ? LogoRenderer.EASTER_EGG_LOGO : LogoRenderer.MINECRAFT_LOGO;
         if (logoConfig.animateWholeText) {
-            renderWholeLogo(gg, logoTexture, logoConfig.logoProfile, startX, height, finalAlpha);
+            renderWholeLogo(graphics, logoTexture, logoConfig.logoProfile, startX, height, finalAlpha);
         } else {
-            renderCascadedLetters(gg, logoConfig.logoProfile, startX, height, finalAlpha);
+            renderCascadedLetters(graphics, logoConfig.logoProfile, startX, height, finalAlpha);
         }
 
-        renderEditionText(gg, logoConfig, screenWidth, height, finalAlpha);
+        renderEditionText(graphics, logoConfig, screenWidth, height, finalAlpha);
 
         return true;
     }
 
-    private static void renderWholeLogo(GuiGraphics gg, Identifier texture, AnimationProfile profile, int startX, int height, float finalAlpha) {
+    private static void renderWholeLogo(GuiGraphics graphics, Identifier texture, AnimationProfile profile, int startX, int height, float finalAlpha) {
         long actualStartTime = ScreenStateTracker.getTitleActualStartTime();
         long elapsed = Util.getMillis() - actualStartTime;
         int logoWidth = LogoRendererAccessor.easeGUI$getLogoWidth();
         int logoHeight = LogoRendererAccessor.easeGUI$getLogoHeight();
 
-        try (AnimationScope ignored = AnimationSystem.begin(gg, startX, height, logoWidth, logoHeight, profile, elapsed, finalAlpha)) {
-            drawLogoTexture(gg, texture, startX, height);
+        try (AnimationScope ignored = AnimationSystem.begin(graphics, startX, height, logoWidth, logoHeight, profile, elapsed, finalAlpha)) {
+            drawLogoTexture(graphics, texture, startX, height);
         }
     }
 
-    private static void renderCascadedLetters(GuiGraphics gg, AnimationProfile profile, int startX, int height, float finalAlpha) {
+    private static void renderCascadedLetters(GuiGraphics graphics, AnimationProfile profile, int startX, int height, float finalAlpha) {
         long now = Util.getMillis();
         long actualStartTime = ScreenStateTracker.getTitleActualStartTime();
         int logoWidth = LogoRendererAccessor.easeGUI$getLogoWidth();
@@ -88,13 +88,13 @@ public class LogoAnimator {
             long cascadeDelay = calculateCascadeDelay(profile, logicalIndex);
             long elapsed = now - actualStartTime - cascadeDelay;
 
-            try (AnimationScope ignored = AnimationSystem.begin(gg, startX, height, logoWidth, logoHeight, profile, elapsed, finalAlpha)) {
-                drawLogoTexture(gg, texture, startX, height);
+            try (AnimationScope ignored = AnimationSystem.begin(graphics, startX, height, logoWidth, logoHeight, profile, elapsed, finalAlpha)) {
+                drawLogoTexture(graphics, texture, startX, height);
             }
         }
     }
 
-    private static void renderEditionText(GuiGraphics gg, EaseGUIConfig.LogoSettings config, int screenWidth, int height, float finalAlpha) {
+    private static void renderEditionText(GuiGraphics graphics, EaseGUIConfig.LogoSettings config, int screenWidth, int height, float finalAlpha) {
         int editionWidth = LogoRendererAccessor.easeGUI$getEditionWidth();
         int editionHeight = LogoRendererAccessor.easeGUI$getEditionHeight();
         int logoHeight = LogoRendererAccessor.easeGUI$getLogoHeight();
@@ -103,25 +103,25 @@ public class LogoAnimator {
         var profile = config.editionProfile;
 
         if (profile == null || !profile.isEnabled()) {
-            drawStaticEdition(gg, x, y, finalAlpha);
+            drawStaticEdition(graphics, x, y, finalAlpha);
             return;
         }
 
         long elapsed = getEditionElapsed(config);
 
         if (elapsed >= profile.getDuration()) {
-            drawStaticEdition(gg, x, y, finalAlpha);
+            drawStaticEdition(graphics, x, y, finalAlpha);
             return;
         }
 
-        try (AnimationScope ignored = AnimationSystem.begin(gg, x, y, editionWidth, editionHeight, profile, elapsed, finalAlpha)) {
-            drawEditionTexture(gg, x, y);
+        try (AnimationScope ignored = AnimationSystem.begin(graphics, x, y, editionWidth, editionHeight, profile, elapsed, finalAlpha)) {
+            drawEditionTexture(graphics, x, y);
         }
     }
 
-    private static void drawStaticEdition(GuiGraphics gg, int x, int y, float finalAlpha) {
-        try (AnimationScope ignored = AnimationSystem.beginAlphaOnly(gg, finalAlpha)) {
-            drawEditionTexture(gg, x, y);
+    private static void drawStaticEdition(GuiGraphics graphics, int x, int y, float finalAlpha) {
+        try (AnimationScope ignored = AnimationSystem.beginAlphaOnly(graphics, finalAlpha)) {
+            drawEditionTexture(graphics, x, y);
         }
     }
 
@@ -142,16 +142,16 @@ public class LogoAnimator {
         return Util.getMillis() - actualStartTime - maxLogoDelay;
     }
 
-    private static void drawLogoTexture(GuiGraphics gg, Identifier texture, int x, int y) {
-        gg.blit(RenderPipelines.GUI_TEXTURED, texture, x, y, 0.0f, 0.0f,
+    private static void drawLogoTexture(GuiGraphics graphics, Identifier texture, int x, int y) {
+        graphics.blit(RenderPipelines.GUI_TEXTURED, texture, x, y, 0.0f, 0.0f,
                 LogoRendererAccessor.easeGUI$getLogoWidth(),
                 LogoRendererAccessor.easeGUI$getLogoHeight(),
                 LogoRendererAccessor.easeGUI$getLogoWidth(),
                 LogoRendererAccessor.easeGUI$getLogoTextureHeight());
     }
 
-    private static void drawEditionTexture(GuiGraphics gg, int x, int y) {
-        gg.blit(RenderPipelines.GUI_TEXTURED, LogoRenderer.MINECRAFT_EDITION, x, y, 0.0f, 0.0f,
+    private static void drawEditionTexture(GuiGraphics graphics, int x, int y) {
+        graphics.blit(RenderPipelines.GUI_TEXTURED, LogoRenderer.MINECRAFT_EDITION, x, y, 0.0f, 0.0f,
                 LogoRendererAccessor.easeGUI$getEditionWidth(),
                 LogoRendererAccessor.easeGUI$getEditionHeight(),
                 LogoRendererAccessor.easeGUI$getEditionWidth(),

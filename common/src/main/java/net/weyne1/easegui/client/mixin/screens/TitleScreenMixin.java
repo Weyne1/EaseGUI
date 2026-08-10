@@ -9,6 +9,7 @@ import net.weyne1.easegui.client.config.ConfigManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
+@SuppressWarnings("NameDoesntMatchTargetClass")
 @Mixin(TitleScreen.class)
 public class TitleScreenMixin {
 
@@ -41,14 +42,14 @@ public class TitleScreenMixin {
                     target = "Lnet/minecraft/client/gui/components/LogoRenderer;renderLogo(Lnet/minecraft/client/gui/GuiGraphics;IF)V"
             )
     )
-    private void easeGUI$conditionallyFadeLogo(LogoRenderer instance, GuiGraphics guiGraphics, int screenWidth, float transparency, Operation<Void> original) {
+    private void easeGUI$conditionallyFadeLogo(LogoRenderer instance, GuiGraphics graphics, int screenWidth, float transparency, Operation<Void> original) {
         var titleSettings = ConfigManager.getConfig().screens.get("title");
 
         if (titleSettings != null && titleSettings.enabled) {
-            original.call(instance, guiGraphics, screenWidth, 1.0F);
+            original.call(instance, graphics, screenWidth, 1.0F);
             return;
         }
 
-        original.call(instance, guiGraphics, screenWidth, transparency);
+        original.call(instance, graphics, screenWidth, transparency);
     }
 }
