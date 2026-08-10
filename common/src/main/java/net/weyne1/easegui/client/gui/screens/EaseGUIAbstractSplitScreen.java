@@ -19,14 +19,14 @@ import org.jspecify.annotations.NonNull;
 import java.util.EnumSet;
 
 public abstract class EaseGUIAbstractSplitScreen extends Screen {
+    private static final int LINE_COLOR = 0x33FFFFFF;
     protected final Screen parent;
     protected int halfWidth;
     protected int listWidth;
     protected int listHeight;
     protected int leftX;
     protected int rightX;
-
-    private static final int LINE_COLOR = 0x33FFFFFF;
+    protected SettingsScrollList dynamicList;
 
     public EaseGUIAbstractSplitScreen(Component title, Screen parent) {
         super(title);
@@ -36,19 +36,14 @@ public abstract class EaseGUIAbstractSplitScreen extends Screen {
     @Override
     protected void init() {
         this.halfWidth = this.width / 2;
-
         this.listWidth = halfWidth;
         this.listHeight = this.height - 50 - 45;
-
         this.leftX = 0;
         this.rightX = halfWidth;
 
-        initScreen();
-
-        // Главный заголовок экрана (в самом верху по центру)
+        // Главный заголовок
         Component titleColored = this.title.copy().withStyle(ChatFormatting.WHITE);
         StringWidget titleWidget = new StringWidget(titleColored, this.font);
-
         titleWidget.setX(this.halfWidth - titleWidget.getWidth() / 2);
         titleWidget.setY(15);
         this.addRenderableWidget(titleWidget);
@@ -58,7 +53,6 @@ public abstract class EaseGUIAbstractSplitScreen extends Screen {
         if (leftSub != null) {
             Component leftSubColored = leftSub.copy().withStyle(ChatFormatting.GRAY);
             StringWidget leftSubWidget = new StringWidget(leftSubColored, this.font);
-
             leftSubWidget.setX((this.halfWidth / 2) - (leftSubWidget.getWidth() / 2));
             leftSubWidget.setY(35);
             this.addRenderableWidget(leftSubWidget);
@@ -69,11 +63,12 @@ public abstract class EaseGUIAbstractSplitScreen extends Screen {
         if (rightSub != null) {
             Component rightSubColored = rightSub.copy().withStyle(ChatFormatting.GRAY);
             StringWidget rightSubWidget = new StringWidget(rightSubColored, this.font);
-
             rightSubWidget.setX((this.halfWidth + (this.halfWidth / 2)) - (rightSubWidget.getWidth() / 2));
             rightSubWidget.setY(35);
             this.addRenderableWidget(rightSubWidget);
         }
+
+        initScreen();
     }
 
     protected abstract void initScreen();
