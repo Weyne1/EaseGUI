@@ -135,8 +135,8 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
         if (cleanDefault == null) cleanDefault = new AnimationProfile();
         AnimationProfile finalCleanDefault = cleanDefault;
 
-        list.addWidget(Button.builder(
-                Component.translatable(translationKey),
+        Button settingsButton = Button.builder(
+                Component.translatable("easegui.generic.configure"),
                 b -> mc.setScreen(new ProfileEditorScreen(
                         this,
                         config.global.elementProfiles.getOrDefault(category, new AnimationProfile()),
@@ -147,7 +147,9 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
                             ConfigManager.save();
                         }
                 ))
-        ).build());
+        ).build();
+
+        list.addLabelAndButton(Component.translatable(translationKey).getString(), settingsButton);
     }
 
     private EditBox createTextField(String value) {
