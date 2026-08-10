@@ -35,19 +35,13 @@ subprojects {
 	apply plugin: 'maven-publish'
 
 	base {
-		archivesName = "${rootProject.archives_name}-${project.name}-${rootProject.mod_version}"
+		archivesName = "${rootProject.archives_name}-${project.name}"
 	}
 
 	tasks.withType(Jar).configureEach {
-		archiveVersion.set("")
-
 		if (name == "sourcesJar") {
 			archiveClassifier.set("sources")
 		}
-	}
-
-	tasks.named('remapJar') {
-		archiveVersion.set("")
 	}
 
 	loom {
