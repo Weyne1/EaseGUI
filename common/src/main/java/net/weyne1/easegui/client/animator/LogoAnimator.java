@@ -70,7 +70,7 @@ public class LogoAnimator {
         int logoWidth = LogoRendererAccessor.easeGUI$getLogoWidth();
         int logoHeight = LogoRendererAccessor.easeGUI$getLogoHeight();
 
-        try (AnimationScope ignored = AnimationSystem.begin(graphics, startX, height, logoWidth, logoHeight, profile, elapsed, finalAlpha)) {
+        try (AnimationScope ignored = AnimationSystem.begin(graphics, profile, startX, height, logoWidth, logoHeight, elapsed, finalAlpha)) {
             drawLogoTexture(graphics, texture, startX, height);
         }
     }
@@ -88,7 +88,7 @@ public class LogoAnimator {
             long cascadeDelay = calculateCascadeDelay(profile, logicalIndex);
             long elapsed = now - actualStartTime - cascadeDelay;
 
-            try (AnimationScope ignored = AnimationSystem.begin(graphics, startX, height, logoWidth, logoHeight, profile, elapsed, finalAlpha)) {
+            try (AnimationScope ignored = AnimationSystem.begin(graphics, profile, startX, height, logoWidth, logoHeight, elapsed, finalAlpha)) {
                 drawLogoTexture(graphics, texture, startX, height);
             }
         }
@@ -114,7 +114,7 @@ public class LogoAnimator {
             return;
         }
 
-        try (AnimationScope ignored = AnimationSystem.begin(graphics, x, y, editionWidth, editionHeight, profile, elapsed, finalAlpha)) {
+        try (AnimationScope ignored = AnimationSystem.begin(graphics, profile, x, y, editionWidth, editionHeight, elapsed, finalAlpha)) {
             drawEditionTexture(graphics, x, y);
         }
     }
