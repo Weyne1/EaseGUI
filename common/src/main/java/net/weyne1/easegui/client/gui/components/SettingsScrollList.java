@@ -3,6 +3,7 @@ package net.weyne1.easegui.client.gui.components;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.client.gui.components.EditBox;
@@ -32,12 +33,29 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
         return Math.min(this.width - 40, MAX_ROW_WIDTH);
     }
 
-    public void addHeader(String text) { this.addEntry(new HeaderEntry(text)); }
-    public void addButton(Button btn) { this.addEntry(new ButtonEntry(this.getRowWidth(), btn)); }
-    public void addTwoButtons(Button btn1, Button btn2) { this.addTwoButtons(btn1, btn2, 0.60f); }
-    public void addTwoButtons(Button btn1, Button btn2, float firstButtonRatio) { this.addEntry(new TwoButtonsEntry(this.getRowWidth(), btn1, btn2, firstButtonRatio)); }
-    public void addField(String label, EditBox box) { this.addEntry(new FieldEntry(this.getRowWidth(), label, box)); }
-    public void addTwoFields(String label, EditBox box1, EditBox box2) { this.addEntry(new TwoFieldsEntry(this.getRowWidth(), label, box1, box2)); }
+    public void addHeader(String text) {
+        this.addEntry(new HeaderEntry(text));
+    }
+
+    public void addWidget(AbstractWidget widget) {
+        this.addEntry(new WidgetEntry(this.getRowWidth(), widget));
+    }
+
+    public void addTwoButtons(Button btn1, Button btn2) {
+        this.addTwoButtons(btn1, btn2, 0.60f);
+    }
+
+    public void addTwoButtons(Button btn1, Button btn2, float firstButtonRatio) {
+        this.addEntry(new TwoButtonsEntry(this.getRowWidth(), btn1, btn2, firstButtonRatio));
+    }
+
+    public void addField(String label, EditBox box) {
+        this.addEntry(new FieldEntry(this.getRowWidth(), label, box));
+    }
+
+    public void addTwoFields(String label, EditBox box1, EditBox box2) {
+        this.addEntry(new TwoFieldsEntry(this.getRowWidth(), label, box1, box2));
+    }
 
     public abstract static class Entry extends ContainerObjectSelectionList.Entry<Entry> { }
 
@@ -60,26 +78,26 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
         public @NotNull List<? extends NarratableEntry> narratables() { return List.of(); }
     }
 
-    public static class ButtonEntry extends Entry {
-        private final Button button;
+    public static class WidgetEntry extends Entry {
+        private final AbstractWidget widget;
 
-        public ButtonEntry(int listWidth, Button button) {
-            this.button = button;
-            this.button.setWidth(listWidth - SCROLLBAR_WIDTH_GAP);
-            this.button.setHeight(WIDGET_HEIGHT);
+        public WidgetEntry(int listWidth, AbstractWidget widget) {
+            this.widget = widget;
+            this.widget.setWidth(listWidth - SCROLLBAR_WIDTH_GAP);
+            this.widget.setHeight(WIDGET_HEIGHT);
         }
 
         @Override
         public void renderContent(@NonNull GuiGraphics graphics, int mouseX, int mouseY, boolean isHovered, float partialTick) {
-            button.setX(this.getContentX() + SCROLLBAR_WIDTH_GAP / 2);
-            button.setY(this.getContentY());
-            button.render(graphics, mouseX, mouseY, partialTick);
+            widget.setX(this.getContentX() + SCROLLBAR_WIDTH_GAP / 2);
+            widget.setY(this.getContentY());
+            widget.render(graphics, mouseX, mouseY, partialTick);
         }
 
         @Override
-        public @NotNull List<? extends GuiEventListener> children() { return List.of(button); }
+        public @NotNull List<? extends GuiEventListener> children() { return List.of(widget); }
         @Override
-        public @NotNull List<? extends NarratableEntry> narratables() { return List.of(button); }
+        public @NotNull List<? extends NarratableEntry> narratables() { return List.of(widget); }
     }
 
     public static class TwoButtonsEntry extends Entry {

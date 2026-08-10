@@ -18,7 +18,7 @@
   "easegui.main.subtitle.screens": "Отдельные экраны",
   "easegui.main.enable_animations": "Анимации: %s",
   "easegui.main.smooth_blur": "Плавное размытие: %s",
-  "easegui.main.blur_duration": "Время размытия (мс)",
+  "easegui.main.smooth_blur_ms": "Плавное размытие: %s мс.",
   "easegui.main.blur_containers": "Размытие в контейнерах: %s",
 
   "easegui.main.button.scrollable": "Анимация панелей списков...",

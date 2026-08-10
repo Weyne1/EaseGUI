@@ -32,7 +32,7 @@ public class TitleScreenConfigurator implements IScreenConfigurator {
             AnimationProfile defaultEdition = defaultSettings.editionProfile;
 
             // Настройка анимации букв
-            list.addButton(Button.builder(Component.translatable("easegui.config.title.logo.edit_anim"), btn ->
+            list.addWidget(Button.builder(Component.translatable("easegui.config.title.logo.edit_anim"), btn ->
                     mc.setScreen(new ProfileEditorScreen(parentScreen, logo.logoProfile, defaultLogo, EnumSet.allOf(ProfileFeature.class), updated -> {
                         logo.logoProfile = updated; ConfigManager.save();
                     }))
@@ -40,7 +40,7 @@ public class TitleScreenConfigurator implements IScreenConfigurator {
 
             // Тип лого (целиком / по буквам)
             Component wholeTextComp = Component.translatable(logo.animateWholeText ? "easegui.config.title.logo.type.whole" : "easegui.config.title.logo.type.letters");
-            list.addButton(Button.builder(Component.translatable("easegui.config.title.logo.type", wholeTextComp), btn -> {
+            list.addWidget(Button.builder(Component.translatable("easegui.config.title.logo.type", wholeTextComp), btn -> {
                 logo.animateWholeText = !logo.animateWholeText;
                 Component updatedComp = Component.translatable(logo.animateWholeText ? "easegui.config.title.logo.type.whole" : "easegui.config.title.logo.type.letters");
                 btn.setMessage(Component.translatable("easegui.config.title.logo.type", updatedComp));
@@ -48,7 +48,7 @@ public class TitleScreenConfigurator implements IScreenConfigurator {
             }).build());
 
             // Настройка профиля Edition
-            list.addButton(Button.builder(Component.translatable("easegui.config.title.edition.edit_anim"), btn ->
+            list.addWidget(Button.builder(Component.translatable("easegui.config.title.edition.edit_anim"), btn ->
                     mc.setScreen(new ProfileEditorScreen(parentScreen, logo.editionProfile, defaultEdition, EnumSet.of(ProfileFeature.OFFSET, ProfileFeature.SCALE, ProfileFeature.ALPHA, ProfileFeature.PIVOT), updated -> {
                         logo.editionProfile = updated; ConfigManager.save();
                     }))
@@ -60,7 +60,7 @@ public class TitleScreenConfigurator implements IScreenConfigurator {
             list.addHeader(Component.translatable("easegui.config.title.splash.header").getString());
 
             // Анимировать сплеш
-            list.addButton(Button.builder(Component.translatable("easegui.config.title.splash.enabled", getOnOff(splash.enabled)), btn -> {
+            list.addWidget(Button.builder(Component.translatable("easegui.config.title.splash.enabled", getOnOff(splash.enabled)), btn -> {
                 splash.enabled = !splash.enabled;
                 btn.setMessage(Component.translatable("easegui.config.title.splash.enabled", getOnOff(splash.enabled)));
                 ConfigManager.save();
@@ -80,7 +80,7 @@ public class TitleScreenConfigurator implements IScreenConfigurator {
 
             // Интерполяция сплеша
             Component easingComp = Component.literal(StringUtils.toTitleCase(splash.splashEasing));
-            list.addButton(Button.builder(Component.translatable("easegui.config.title.splash.easing", easingComp), btn -> {
+            list.addWidget(Button.builder(Component.translatable("easegui.config.title.splash.easing", easingComp), btn -> {
                 EasingType[] values = EasingType.values();
                 splash.splashEasing = values[(splash.splashEasing.ordinal() + 1) % values.length];
                 Component updatedEasing = Component.literal(StringUtils.toTitleCase(splash.splashEasing));
