@@ -57,6 +57,14 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
         this.addEntry(new TwoFieldsEntry(this.getRowWidth(), label, box1, box2));
     }
 
+    public void addLabelAndButton(String label, Button button) {
+        this.addLabelAndButton(label, button, 0.25f);
+    }
+
+    public void addLabelAndButton(String label, Button button, float buttonRatio) {
+        this.addEntry(new LabelAndButtonEntry(this.getRowWidth(), label, button, buttonRatio));
+    }
+
     public abstract static class Entry extends ContainerObjectSelectionList.Entry<Entry> { }
 
     public static class HeaderEntry extends Entry {
@@ -230,5 +238,53 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
         public @NotNull List<? extends GuiEventListener> children() { return List.of(label, field1, field2); }
         @Override
         public @NotNull List<? extends NarratableEntry> narratables() { return List.of(label, field1, field2); }
+    }
+
+    public static class LabelAndButtonEntry extends Entry {
+        private static final int LABEL_PADDING = 4;
+        private final Component label;
+        private final Button button;
+        private final int availWidth;
+        private final int buttonWidth;
+
+        public LabelAndButtonEntry(int listWidth, String labelText, Button button, float buttonRatio) {
+            this.availWidth = listWidth - SCROLLBAR_WIDTH_GAP;
+            this.buttonWidth = (int)(availWidth * buttonRatio);
+
+            this.label = Component.literal(labelText);
+            this.button = button;
+            this.button.setWidth(buttonWidth);
+            this.button.setHeight(WIDGET_HEIGHT);
+        }
+
+        @Override
+        public void render(GuiGraphics graphics, int index, int top, int left, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isHovered, float partialTick) {
+            Font font = Minecraft.getInstance().font;
+
+            int startX = left + SCROLLBAR_WIDTH_GAP / 2;
+
+            if (isHovered) {
+                graphics.fill(startX, top, startX + availWidth, top + WIDGET_HEIGHT, 0x33FFFFFF);
+            }
+
+            int labelX = startX + LABEL_PADDING;
+            int labelY = top + (WIDGET_HEIGHT - font.lineHeight) / 2;
+            graphics.drawString(font, this.label, labelX, labelY, 0xFFFFFFFF);
+
+            int buttonX = startX + availWidth - buttonWidth;
+            button.setX(buttonX);
+            button.setY(top);
+            button.render(graphics, mouseX, mouseY, partialTick);
+        }
+
+        @Override
+        public @NotNull List<? extends GuiEventListener> children() {
+            return List.of(button);
+        }
+
+        @Override
+        public @NotNull List<? extends NarratableEntry> narratables() {
+            return List.of(button);
+        }
     }
 }
