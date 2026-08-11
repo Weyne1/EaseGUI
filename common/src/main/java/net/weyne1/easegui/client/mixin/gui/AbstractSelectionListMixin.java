@@ -6,7 +6,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractSelectionList;
 import net.weyne1.easegui.client.animation.AnimationContext;
 import net.weyne1.easegui.client.animation.AnimationScope;
-import net.weyne1.easegui.client.animation.AnimationState;
+import net.weyne1.easegui.client.animation.WidgetAnimationState;
 import net.weyne1.easegui.client.animator.ListItemAnimator;
 import net.weyne1.easegui.client.animator.ScrollableListAnimator;
 import org.spongepowered.asm.mixin.Mixin;
@@ -16,7 +16,8 @@ import org.spongepowered.asm.mixin.Unique;
 @Mixin(AbstractSelectionList.class)
 public class AbstractSelectionListMixin {
 
-    @Unique private final AnimationState easeGUI$scrollAnimationState = new AnimationState();
+    @Unique
+    private final WidgetAnimationState easeGUI$scrollAnimationState = new WidgetAnimationState();
     @Shadow protected int width;
     @Shadow protected int height;
     @Shadow protected int x0;

@@ -8,7 +8,7 @@ import net.weyne1.easegui.api.WidgetCategory;
 import net.weyne1.easegui.api.animation.AnimationProfile;
 import net.weyne1.easegui.client.animation.AnimationContext;
 import net.weyne1.easegui.client.animation.AnimationScope;
-import net.weyne1.easegui.client.animation.AnimationState;
+import net.weyne1.easegui.client.animation.WidgetAnimationState;
 import net.weyne1.easegui.client.animation.AnimationSystem;
 import net.weyne1.easegui.client.config.ConfigManager;
 import net.weyne1.easegui.client.state.ScreenStateTracker;
@@ -21,7 +21,7 @@ public final class ScrollableListAnimator {
     private ScrollableListAnimator() {
     }
 
-    public static AnimationScope beginRender(GuiGraphics graphics, int x, int y, int width, int height, AnimationState state) {
+    public static AnimationScope beginRender(GuiGraphics graphics, int x, int y, int width, int height, WidgetAnimationState state) {
         if (Minecraft.getInstance().screen instanceof AbstractContainerScreen) {
             return null;
         }
@@ -46,7 +46,7 @@ public final class ScrollableListAnimator {
         return AnimationSystem.begin(graphics, x, y, width, height, profile, state.startTime, state.delay, 1.0f);
     }
 
-    private static void updateAnimationState(int x, int y, AnimationState state, long now, AnimationProfile profile) {
+    private static void updateAnimationState(int x, int y, WidgetAnimationState state, long now, AnimationProfile profile) {
         int currentFrame = ScreenStateTracker.getCurrentFrameId();
 
         if (state.init && currentFrame > state.lastRenderFrame + 1) {
