@@ -43,7 +43,7 @@ public class BackgroundAnimator {
         }
 
         EaseGUIConfig config = ConfigManager.getConfig();
-        if (!config.global.enableSmoothBlur) return false;
+        if (config.global.blurDuration <= 0) return false;
 
         try {
             EaseGUIScreenType screenType = EaseGUIScreenRegistry.from(screen);
