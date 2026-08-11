@@ -6,7 +6,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.*;
 import net.weyne1.easegui.client.extension.WidgetExtension;
 import net.weyne1.easegui.client.animation.AnimationScope;
-import net.weyne1.easegui.client.animation.AnimationState;
+import net.weyne1.easegui.client.animation.WidgetAnimationState;
 import net.weyne1.easegui.client.animator.WidgetAnimator;
 import net.weyne1.easegui.api.WidgetCategory;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,7 +19,7 @@ public abstract class AbstractWidgetMixin implements WidgetExtension {
 
     @Shadow protected float alpha;
 
-    @Unique private final AnimationState easeGUI$animationState = new AnimationState();
+    @Unique private final WidgetAnimationState easeGUI$animationState = new WidgetAnimationState();
     @Unique private WidgetCategory easeGUI$cachedCategory = null;
 
     @Override
