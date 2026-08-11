@@ -2,7 +2,6 @@ package net.weyne1.easegui.client.gui.screens;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.weyne1.easegui.api.WidgetCategory;
@@ -106,19 +105,23 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
                             addCategoryOverrideRow(rightList, type.getDisplayName(), WidgetCategory.CONTAINERS, settings, config);
                         }
                     } else {
-                        rightList.addWidget(Button.builder(
-                                type.getDisplayName(),
+                        Button settingsBtn = Button.builder(
+                                Component.translatable("easegui.generic.edit"),
                                 b -> mc.setScreen(new ScreenSpecificConfigScreen(this, type))
-                        ).build());
+                        ).build();
+
+                        rightList.addLabelAndButton(type.getDisplayName().getString(), settingsBtn);
                     }
                 }
             }
         }
 
-        rightList.addWidget(Button.builder(
-                EaseGUIScreenRegistry.OTHER.getDisplayName(),
+        Button settingsBtn = Button.builder(
+                Component.translatable("easegui.generic.edit"),
                 b -> mc.setScreen(new ScreenSpecificConfigScreen(this, EaseGUIScreenRegistry.OTHER))
-        ).build());
+        ).build();
+
+        rightList.addLabelAndButton(EaseGUIScreenRegistry.OTHER.getDisplayName().getString(), settingsBtn);
 
         this.addRenderableWidget(rightList);
 
@@ -136,7 +139,7 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
         AnimationProfile finalCleanDefault = cleanDefault;
 
         Button settingsButton = Button.builder(
-                Component.translatable("easegui.generic.configure"),
+                Component.translatable("easegui.generic.edit"),
                 button -> mc.setScreen(new ProfileEditorScreen(
                         this,
                         config.global.elementProfiles.getOrDefault(category, new AnimationProfile()),
@@ -150,12 +153,5 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
         ).build();
 
         list.addLabelAndButton(Component.translatable(translationKey).getString(), settingsButton);
-    }
-
-    private EditBox createTextField(String value) {
-        assert this.minecraft != null;
-        EditBox editBox = new EditBox(this.minecraft.font, 0, 0, 60, 16, Component.empty());
-        editBox.setValue(value);
-        return editBox;
     }
 }

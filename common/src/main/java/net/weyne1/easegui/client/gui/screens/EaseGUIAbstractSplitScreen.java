@@ -108,7 +108,7 @@ public abstract class EaseGUIAbstractSplitScreen extends Screen {
         AnimationProfile finalCleanDefault = cleanDefault;
 
         // Кнопка Настройки
-        Button editBtn = Button.builder(Component.translatable("easegui.generic.configure"), btn -> {
+        Button editBtn = Button.builder(Component.translatable("easegui.generic.edit"), btn -> {
             var profile = settings.customProfiles.getOrDefault(category, new AnimationProfile());
 
             EnumSet<ProfileFeature> allowedFeatures = category.getAllowedFeatures();
