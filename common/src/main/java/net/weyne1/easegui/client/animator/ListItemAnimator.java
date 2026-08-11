@@ -11,7 +11,7 @@ import net.weyne1.easegui.client.state.ScreenStateTracker;
 
 public class ListItemAnimator {
 
-    public static AnimationScope beginRender(GuiGraphics gg, int top, int left, int width, int height) {
+    public static AnimationScope beginRender(GuiGraphics graphics, int top, int left, int width, int height) {
         if (!ConfigManager.getConfig().global.enabled) {
             return null;
         }
@@ -22,7 +22,7 @@ public class ListItemAnimator {
         long delay = getDelay(top, left, profile);
         long startTime = ScreenStateTracker.getScreenOpenTime();
 
-        return AnimationSystem.begin(gg, left, top, width, height, profile, startTime, delay, 1.0f);
+        return AnimationSystem.begin(graphics, left, top, width, height, profile, startTime, delay, 1.0f);
     }
 
     private static long getDelay(int top, int left, AnimationProfile profile) {

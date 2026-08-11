@@ -18,7 +18,7 @@ public final class AnimationSystem {
      * @return active {@link AnimationScope}, or {@code null} if the duration has elapsed
      */
     public static AnimationScope begin(
-            GuiGraphics gg,
+            GuiGraphics graphics,
             int x,
             int y,
             int width,
@@ -32,7 +32,7 @@ public final class AnimationSystem {
         if (elapsed >= profile.getDuration()) return null;
 
         float rawProgress = elapsed <= 0 ? 0.0f : Math.min(1.0f, elapsed / (float) profile.getDuration());
-        return begin(gg, x, y, width, height, profile, rawProgress, baseAlpha);
+        return begin(graphics, x, y, width, height, profile, rawProgress, baseAlpha);
     }
 
     /**
@@ -43,7 +43,7 @@ public final class AnimationSystem {
      * @return active {@link AnimationScope}, or {@code null} if the duration has elapsed
      */
     public static AnimationScope begin(
-            GuiGraphics gg,
+            GuiGraphics graphics,
             int x,
             int y,
             int width,
@@ -55,7 +55,7 @@ public final class AnimationSystem {
         if (elapsed >= profile.getDuration()) return null;
 
         float rawProgress = elapsed <= 0 ? 0.0f : Math.min(1.0f, elapsed / (float) profile.getDuration());
-        return begin(gg, x, y, width, height, profile, rawProgress, baseAlpha);
+        return begin(graphics, x, y, width, height, profile, rawProgress, baseAlpha);
     }
 
     /**
@@ -66,7 +66,7 @@ public final class AnimationSystem {
      * @return active {@link AnimationScope} context
      */
     public static AnimationScope begin(
-            GuiGraphics gg,
+            GuiGraphics graphics,
             int x,
             int y,
             int width,
@@ -93,7 +93,7 @@ public final class AnimationSystem {
 
         float finalAlpha = AnimationMath.clamp(baseAlpha * lerpedAlpha, 0.0f, 1.0f);
 
-        AnimationScope scope = new AnimationScope(gg, finalAlpha);
+        AnimationScope scope = new AnimationScope(graphics, finalAlpha);
         scope.setTransformParams(
                 AnimationMath.calculateCurrentOffset(profile.getOffsetX(), spatialProgress),
                 AnimationMath.calculateCurrentOffset(profile.getOffsetY(), spatialProgress),
@@ -105,10 +105,10 @@ public final class AnimationSystem {
         return scope;
     }
 
-    public static AnimationScope beginAlphaOnly(GuiGraphics gg, float alpha) {
+    public static AnimationScope beginAlphaOnly(GuiGraphics graphics, float alpha) {
         if (AnimationContext.isAnimationDisabled()) {
             return AnimationScope.NO_OP;
         }
-        return new AnimationScope(gg, alpha);
+        return new AnimationScope(graphics, alpha);
     }
 }

@@ -12,7 +12,7 @@ import net.weyne1.easegui.client.state.ScreenStateTracker;
 
 public class SplashAnimator {
 
-    public static AnimationScope beginRender(GuiGraphics gg, int x, int y, int color) {
+    public static AnimationScope beginRender(GuiGraphics graphics, int x, int y, int color) {
         EaseGUIConfig config = ConfigManager.getConfig();
 
         if (!config.global.enabled) {
@@ -29,7 +29,7 @@ public class SplashAnimator {
         long elapsed = Util.getMillis() - actualStartTime - splashConfig.splashDelay;
 
         if (elapsed <= 0) {
-            return AnimationSystem.beginAlphaOnly(gg, 0.0f);
+            return AnimationSystem.beginAlphaOnly(graphics, 0.0f);
         }
 
         if (elapsed >= splashConfig.splashDuration) {
@@ -46,7 +46,7 @@ public class SplashAnimator {
 
         float finalAlpha = AnimationMath.clamp(baseAlpha * progress * parentAlpha, 0.0f, 1.0f);
 
-        AnimationScope scope = AnimationSystem.beginAlphaOnly(gg, finalAlpha);
+        AnimationScope scope = AnimationSystem.beginAlphaOnly(graphics, finalAlpha);
         scope.applyPivotScale(x, y, progress);
         return scope;
     }

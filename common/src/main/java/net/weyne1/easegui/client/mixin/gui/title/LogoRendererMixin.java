@@ -10,6 +10,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+@SuppressWarnings("NameDoesntMatchTargetClass")
 @Mixin(value = LogoRenderer.class, priority = 1010)
 public class LogoRendererMixin {
 
@@ -21,8 +22,8 @@ public class LogoRendererMixin {
             at = @At("HEAD"),
             cancellable = true
     )
-    private void easeGUI$overrideLogo(GuiGraphics guiGraphics, int screenWidth, float transparency, int height, CallbackInfo ci) {
-        if (LogoAnimator.render(guiGraphics, screenWidth, transparency, height, showEasterEgg, keepLogoThroughFade)) {
+    private void easeGUI$overrideLogo(GuiGraphics graphics, int screenWidth, float transparency, int height, CallbackInfo ci) {
+        if (LogoAnimator.render(graphics, screenWidth, height, showEasterEgg)) {
             ci.cancel();
         }
     }

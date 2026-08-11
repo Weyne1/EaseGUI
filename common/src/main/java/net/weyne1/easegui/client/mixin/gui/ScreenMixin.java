@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.injection.ModifyArgs;
 import org.spongepowered.asm.mixin.injection.invoke.arg.Args;
 
 @Mixin(Screen.class)
-@SuppressWarnings("ConstantConditions")
+@SuppressWarnings({"ConstantConditions", "NameDoesntMatchTargetClass"})
 public abstract class ScreenMixin {
 
     @Shadow @Nullable protected Minecraft minecraft;
@@ -29,27 +29,27 @@ public abstract class ScreenMixin {
     // Container lifecycle
 
     @WrapMethod(method = "renderWithTooltip")
-    private void easeGUI$wrapScreenRender(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, Operation<Void> original) {
+    private void easeGUI$wrapScreenRender(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, Operation<Void> original) {
         if (RenderSystem.isOnRenderThread()
                 && this instanceof ContainerScreenExtension
                 && !AnimationContext.isAnimationDisabled()) {
-            try (AnimationScope ignored = ContainerAnimator.beginAnimation((Screen) (Object) this, guiGraphics)) {
+            try (AnimationScope ignored = ContainerAnimator.beginAnimation((Screen) (Object) this, graphics)) {
                 AnimationContext.pushParentAnimation();
                 try {
-                    original.call(guiGraphics, mouseX, mouseY, partialTick);
+                    original.call(graphics, mouseX, mouseY, partialTick);
                 } finally {
                     AnimationContext.popParentAnimation();
                 }
             }
         } else {
-            original.call(guiGraphics, mouseX, mouseY, partialTick);
+            original.call(graphics, mouseX, mouseY, partialTick);
         }
     }
 
     // Transparent background (blur / dim)
 
     @WrapMethod(method = "renderTransparentBackground")
-    private void easeGUI$wrapTransparentBackground(GuiGraphics guiGraphics, Operation<Void> original) {
+    private void easeGUI$wrapTransparentBackground(GuiGraphics graphics, Operation<Void> original) {
         AnimationScope currentScope = AnimationContext.getCurrentScope();
         if (currentScope != null) currentScope.suspend();
 
@@ -64,7 +64,7 @@ public abstract class ScreenMixin {
                 this.renderBlurredBackground(partialTick);
             }
 
-            original.call(guiGraphics);
+            original.call(graphics);
         } finally {
             if (currentScope != null) currentScope.resume();
         }
@@ -73,12 +73,12 @@ public abstract class ScreenMixin {
     // Menu background
 
     @WrapMethod(method = "renderMenuBackground(Lnet/minecraft/client/gui/GuiGraphics;)V")
-    private void easeGUI$wrapMenuBackground(GuiGraphics guiGraphics, Operation<Void> original) {
+    private void easeGUI$wrapMenuBackground(GuiGraphics graphics, Operation<Void> original) {
         AnimationScope currentScope = AnimationContext.getCurrentScope();
         if (currentScope != null) currentScope.suspend();
 
-        try (AnimationScope ignored = BackgroundAnimator.beginRenderMenu((Screen) (Object) this, guiGraphics)) {
-            original.call(guiGraphics);
+        try (AnimationScope ignored = BackgroundAnimator.beginRenderMenu((Screen) (Object) this, graphics)) {
+            original.call(graphics);
         } finally {
             if (currentScope != null) currentScope.resume();
         }
