@@ -13,6 +13,8 @@ public class ScreenStateTracker {
     private static int resizeGraceFrames = 0;
     private static int lastWidth = -1;
     private static int lastHeight = -1;
+    private static boolean blurredInCurrentFrame = false;
+    private static boolean lastScreenWasBlurred = false;
 
     private static WeakReference<Screen> lastScreenRef = new WeakReference<>(null);
     private static WeakReference<Screen> lastRenderedScreenRef = new WeakReference<>(null);
@@ -37,6 +39,19 @@ public class ScreenStateTracker {
 
     public static boolean wasScreenRendered(Screen screen) {
         return screen != null && lastRenderedScreenRef.get() == screen;
+    }
+
+    public static void markBlurredThisFrame() {
+        blurredInCurrentFrame = true;
+    }
+
+    public static void onScreenChange() {
+        lastScreenWasBlurred = blurredInCurrentFrame;
+        blurredInCurrentFrame = false;
+    }
+
+    public static boolean wasLastScreenBlurred() {
+        return lastScreenWasBlurred;
     }
 
     public static boolean isResizeFrame() {

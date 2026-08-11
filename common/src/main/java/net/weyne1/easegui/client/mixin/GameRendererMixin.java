@@ -5,7 +5,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.weyne1.easegui.client.animation.AnimationContext;
 import net.weyne1.easegui.client.animator.BackgroundAnimator;
 import net.weyne1.easegui.client.config.ConfigManager;
-import net.weyne1.easegui.client.state.ScreenAnimationTracker;
+import net.weyne1.easegui.client.state.BackgroundAnimationTracker;
 import net.weyne1.easegui.client.state.ScreenStateTracker;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -22,13 +22,13 @@ public class GameRendererMixin {
             index = 1
     )
     private float easeGUI$animateBlurRadiusArg(float originalRadius) {
-        boolean smoothBlurEnabled = ConfigManager.getConfig().global.blurDuration > 0;
+        boolean smoothBlurEnabled = ConfigManager.getConfig().global.backgroundAnimationDuration > 0;
 
-        if (!smoothBlurEnabled || BackgroundAnimator.skipBackgroundFade) {
+        if (!smoothBlurEnabled || BackgroundAnimator.isBackgroundAnimationSkipped()) {
             return originalRadius;
         }
 
-        return originalRadius * ScreenAnimationTracker.getProgress();
+        return originalRadius * BackgroundAnimationTracker.getProgress();
     }
 
     @Inject(method = "render", at = @At("HEAD"))

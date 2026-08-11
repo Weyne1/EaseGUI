@@ -15,10 +15,10 @@ public class BlurDurationSlider extends EaseGUISlider {
     }
 
     private static double calculateInitialValue(EaseGUIConfig config) {
-        if (config.global.blurDuration <= 0) {
+        if (config.global.backgroundAnimationDuration <= 0) {
             return 0.0;
         }
-        int steps = Math.round((float) config.global.blurDuration / 100.0f);
+        int steps = Math.round((float) config.global.backgroundAnimationDuration / 100.0f);
         return Math.clamp(steps / 10.0, 0.1, 1.0);
     }
 
@@ -37,6 +37,6 @@ public class BlurDurationSlider extends EaseGUISlider {
     @Override
     protected void applyValue() {
         int steps = (int) Math.round(this.value * 10.0);
-        config.global.blurDuration = steps * 100L;
+        config.global.backgroundAnimationDuration = steps * 100L;
     }
 }
