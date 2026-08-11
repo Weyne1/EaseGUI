@@ -1,7 +1,9 @@
 package net.weyne1.easegui.client.gui.screens;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.weyne1.easegui.api.WidgetCategory;
@@ -18,6 +20,9 @@ import java.util.List;
 
 public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
 
+    private static String lastSearchQuery = "";
+    private static int dynamicListScrollAmount = 0;
+
     public MainConfigScreen(Screen parent) {
         super(Component.translatable("easegui.main.title"), parent);
     }
@@ -29,7 +34,7 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
 
     @Override
     protected Component getRightSubtitle() {
-        return Component.translatable("easegui.main.subtitle.screens");
+        return null;
     }
 
     @Override
@@ -82,55 +87,47 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
 
         this.addRenderableWidget(leftList);
 
+        // ================= СПРАВА: ПОИСК И ОТДЕЛЬНЫЕ ЭКРАНЫ =================
 
-        // ================= СПРАВА: ОТДЕЛЬНЫЕ ЭКРАНЫ =================
-        SettingsScrollList rightList = new SettingsScrollList(this.minecraft, listWidth, listHeight, 50, 24);
-        rightList.setX(rightX);
-        rightList.setY(50);
+        this.dynamicList = new SettingsScrollList(this.minecraft, listWidth, listHeight, 50, 24);
+        this.dynamicList.setX(rightX);
+        this.dynamicList.setY(50);
 
-        for (EaseGUIScreenGroup category : EaseGUIScreenGroup.values()) {
-            List<EaseGUIScreenType> categoryScreens = EaseGUIScreenRegistry.getRegisteredTypes().stream()
-                    .filter(type -> type.getGroup() == category)
-                    .sorted(Comparator.comparingInt(EaseGUIScreenType::getPriority).reversed()
-                            .thenComparing(type -> type.getDisplayName().getString()))
-                    .toList();
+        int searchWidth = 160;
+        int searchX = this.rightX + (this.listWidth / 2) - (searchWidth / 2);
 
-            if (!categoryScreens.isEmpty()) {
-                rightList.addHeader(Component.translatable(category.getTranslationKey()).getString());
+        EditBox searchBox = new EditBox(this.font, searchX, 30, searchWidth, 16, Component.translatable("easegui.search.placeholder"));
+        searchBox.setHint(Component.translatable("easegui.search.hint").withStyle(ChatFormatting.DARK_GRAY));
+        searchBox.setValue(lastSearchQuery);
+        searchBox.setResponder(this::onSearchQueryChanged);
+        searchBox.setFocused(true);
+        this.addRenderableWidget(searchBox);
+        this.setFocused(searchBox);
 
-                for (EaseGUIScreenType type : categoryScreens) {
-                    if (type.getGroup() == EaseGUIScreenGroup.CONTAINERS) {
-                        var settings = config.screens.get(type.getId());
-                        if (settings != null) {
-                            addCategoryOverrideRow(rightList, type.getDisplayName(), WidgetCategory.CONTAINERS, settings, config);
-                        }
-                    } else {
-                        Button settingsBtn = Button.builder(
-                                Component.translatable("easegui.generic.edit"),
-                                b -> mc.setScreen(new ScreenSpecificConfigScreen(this, type))
-                        ).build();
+        rebuildRightList(lastSearchQuery);
+        this.addRenderableWidget(this.dynamicList);
 
-                        rightList.addLabelAndButton(type.getDisplayName().getString(), settingsBtn);
-                    }
-                }
-            }
-        }
-
-        Button settingsBtn = Button.builder(
-                Component.translatable("easegui.generic.edit"),
-                b -> mc.setScreen(new ScreenSpecificConfigScreen(this, EaseGUIScreenRegistry.OTHER))
-        ).build();
-
-        rightList.addLabelAndButton(EaseGUIScreenRegistry.OTHER.getDisplayName().getString(), settingsBtn);
-
-        this.addRenderableWidget(rightList);
-
+        this.dynamicList.setScrollListener(amount -> dynamicListScrollAmount = amount);
+        this.dynamicList.setScrollAmount(dynamicListScrollAmount);
 
         // ================= НИЖНЯЯ ПАНЕЛЬ =================
         this.addRenderableWidget(Button.builder(
                 Component.translatable("easegui.generic.done"),
-                b -> onClose()
+                b -> this.onClose()
         ).bounds(halfWidth - 100, this.height - 30, 200, 20).build());
+    }
+
+    private void onSearchQueryChanged(String query) {
+        lastSearchQuery = query;
+        rebuildRightList(query);
+        this.dynamicList.setScrollAmount(0);
+    }
+
+    @Override
+    public void onClose() {
+        lastSearchQuery = "";
+        dynamicListScrollAmount = 0;
+        super.onClose();
     }
 
     private void addGlobalProfileButton(SettingsScrollList list, EaseGUIConfig config, Minecraft mc, WidgetCategory category, String translationKey) {
@@ -153,5 +150,59 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
         ).build();
 
         list.addLabelAndButton(Component.translatable(translationKey).getString(), settingsButton);
+    }
+
+    private void rebuildRightList(String query) {
+        this.dynamicList.replaceEntries(List.of());
+
+        String lowerQuery = query.toLowerCase().trim();
+        EaseGUIConfig config = ConfigManager.getConfig();
+
+        for (EaseGUIScreenGroup category : EaseGUIScreenGroup.values()) {
+            List<EaseGUIScreenType> categoryScreens = EaseGUIScreenRegistry.getRegisteredTypes().stream()
+                    .filter(type -> type.getGroup() == category)
+                    .sorted(Comparator.comparingInt(EaseGUIScreenType::getPriority).reversed()
+                            .thenComparing(type -> type.getDisplayName().getString()))
+                    .toList();
+
+            List<EaseGUIScreenType> matchingScreens = categoryScreens.stream()
+                    .filter(type -> type.getDisplayName().getString().toLowerCase().contains(lowerQuery))
+                    .toList();
+
+            if (!matchingScreens.isEmpty()) {
+                this.dynamicList.addHeader(Component.translatable(category.getTranslationKey()).getString());
+
+                for (EaseGUIScreenType type : matchingScreens) {
+                    if (type.getGroup() == EaseGUIScreenGroup.CONTAINERS) {
+                        var settings = config.screens.get(type.getId());
+                        if (settings != null) {
+                            addCategoryOverrideRow(this.dynamicList, type.getDisplayName(), WidgetCategory.CONTAINERS, settings, config);
+                        }
+                    } else {
+                        Button settingsBtn = Button.builder(
+                                Component.translatable("easegui.generic.edit"),
+                                btn -> {
+                                    assert this.minecraft != null;
+                                    this.minecraft.setScreen(new ScreenSpecificConfigScreen(this, type));
+                                }
+                        ).build();
+
+                        this.dynamicList.addLabelAndButton(type.getDisplayName().getString(), settingsBtn);
+                    }
+                }
+            }
+        }
+
+        String otherName = EaseGUIScreenRegistry.OTHER.getDisplayName().getString();
+        if (otherName.toLowerCase().contains(lowerQuery)) {
+            Button settingsBtn = Button.builder(
+                    Component.translatable("easegui.generic.edit"),
+                    btn -> {
+                        assert this.minecraft != null;
+                        this.minecraft.setScreen(new ScreenSpecificConfigScreen(this, EaseGUIScreenRegistry.OTHER));
+                    }
+            ).build();
+            this.dynamicList.addLabelAndButton(otherName, settingsBtn);
+        }
     }
 }
