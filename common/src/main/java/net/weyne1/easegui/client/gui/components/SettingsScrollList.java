@@ -11,6 +11,10 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.network.chat.Component;
+import net.minecraft.Util;
+import net.weyne1.easegui.api.animation.EasingType;
+import net.weyne1.easegui.client.animation.AnimationScope;
+import net.weyne1.easegui.client.animation.AnimationSystem;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -250,6 +254,8 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
         private final Button button;
         private final int availWidth;
         private final int buttonWidth;
+        private boolean isHovering = false;
+        private long animationStartTime = 0L;
 
         public LabelAndButtonEntry(int listWidth, String labelText, Button button, float buttonRatio) {
             this.availWidth = listWidth - SCROLLBAR_WIDTH_GAP;
@@ -264,11 +270,32 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
         @Override
         public void render(GuiGraphics graphics, int index, int top, int left, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isHovered, float partialTick) {
             Font font = Minecraft.getInstance().font;
+            long now = Util.getMillis();
+
+            final float TARGET_ALPHA = 0.15f;
+            final long DURATION_MS = 200L;
+
+            if (isHovered && !this.isHovering) {
+                this.isHovering = true;
+                this.animationStartTime = now;
+            } else if (!isHovered && this.isHovering) {
+                this.isHovering = false;
+                this.animationStartTime = now;
+            }
 
             int startX = left + SCROLLBAR_WIDTH_GAP / 2;
 
-            if (isHovered) {
-                graphics.fill(startX, top, startX + availWidth, top + WIDGET_HEIGHT, 0x33FFFFFF);
+            long elapsed = now - this.animationStartTime;
+            boolean isAnimating = this.isHovering || (elapsed < DURATION_MS);
+
+            if (isAnimating) {
+                float linearProgress = Math.min(1.0f, elapsed / (float) DURATION_MS);
+                float effectiveProgress = this.isHovering ? linearProgress : (1.0f - linearProgress);
+                float currentAlpha = EasingType.EASE_OUT_CUBIC.ease(effectiveProgress) * TARGET_ALPHA;
+
+                try (AnimationScope ignored = AnimationSystem.beginAlphaOnly(graphics, currentAlpha)) {
+                    graphics.fill(startX, top, startX + availWidth, top + WIDGET_HEIGHT, 0xFFFFFFFF);
+                }
             }
 
             int labelX = startX + LABEL_PADDING;
