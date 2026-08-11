@@ -35,7 +35,7 @@ public class WidgetAnimator {
             return null;
         }
 
-        return AnimationSystem.begin(graphics, widget.getX(), widget.getY(), widget.getWidth(), widget.getHeight(), profile,
+        return AnimationSystem.begin(graphics, profile, widget.getX(), widget.getY(), widget.getWidth(), widget.getHeight(),
                 state.startTime, state.delay, ((WidgetExtension) widget).easeGUI$getAlpha());
     }
 

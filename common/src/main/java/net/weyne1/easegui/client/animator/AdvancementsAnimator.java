@@ -35,7 +35,7 @@ public class AdvancementsAnimator {
 
         if (elapsed >= profile.getDuration()) return null;
 
-        return AnimationSystem.begin(graphics, 0, 0, screen.width, screen.height, profile, elapsed, 1.0f);
+        return AnimationSystem.begin(graphics, profile, 0, 0, screen.width, screen.height, elapsed, 1.0f);
     }
 
     public static AnimationScope beginRenderTab(Screen screen, GuiGraphics graphics, int tabIndex) {
@@ -66,6 +66,6 @@ public class AdvancementsAnimator {
 
         if (elapsed >= profile.getDuration()) return null;
 
-        return AnimationSystem.begin(graphics, 0, 0, 28, 32, profile, elapsed, parentAlpha);
+        return AnimationSystem.begin(graphics, profile, 0, 0, 28, 32, elapsed, parentAlpha);
     }
 }

@@ -19,20 +19,17 @@ public final class AnimationSystem {
      */
     public static AnimationScope begin(
             GuiGraphics graphics,
+            AnimationProfile profile,
             int x,
             int y,
             int width,
             int height,
-            AnimationProfile profile,
             long startTime,
             long delay,
             float baseAlpha
     ) {
         long elapsed = Util.getMillis() - startTime - delay;
-        if (elapsed >= profile.getDuration()) return null;
-
-        float rawProgress = elapsed <= 0 ? 0.0f : Math.min(1.0f, elapsed / (float) profile.getDuration());
-        return begin(graphics, x, y, width, height, profile, rawProgress, baseAlpha);
+        return begin(graphics, profile, x, y, width, height, elapsed, baseAlpha);
     }
 
     /**
@@ -44,18 +41,18 @@ public final class AnimationSystem {
      */
     public static AnimationScope begin(
             GuiGraphics graphics,
+            AnimationProfile profile,
             int x,
             int y,
             int width,
             int height,
-            AnimationProfile profile,
             long elapsed,
             float baseAlpha
     ) {
         if (elapsed >= profile.getDuration()) return null;
 
         float rawProgress = elapsed <= 0 ? 0.0f : Math.min(1.0f, elapsed / (float) profile.getDuration());
-        return begin(graphics, x, y, width, height, profile, rawProgress, baseAlpha);
+        return begin(graphics, profile, x, y, width, height, rawProgress, baseAlpha);
     }
 
     /**
@@ -67,11 +64,11 @@ public final class AnimationSystem {
      */
     public static AnimationScope begin(
             GuiGraphics graphics,
+            AnimationProfile profile,
             int x,
             int y,
             int width,
             int height,
-            AnimationProfile profile,
             float rawProgress,
             float baseAlpha
     ) {
@@ -80,28 +77,43 @@ public final class AnimationSystem {
         }
 
         float clampedRaw = AnimationMath.clamp(rawProgress, 0.0f, 1.0f);
-
-        float spatialProgress = profile.getEasing() != null
-                ? profile.getEasing().ease(clampedRaw)
-                : clampedRaw;
+        float spatialProgress = profile.getEasing() != null ? profile.getEasing().ease(clampedRaw) : clampedRaw;
 
         float alphaProgress = EasingType.EASE_OUT_CUBIC.ease(clampedRaw);
-
-        float lerpedAlpha = (clampedRaw <= 0.0f)
-                ? profile.getStartAlpha()
-                : AnimationMath.lerp(profile.getStartAlpha(), 1.0f, alphaProgress);
-
+        float lerpedAlpha = AnimationMath.lerp(profile.getInitialAlpha(), 1.0f, alphaProgress);
         float finalAlpha = AnimationMath.clamp(baseAlpha * lerpedAlpha, 0.0f, 1.0f);
 
         AnimationScope scope = new AnimationScope(graphics, finalAlpha);
-        scope.setTransformParams(
-                AnimationMath.calculateCurrentOffset(profile.getOffsetX(), spatialProgress),
-                AnimationMath.calculateCurrentOffset(profile.getOffsetY(), spatialProgress),
-                AnimationMath.lerp(profile.getStartScaleX(), 1.0f, spatialProgress),
-                AnimationMath.lerp(profile.getStartScaleY(), 1.0f, spatialProgress),
+        scope.pushTransforms(
+                AnimationMath.calculateCurrentOffset(profile.getInitialOffsetX(), spatialProgress),
+                AnimationMath.calculateCurrentOffset(profile.getInitialOffsetY(), spatialProgress),
+                AnimationMath.lerp(profile.getInitialScaleX(), 1.0f, spatialProgress),
+                AnimationMath.lerp(profile.getInitialScaleY(), 1.0f, spatialProgress),
                 profile.getPivot().getX(x, width),
                 profile.getPivot().getY(y, height)
         );
+        return scope;
+    }
+
+    /**
+     * Begins an animation scope applying pivot scaling and custom alpha.
+     * Useful for isolated custom animated elements like splash text.
+     *
+     * @return active {@link AnimationScope} context
+     */
+    public static AnimationScope beginPivotScale(
+            GuiGraphics graphics,
+            float pivotX,
+            float pivotY,
+            float scale,
+            float alpha
+    ) {
+        if (AnimationContext.isAnimationDisabled()) {
+            return AnimationScope.NO_OP;
+        }
+
+        AnimationScope scope = new AnimationScope(graphics, alpha);
+        scope.pushTransforms(pivotX, pivotY, scale);
         return scope;
     }
 

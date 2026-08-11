@@ -147,9 +147,9 @@ public abstract class EaseGUIAbstractSplitScreen extends Screen {
         return target
                 .enabled(source.isEnabled())
                 .duration(source.getDuration())
-                .offset(source.getOffsetX(), source.getOffsetY())
-                .startScale(source.getStartScaleX(), source.getStartScaleY())
-                .startAlpha(source.getStartAlpha())
+                .initialOffset(source.getInitialOffsetX(), source.getInitialOffsetY())
+                .initialScale(source.getInitialScaleX(), source.getInitialScaleY())
+                .initialAlpha(source.getInitialAlpha())
                 .cascadeDelay(source.getCascadeDelay())
                 .easing(source.getEasing())
                 .pivot(source.getPivot())

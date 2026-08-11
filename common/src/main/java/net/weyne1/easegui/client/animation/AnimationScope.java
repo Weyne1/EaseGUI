@@ -3,19 +3,27 @@ package net.weyne1.easegui.client.animation;
 import net.minecraft.client.gui.GuiGraphics;
 import net.weyne1.easegui.client.EaseGUIDebug;
 
+@SuppressWarnings({"unused", "BooleanMethodIsAlwaysInverted"})
 public class AnimationScope implements AutoCloseable {
     public static final AnimationScope NO_OP = new NoOpAnimationScope();
     private static final float MIN_SCALE = 0.001f;
-
     private final GuiGraphics graphics;
     private final float alpha;
-
     private boolean isClosed = false;
     private int suspendDepth = 0;
-
     private float offsetX, offsetY;
     private float scaleX = 1.0f, scaleY = 1.0f;
     private float pivotX, pivotY;
+
+    public float getOffsetX() { return offsetX; }
+    public float getOffsetY() { return offsetY; }
+    public float getScaleX() { return scaleX; }
+    public float getScaleY() { return scaleY; }
+    public float getPivotX() { return pivotX; }
+    public float getPivotY() { return pivotY; }
+    public float getAlpha() { return alpha; }
+    public boolean isClosed() { return isClosed; }
+    public boolean isSuspended() { return suspendDepth > 0; }
 
     protected AnimationScope() {
         this.graphics = null;
@@ -31,7 +39,9 @@ public class AnimationScope implements AutoCloseable {
         this.graphics.pose().pushPose();
     }
 
-    void setTransformParams(float offsetX, float offsetY, float scaleX, float scaleY, float pivotX, float pivotY) {
+    void pushTransforms(float offsetX, float offsetY, float scaleX, float scaleY, float pivotX, float pivotY) {
+        if (this.graphics == null) return;
+
         this.offsetX = offsetX;
         this.offsetY = offsetY;
         this.scaleX = clampScale(scaleX);
@@ -43,22 +53,17 @@ public class AnimationScope implements AutoCloseable {
             graphics.pose().translate(offsetX + pivotX, offsetY + pivotY, 0.0f);
             graphics.pose().scale(this.scaleX, this.scaleY, 1.0f);
             graphics.pose().translate(-pivotX, -pivotY, 0.0f);
-        } else {
+        } else if (offsetX != 0.0f || offsetY != 0.0f) {
             graphics.pose().translate(offsetX, offsetY, 0.0f);
         }
     }
 
-    public void applyPivotScale(float pivotX, float pivotY, float scale) {
-        if (this.graphics == null) return;
+    void pushTransforms(float pivotX, float pivotY, float scale) {
+        pushTransforms(0.0f, 0.0f, scale, scale, pivotX, pivotY);
+    }
 
-        this.scaleX = clampScale(scale);
-        this.scaleY = clampScale(scale);
-        this.pivotX = pivotX;
-        this.pivotY = pivotY;
-
-        graphics.pose().translate(pivotX, pivotY, 0.0f);
-        graphics.pose().scale(this.scaleX, this.scaleY, 1.0f);
-        graphics.pose().translate(-pivotX, -pivotY, 0.0f);
+    void pushTransforms(float pivotX, float pivotY, float scaleX, float scaleY) {
+        pushTransforms(0.0f, 0.0f, scaleX, scaleY, pivotX, pivotY);
     }
 
     public void suspend() {
@@ -119,25 +124,12 @@ public class AnimationScope implements AutoCloseable {
         AnimationContext.popScope(this);
     }
 
-    public boolean isClosed() {
-        return isClosed;
-    }
-
-    public boolean isSuspended() {
-        return suspendDepth > 0;
-    }
-
-    public float getAlpha() {
-        return alpha;
-    }
-
     private static float clampScale(float scale) {
         return Math.max(MIN_SCALE, Math.abs(scale));
     }
 
     private static final class NoOpAnimationScope extends AnimationScope {
-        @Override void setTransformParams(float oX, float oY, float sX, float sY, float pX, float pY) {}
-        @Override public void applyPivotScale(float pX, float pY, float s) {}
+        @Override void pushTransforms(float oX, float oY, float sX, float sY, float pX, float pY) {}
         @Override public void suspend() {}
         @Override public void resume() {}
         @Override public void close() {}
