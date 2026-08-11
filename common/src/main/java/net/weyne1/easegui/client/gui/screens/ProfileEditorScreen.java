@@ -111,7 +111,7 @@ public class ProfileEditorScreen extends EaseGUIAbstractSplitScreen {
         // --- 5.1. Направление каскада
         if (activeFeatures.contains(ProfileFeature.CASCADE_DIRECTION)) {
             Component dirComp = getCascadeDirectionComponent(workingCopy.getCascadeDirection());
-            leftScrollList.addButton(Button.builder(Component.translatable("easegui.editor.button.cascade_dir", dirComp), b -> {
+            leftScrollList.addWidget(Button.builder(Component.translatable("easegui.editor.button.cascade_dir", dirComp), b -> {
                 CascadeDirection[] v = CascadeDirection.values();
                 workingCopy.cascadeDirection(v[(workingCopy.getCascadeDirection().ordinal() + 1) % v.length]);
                 b.setMessage(Component.translatable("easegui.editor.button.cascade_dir", getCascadeDirectionComponent(workingCopy.getCascadeDirection())));
@@ -121,7 +121,7 @@ public class ProfileEditorScreen extends EaseGUIAbstractSplitScreen {
         // --- 6. Точка опоры (Pivot) ---
         if (activeFeatures.contains(ProfileFeature.PIVOT)) {
             Component pivotComp = Component.translatable("easegui.pivot." + workingCopy.getPivot().name().toLowerCase());
-            leftScrollList.addButton(Button.builder(Component.translatable("easegui.editor.button.pivot", pivotComp), b -> {
+            leftScrollList.addWidget(Button.builder(Component.translatable("easegui.editor.button.pivot", pivotComp), b -> {
                 PivotPoint[] v = PivotPoint.values();
                 workingCopy.pivot(v[(workingCopy.getPivot().ordinal() + 1) % v.length]);
                 Component updatedPivot = Component.translatable("easegui.pivot." + workingCopy.getPivot().name().toLowerCase());
@@ -131,7 +131,7 @@ public class ProfileEditorScreen extends EaseGUIAbstractSplitScreen {
 
         // --- 7. Интерполяция (Easing) ---
         Component easingComp = Component.literal(StringUtils.toTitleCase(workingCopy.getEasing()));
-        leftScrollList.addButton(Button.builder(
+        leftScrollList.addWidget(Button.builder(
                 Component.translatable("easegui.editor.button.easing", easingComp),
                 button -> {
                     EasingType[] values = EasingType.values();
