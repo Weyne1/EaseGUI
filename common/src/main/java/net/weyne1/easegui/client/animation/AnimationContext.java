@@ -1,5 +1,6 @@
 package net.weyne1.easegui.client.animation;
 
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.weyne1.easegui.client.EaseGUIDebug;
 import org.jetbrains.annotations.NotNull;
 
@@ -12,6 +13,7 @@ public final class AnimationContext {
         final Deque<AnimationScope> scopeStack = new ArrayDeque<>();
         final Deque<AnimationScope> disableSuspendedStack = new ArrayDeque<>();
         final Deque<Boolean> disableHadScopeStack = new ArrayDeque<>();
+        final Deque<AnimationScope> scopePool = new ArrayDeque<>();
         int parentAnimationDepth = 0;
         int disableDepth = 0;
 
@@ -25,6 +27,24 @@ public final class AnimationContext {
     }
 
     private static final ThreadLocal<ThreadState> STATE = ThreadLocal.withInitial(ThreadState::new);
+
+    @NotNull
+    static AnimationScope obtainScope(GuiGraphicsExtractor graphics, float alpha) {
+        ThreadState state = STATE.get();
+        AnimationScope scope = state.scopePool.isEmpty() ? new AnimationScope() : state.scopePool.pop();
+        scope.init(graphics, alpha);
+        return scope;
+    }
+
+    static void recycleScope(AnimationScope scope) {
+        if (scope == AnimationScope.NO_OP) return;
+
+        ThreadState state = STATE.get();
+
+        if (state.scopePool.size() < 64) {
+            state.scopePool.push(scope);
+        }
+    }
 
     public static DisabledScope disable() {
         return new DisabledScope();

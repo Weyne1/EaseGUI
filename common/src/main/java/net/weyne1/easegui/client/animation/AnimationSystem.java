@@ -95,7 +95,7 @@ public final class AnimationSystem {
         float lerpedAlpha = AnimationMath.lerp(profile.getInitialAlpha(), 1.0f, alphaProgress);
         float finalAlpha = AnimationMath.clamp(baseAlpha * lerpedAlpha, 0.0f, 1.0f);
 
-        AnimationScope scope = new AnimationScope(graphics, finalAlpha);
+        AnimationScope scope = AnimationContext.obtainScope(graphics, finalAlpha);
         scope.pushTransforms(
                 AnimationMath.calculateCurrentOffset(profile.getInitialOffsetX(), spatialProgress),
                 AnimationMath.calculateCurrentOffset(profile.getInitialOffsetY(), spatialProgress),
@@ -125,7 +125,7 @@ public final class AnimationSystem {
             return AnimationScope.NO_OP;
         }
 
-        AnimationScope scope = new AnimationScope(graphics, alpha);
+        AnimationScope scope = AnimationContext.obtainScope(graphics, alpha);
         scope.pushTransforms(pivotX, pivotY, scale);
         return scope;
     }
@@ -140,6 +140,6 @@ public final class AnimationSystem {
         if (AnimationContext.isAnimationDisabled()) {
             return AnimationScope.NO_OP;
         }
-        return new AnimationScope(graphics, alpha);
+        return AnimationContext.obtainScope(graphics, alpha);
     }
 }

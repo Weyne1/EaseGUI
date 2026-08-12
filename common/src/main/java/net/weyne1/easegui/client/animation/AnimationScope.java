@@ -8,8 +8,9 @@ import org.joml.Matrix3x2fStack;
 public class AnimationScope implements AutoCloseable {
     public static final AnimationScope NO_OP = new NoOpAnimationScope();
     private static final float MIN_SCALE = 0.001f;
-    private final GuiGraphicsExtractor graphics;
-    private final float alpha;
+
+    private GuiGraphicsExtractor graphics;
+    private float alpha;
     private boolean isClosed = false;
     private int suspendDepth = 0;
     private float offsetX, offsetY;
@@ -30,18 +31,24 @@ public class AnimationScope implements AutoCloseable {
      * Indicates whether this Scope is a real animation.
      * @return {@code true} for real animations, {@code false} for {@link AnimationScope#NO_OP}.
      */
-    public boolean isAnimating() {
-        return true;
-    }
+    public boolean isAnimating() { return true; }
 
-    protected AnimationScope() {
+    AnimationScope() {
         this.graphics = null;
         this.alpha = 1.0f;
     }
 
-    public AnimationScope(GuiGraphicsExtractor graphics, float alpha) {
+    void init(GuiGraphicsExtractor graphics, float alpha) {
         this.graphics = graphics;
         this.alpha = alpha;
+        this.isClosed = false;
+        this.suspendDepth = 0;
+        this.offsetX = 0.0f;
+        this.offsetY = 0.0f;
+        this.scaleX = 1.0f;
+        this.scaleY = 1.0f;
+        this.pivotX = 0.0f;
+        this.pivotY = 0.0f;
 
         AnimationContext.pushScope(this);
         this.graphics.pose().pushMatrix();
@@ -118,15 +125,24 @@ public class AnimationScope implements AutoCloseable {
             if (suspendDepth > 0) {
                 EaseGUIDebug.reportError("scope_closed_while_suspended", () -> String.format("AnimationScope closed while suspended (depth=%d)!", suspendDepth));
                 while (suspendDepth > 0) {
-                    graphics.pose().popMatrix();
+                    if (graphics != null) {
+                        graphics.pose().popMatrix();
+                    }
                     suspendDepth--;
                 }
             }
-            graphics.pose().popMatrix();
-        } catch (Throwable t) {
-            EaseGUIDebug.reportError("pose_stack_error", () -> "Error closing scope: " + t.getMessage());
+
+            if (graphics != null) {
+                try {
+                    graphics.pose().popMatrix();
+                } catch (IllegalStateException e) {
+                    EaseGUIDebug.reportError("pose_stack_underflow", () -> "PoseStack underflow inside AnimationScope close!");
+                }
+            }
         } finally {
             AnimationContext.popScope(this);
+            this.graphics = null;
+            AnimationContext.recycleScope(this);
         }
     }
 
