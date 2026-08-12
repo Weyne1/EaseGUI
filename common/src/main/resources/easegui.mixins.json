@@ -6,6 +6,7 @@
   "client": [
     "OptionsMixin",
     "renderer.GameRendererMixin",
+    "renderer.state.gui.GuiRenderStateMixin",
     "renderer.state.gui.GuiTextRenderStateMixin",
     "renderer.state.gui.GuiItemRenderStateMixin",
     "accessor.LogoRendererAccessor",
