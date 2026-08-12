@@ -47,12 +47,12 @@ public class BackgroundAnimator {
 
     public static AnimationScope beginRenderMenu(Screen screen, GuiGraphicsExtractor graphics) {
         if (!isBackgroundEffectAllowed(screen)) {
-            return null;
+            return AnimationScope.NO_OP;
         }
 
         float progress = BackgroundAnimationTracker.getProgress();
         if (progress >= 1.0f) {
-            return null;
+            return AnimationScope.NO_OP;
         }
 
         return AnimationSystem.beginAlphaOnly(graphics, progress);

@@ -10,11 +10,13 @@ import net.weyne1.easegui.api.WidgetCategory;
 import net.weyne1.easegui.api.EaseGUIScreenRegistry;
 import net.weyne1.easegui.api.EaseGUIScreenType;
 import net.weyne1.easegui.api.animation.AnimationProfile;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.function.Function;
 
 import static net.weyne1.easegui.client.EaseGUIClient.LOGGER;
 
@@ -130,5 +132,18 @@ public class ConfigManager {
         }
 
         return currentConfig.global.elementProfiles.get(category);
+    }
+
+    @Nullable
+    public static AnimationProfile getProfile(Screen screen, Function<EaseGUIConfig.ScreenSettings, AnimationProfile> profileExtractor) {
+        EaseGUIConfig config = getConfig();
+        if (!config.global.enabled) return null;
+
+        EaseGUIScreenType type = EaseGUIScreenRegistry.from(screen);
+        var settings = config.screens.get(type.getId());
+
+        if (settings == null || !settings.enabled) return null;
+
+        return profileExtractor.apply(settings);
     }
 }

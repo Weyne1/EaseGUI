@@ -38,7 +38,7 @@ public abstract class ScreenMixin {
         if (RenderSystem.isOnRenderThread()
                 && this instanceof ContainerScreenExtension
                 && !AnimationContext.isAnimationDisabled()) {
-            try (AnimationScope ignored = ContainerAnimator.beginAnimation((Screen) (Object) this, graphics)) {
+            try (AnimationScope ignored = ContainerAnimator.beginContainer((Screen) (Object) this, graphics)) {
                 AnimationContext.pushParentAnimation();
                 try {
                     original.call(graphics, mouseX, mouseY, a);
@@ -55,7 +55,9 @@ public abstract class ScreenMixin {
     @WrapMethod(method = "extractTransparentBackground")
     private void easeGUI$wrapTransparentBackground(GuiGraphicsExtractor graphics, Operation<Void> original) {
         AnimationScope currentScope = AnimationContext.getCurrentScope();
-        if (currentScope != null) currentScope.suspend();
+        if (currentScope.isAnimating()) {
+            currentScope.suspend();
+        }
 
         try {
             Screen currentScreen = (Screen) (Object) this;
@@ -68,7 +70,9 @@ public abstract class ScreenMixin {
 
             original.call(graphics);
         } finally {
-            if (currentScope != null) currentScope.resume();
+            if (currentScope.isAnimating()) {
+                currentScope.resume();
+            }
         }
     }
 
@@ -76,12 +80,16 @@ public abstract class ScreenMixin {
     @WrapMethod(method = "extractMenuBackground(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V")
     private void easeGUI$wrapMenuBackground(GuiGraphicsExtractor graphics, Operation<Void> original) {
         AnimationScope currentScope = AnimationContext.getCurrentScope();
-        if (currentScope != null) currentScope.suspend();
+        if (currentScope.isAnimating()) {
+            currentScope.suspend();
+        }
 
         try (AnimationScope ignored = BackgroundAnimator.beginRenderMenu((Screen) (Object) this, graphics)) {
             original.call(graphics);
         } finally {
-            if (currentScope != null) currentScope.resume();
+            if (currentScope.isAnimating()) {
+                currentScope.resume();
+            }
         }
     }
 

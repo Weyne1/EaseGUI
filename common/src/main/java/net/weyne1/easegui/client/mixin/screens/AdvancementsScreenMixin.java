@@ -20,15 +20,15 @@ public class AdvancementsScreenMixin {
     private void easeGUI$wrapRenderWindow(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, Operation<Void> original) {
         AdvancementsScreen screen = (AdvancementsScreen) (Object) this;
 
-        try (AnimationScope scope = AdvancementsAnimator.beginRenderWindow(screen, graphics)) {
-            boolean hasParent = (scope != null);
-            if (hasParent) {
+        try (AnimationScope scope = AdvancementsAnimator.beginWindow(screen, graphics)) {
+            if (scope.isAnimating()) {
                 AnimationContext.pushParentAnimation();
             }
+
             try {
                 original.call(graphics, mouseX, mouseY, a);
             } finally {
-                if (hasParent) {
+                if (scope.isAnimating()) {
                     AnimationContext.popParentAnimation();
                 }
             }
@@ -42,7 +42,7 @@ public class AdvancementsScreenMixin {
     private void easeGUI$ignoreSuperWidgetsInWindowScope(AdvancementsScreen instance, GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, Operation<Void> original) {
         AnimationScope currentScope = AnimationContext.getCurrentScope();
 
-        if (currentScope != null) {
+        if (currentScope.isAnimating()) {
             currentScope.suspend();
 
             boolean hadParent = AnimationContext.hasParentAnimation();
@@ -71,7 +71,7 @@ public class AdvancementsScreenMixin {
     private void easeGUI$wrapDrawTab(AdvancementTab tab, GuiGraphicsExtractor graphics, int xo, int yo, int mouseX, int mouseY, boolean selected, Operation<Void> original) {
         AdvancementsScreen screen = (AdvancementsScreen) (Object) this;
 
-        try (AnimationScope ignored = AdvancementsAnimator.beginRenderTab(screen, graphics, tab.getIndex())) {
+        try (AnimationScope ignored = AdvancementsAnimator.beginTab(screen, graphics, tab.getIndex())) {
             original.call(tab, graphics, xo, yo, mouseX, mouseY, selected);
         }
     }
@@ -84,7 +84,7 @@ public class AdvancementsScreenMixin {
     private void easeGUI$wrapDrawIcon(AdvancementTab tab, GuiGraphicsExtractor graphics, int xo, int yo, Operation<Void> original) {
         AdvancementsScreen screen = (AdvancementsScreen) (Object) this;
 
-        try (AnimationScope ignored = AdvancementsAnimator.beginRenderTab(screen, graphics, tab.getIndex())) {
+        try (AnimationScope ignored = AdvancementsAnimator.beginTab(screen, graphics, tab.getIndex())) {
             original.call(tab, graphics, xo, yo);
         }
     }

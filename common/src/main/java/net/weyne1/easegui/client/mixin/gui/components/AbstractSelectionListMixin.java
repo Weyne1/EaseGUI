@@ -33,12 +33,13 @@ public abstract class AbstractSelectionListMixin {
         int top = element.getY();
         int height = element.getHeight();
 
-        AnimationContext.pushParentAnimation();
-
-        try (AnimationScope ignored = ListItemAnimator.beginRender(graphics, top, left, width, height)) {
-            original.call(instance, graphics, mouseX, mouseY, a, entry);
-        } finally {
-            AnimationContext.popParentAnimation();
+        try (AnimationScope ignored = ListItemAnimator.beginListItems(graphics, top, left, width, height)) {
+            AnimationContext.pushParentAnimation();
+            try {
+                original.call(instance, graphics, mouseX, mouseY, a, entry);
+            } finally {
+                AnimationContext.popParentAnimation();
+            }
         }
     }
 }

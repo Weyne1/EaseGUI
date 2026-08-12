@@ -6,6 +6,7 @@ import net.minecraft.client.gui.ActiveTextCollector;
 import net.minecraft.client.gui.TextAlignment;
 import net.minecraft.client.gui.components.SplashRenderer;
 import net.minecraft.network.chat.Component;
+import net.weyne1.easegui.client.animation.AnimationContext;
 import net.weyne1.easegui.client.animator.SplashAnimator;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -29,7 +30,7 @@ public class SplashRendererMixin {
             Component text,
             Operation<Void> original
     ) {
-        if (text == null || text.getString().isBlank()) {
+        if (text == null || text.getString().isBlank() || AnimationContext.isAnimationDisabled()) {
             original.call(collector, alignment, anchorX, y, parameters, text);
             return;
         }

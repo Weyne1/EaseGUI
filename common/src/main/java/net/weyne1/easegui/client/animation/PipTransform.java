@@ -22,7 +22,7 @@ public final class PipTransform {
 
     private static int[] transformRange(int start, int end, boolean horizontal) {
         AnimationScope scope = AnimationContext.getCurrentScope();
-        if (scope == null || scope.isSuspended()) {
+        if (!scope.isAnimating() || scope.isSuspended()) {
             return new int[]{start, end};
         }
 
@@ -48,7 +48,7 @@ public final class PipTransform {
 
     public static float scale(float scale) {
         AnimationScope scope = AnimationContext.getCurrentScope();
-        if (scope == null || scope.isSuspended()) return scale;
+        if (!scope.isAnimating() || scope.isSuspended()) return scale;
 
         float animScale = (Math.abs(scope.getScaleX()) + Math.abs(scope.getScaleY())) * 0.5f;
         return scale * animScale;

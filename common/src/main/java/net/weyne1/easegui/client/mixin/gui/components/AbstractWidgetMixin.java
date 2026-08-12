@@ -4,6 +4,7 @@ import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.*;
+import net.weyne1.easegui.client.animation.AnimationContext;
 import net.weyne1.easegui.client.extension.WidgetExtension;
 import net.weyne1.easegui.client.animation.AnimationScope;
 import net.weyne1.easegui.client.animation.WidgetAnimationState;
@@ -30,18 +31,18 @@ public abstract class AbstractWidgetMixin implements WidgetExtension {
     private void easeGUI$wrapWidgetRender(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, Operation<Void> original) {
         AbstractWidget widget = (AbstractWidget) (Object) this;
 
-        if (!widget.visible) {
+        if (!widget.visible || AnimationContext.isAnimationDisabled()) {
             original.call(graphics, mouseX, mouseY, a);
             return;
         }
 
-        var category = this.easeGUI$getCategory();
-        if (category == null || category == WidgetCategory.UNKNOWN) {
+        WidgetCategory category = this.easeGUI$getCategory();
+        if (category == WidgetCategory.UNKNOWN) {
             original.call(graphics, mouseX, mouseY, a);
             return;
         }
 
-        try (AnimationScope ignored = WidgetAnimator.beginRender(widget, graphics, category, this.easeGUI$animationState)) {
+        try (AnimationScope ignored = WidgetAnimator.beginWidget(widget, graphics, category, this.easeGUI$animationState)) {
             original.call(graphics, mouseX, mouseY, a);
         }
     }

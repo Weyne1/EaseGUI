@@ -26,6 +26,14 @@ public class AnimationScope implements AutoCloseable {
     public boolean isClosed() { return isClosed; }
     public boolean isSuspended() { return suspendDepth > 0; }
 
+    /**
+     * Indicates whether this Scope is a real animation.
+     * @return {@code true} for real animations, {@code false} for {@link AnimationScope#NO_OP}.
+     */
+    public boolean isAnimating() {
+        return true;
+    }
+
     protected AnimationScope() {
         this.graphics = null;
         this.alpha = 1.0f;
@@ -127,6 +135,7 @@ public class AnimationScope implements AutoCloseable {
     }
 
     private static final class NoOpAnimationScope extends AnimationScope {
+        @Override public boolean isAnimating() { return false; }
         @Override void pushTransforms(float oX, float oY, float sX, float sY, float pX, float pY) {}
         @Override public void suspend() {}
         @Override public void resume() {}

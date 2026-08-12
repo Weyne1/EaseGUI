@@ -1,10 +1,12 @@
 package net.weyne1.easegui.client.animation;
 
 import net.weyne1.easegui.client.EaseGUIDebug;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
 
+@SuppressWarnings("unused")
 public final class AnimationContext {
     private static final Deque<AnimationScope> SCOPE_STACK = new ArrayDeque<>();
     private static final Deque<AnimationScope> DISABLE_SUSPENDED_STACK = new ArrayDeque<>();
@@ -29,7 +31,7 @@ public final class AnimationContext {
      */
     public static void beginManualDisable() {
         AnimationScope current = getCurrentScope();
-        boolean hadScope = current != null;
+        boolean hadScope = current.isAnimating();
 
         DISABLE_HAD_SCOPE_STACK.push(hadScope);
         if (hadScope) {
@@ -59,7 +61,7 @@ public final class AnimationContext {
 
         private DisabledScope() {
             this.scope = getCurrentScope();
-            if (scope != null) {
+            if (scope.isAnimating()) {
                 scope.suspend();
             }
             pushDisabled();
@@ -68,7 +70,7 @@ public final class AnimationContext {
         @Override
         public void close() {
             popDisabled();
-            if (scope != null) {
+            if (scope.isAnimating()) {
                 scope.resume();
             }
         }
@@ -91,7 +93,11 @@ public final class AnimationContext {
         }
     }
 
+    @NotNull
     public static AnimationScope getCurrentScope() {
+        if (SCOPE_STACK.isEmpty()) {
+            return AnimationScope.NO_OP;
+        }
         return SCOPE_STACK.peek();
     }
 
