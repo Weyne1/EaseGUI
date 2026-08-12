@@ -106,21 +106,20 @@ public class AnimationScope implements AutoCloseable {
         if (isClosed) return;
         isClosed = true;
 
-        if (suspendDepth > 0) {
-            EaseGUIDebug.reportError("scope_closed_while_suspended",
-                    () -> "AnimationScope closed while still suspended (depth=" + suspendDepth + ")! " +
-                            "A layer likely leaked a suspend() without a matching resume().");
-            graphics.pose().popMatrix();
-            suspendDepth = 0;
-        }
-
         try {
+            if (suspendDepth > 0) {
+                EaseGUIDebug.reportError("scope_closed_while_suspended", () -> String.format("AnimationScope closed while suspended (depth=%d)!", suspendDepth));
+                while (suspendDepth > 0) {
+                    graphics.pose().popMatrix();
+                    suspendDepth--;
+                }
+            }
             graphics.pose().popMatrix();
-        } catch (IllegalStateException e) {
-            EaseGUIDebug.reportError("pose_stack_underflow", () -> "PoseStack underflow inside AnimationScope close!");
+        } catch (Throwable t) {
+            EaseGUIDebug.reportError("pose_stack_error", () -> "Error closing scope: " + t.getMessage());
+        } finally {
+            AnimationContext.popScope(this);
         }
-
-        AnimationContext.popScope(this);
     }
 
     private static float clampScale(float scale) {
