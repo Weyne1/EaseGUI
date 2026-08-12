@@ -8,11 +8,23 @@ import java.util.Deque;
 
 @SuppressWarnings("unused")
 public final class AnimationContext {
-    private static final Deque<AnimationScope> SCOPE_STACK = new ArrayDeque<>();
-    private static final Deque<AnimationScope> DISABLE_SUSPENDED_STACK = new ArrayDeque<>();
-    private static final Deque<Boolean> DISABLE_HAD_SCOPE_STACK = new ArrayDeque<>();
-    private static int parentAnimationDepth = 0;
-    private static int disableDepth = 0;
+    private static final class ThreadState {
+        final Deque<AnimationScope> scopeStack = new ArrayDeque<>();
+        final Deque<AnimationScope> disableSuspendedStack = new ArrayDeque<>();
+        final Deque<Boolean> disableHadScopeStack = new ArrayDeque<>();
+        int parentAnimationDepth = 0;
+        int disableDepth = 0;
+
+        void reset() {
+            scopeStack.clear();
+            disableSuspendedStack.clear();
+            disableHadScopeStack.clear();
+            parentAnimationDepth = 0;
+            disableDepth = 0;
+        }
+    }
+
+    private static final ThreadLocal<ThreadState> STATE = ThreadLocal.withInitial(ThreadState::new);
 
     public static DisabledScope disable() {
         return new DisabledScope();
@@ -30,12 +42,13 @@ public final class AnimationContext {
      * from uncaught exceptions between the two calls.
      */
     public static void beginManualDisable() {
+        ThreadState state = STATE.get();
         AnimationScope current = getCurrentScope();
         boolean hadScope = current.isAnimating();
 
-        DISABLE_HAD_SCOPE_STACK.push(hadScope);
+        state.disableHadScopeStack.push(hadScope);
         if (hadScope) {
-            DISABLE_SUSPENDED_STACK.push(current);
+            state.disableSuspendedStack.push(current);
             current.suspend();
         }
         pushDisabled();
@@ -44,14 +57,19 @@ public final class AnimationContext {
     public static void endManualDisable() {
         popDisabled();
 
-        if (DISABLE_HAD_SCOPE_STACK.isEmpty()) {
-            EaseGUIDebug.reportError("disable_stack_underflow", () -> "disableEnd() called without matching disableStart()!");
+        ThreadState state = STATE.get();
+        if (state.disableHadScopeStack.isEmpty()) {
+            EaseGUIDebug.reportError("disable_stack_underflow", () -> "endManualDisable() called without matching beginManualDisable()!");
             return;
         }
 
-        boolean hadScope = DISABLE_HAD_SCOPE_STACK.pop();
+        boolean hadScope = state.disableHadScopeStack.pop();
         if (hadScope) {
-            AnimationScope suspended = DISABLE_SUSPENDED_STACK.pop();
+            if (state.disableSuspendedStack.isEmpty()) {
+                EaseGUIDebug.reportError("disable_suspended_underflow", () -> "Suspended stack underflow in endManualDisable()!");
+                return;
+            }
+            AnimationScope suspended = state.disableSuspendedStack.pop();
             suspended.resume();
         }
     }
@@ -77,17 +95,18 @@ public final class AnimationContext {
     }
 
     public static void pushScope(AnimationScope scope) {
-        SCOPE_STACK.push(scope);
+        STATE.get().scopeStack.push(scope);
     }
 
     public static void popScope(AnimationScope scope) {
-        if (SCOPE_STACK.isEmpty()) {
+        ThreadState state = STATE.get();
+        if (state.scopeStack.isEmpty()) {
             EaseGUIDebug.reportError("scope_underflow", () -> "Attempt to close a scope when the stack is empty!");
             return;
         }
 
-        if (SCOPE_STACK.peek() == scope) {
-            SCOPE_STACK.pop();
+        if (state.scopeStack.peek() == scope) {
+            state.scopeStack.pop();
         } else {
             EaseGUIDebug.reportError("scope_mismatch", () -> "Animation closing order violated! Attempted to close the wrong scope.");
         }
@@ -95,29 +114,32 @@ public final class AnimationContext {
 
     @NotNull
     public static AnimationScope getCurrentScope() {
-        if (SCOPE_STACK.isEmpty()) {
+        ThreadState state = STATE.get();
+        if (state.scopeStack.isEmpty()) {
             return AnimationScope.NO_OP;
         }
-        return SCOPE_STACK.peek();
+        return state.scopeStack.peek();
     }
 
     public static boolean isActive() {
-        if (isAnimationDisabled() || SCOPE_STACK.isEmpty()) return false;
-        for (AnimationScope scope : SCOPE_STACK) {
+        ThreadState state = STATE.get();
+        if (isAnimationDisabled() || state.scopeStack.isEmpty()) return false;
+        for (AnimationScope scope : state.scopeStack) {
             if (!scope.isSuspended()) return true;
         }
         return false;
     }
 
     public static float getCurrentAlpha() {
-        if (isAnimationDisabled() || SCOPE_STACK.isEmpty()) {
+        ThreadState state = STATE.get();
+        if (isAnimationDisabled() || state.scopeStack.isEmpty()) {
             return 1.0f;
         }
 
         float totalAlpha = 1.0f;
         boolean hasActiveScope = false;
 
-        for (AnimationScope scope : SCOPE_STACK) {
+        for (AnimationScope scope : state.scopeStack) {
             if (!scope.isSuspended()) {
                 totalAlpha *= scope.getAlpha();
                 hasActiveScope = true;
@@ -128,44 +150,42 @@ public final class AnimationContext {
     }
 
     public static void pushParentAnimation() {
-        parentAnimationDepth++;
+        STATE.get().parentAnimationDepth++;
     }
 
     public static void popParentAnimation() {
-        if (parentAnimationDepth <= 0) {
+        ThreadState state = STATE.get();
+        if (state.parentAnimationDepth <= 0) {
             EaseGUIDebug.reportError("parent_anim_underflow", () -> "Parent animation balance broken! popParentAnimation() called too many times.");
-            parentAnimationDepth = 0;
+            state.parentAnimationDepth = 0;
             return;
         }
-        parentAnimationDepth--;
+        state.parentAnimationDepth--;
     }
 
     public static boolean hasParentAnimation() {
-        return parentAnimationDepth > 0;
+        return STATE.get().parentAnimationDepth > 0;
     }
 
     public static void pushDisabled() {
-        disableDepth++;
+        STATE.get().disableDepth++;
     }
 
     public static void popDisabled() {
-        if (disableDepth <= 0) {
+        ThreadState state = STATE.get();
+        if (state.disableDepth <= 0) {
             EaseGUIDebug.reportError("disable_depth_underflow", () -> "Attempted to call popDisabled() when depth is already 0!");
-            disableDepth = 0;
+            state.disableDepth = 0;
             return;
         }
-        disableDepth--;
+        state.disableDepth--;
     }
 
     public static boolean isAnimationDisabled() {
-        return disableDepth > 0;
+        return STATE.get().disableDepth > 0;
     }
 
     public static void resetFrameState() {
-        SCOPE_STACK.clear();
-        DISABLE_SUSPENDED_STACK.clear();
-        DISABLE_HAD_SCOPE_STACK.clear();
-        parentAnimationDepth = 0;
-        disableDepth = 0;
+        STATE.get().reset();
     }
 }
