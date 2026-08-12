@@ -5,16 +5,15 @@ import net.minecraft.util.Util;
 import net.weyne1.easegui.api.animation.AnimationProfile;
 import net.weyne1.easegui.api.animation.EasingType;
 
+@SuppressWarnings("unused")
 public final class AnimationSystem {
-
-    private AnimationSystem() {}
 
     /**
      * Begins an animation scope using start timestamp and delay.
      * Use this overload for real-time game elements tied to a specific open time or start timestamp.
      *
      * @param startTime time in milliseconds when the screen/animation sequence started
-     * @param delay delay in milliseconds before this specific element begins animating
+     * @param delay     delay in milliseconds before this specific element begins animating
      * @return active {@link AnimationScope}, or {@code null} if the duration has elapsed
      */
     public static AnimationScope begin(
@@ -92,6 +91,30 @@ public final class AnimationSystem {
                 profile.getPivot().getX(x, width),
                 profile.getPivot().getY(y, height)
         );
+        return scope;
+    }
+
+    /**
+     * Begins an animation scope applying pivot scaling and custom alpha.
+     * <p>
+     * Useful for isolated custom animated elements like splash text.
+     *
+     * @return active {@link AnimationScope} context
+     */
+    public static AnimationScope beginPivotScale(
+            GuiGraphicsExtractor graphics,
+            float pivotX,
+            float pivotY,
+            float scale,
+            float alpha
+    ) {
+        if (AnimationContext.isAnimationDisabled()) {
+            return AnimationScope.NO_OP;
+        }
+
+
+        AnimationScope scope = new AnimationScope(graphics, alpha);
+        scope.pushTransforms(pivotX, pivotY, scale);
         return scope;
     }
 

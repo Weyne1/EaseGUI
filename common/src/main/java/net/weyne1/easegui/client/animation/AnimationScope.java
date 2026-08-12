@@ -68,21 +68,6 @@ public class AnimationScope implements AutoCloseable {
         pushTransforms(0.0f, 0.0f, scaleX, scaleY, pivotX, pivotY);
     }
 
-    public void applyPivotScale(float pivotX, float pivotY, float scale) {
-        if (this.graphics == null) return;
-
-        this.scaleX = clampScale(scale);
-        this.scaleY = clampScale(scale);
-        this.pivotX = pivotX;
-        this.pivotY = pivotY;
-
-        Matrix3x2fStack poseStack = graphics.pose();
-
-        poseStack.translate(pivotX, pivotY);
-        poseStack.scale(this.scaleX, this.scaleY);
-        poseStack.translate(-pivotX, -pivotY);
-    }
-
     public void suspend() {
         if (isClosed) return;
 
@@ -144,7 +129,6 @@ public class AnimationScope implements AutoCloseable {
 
     private static final class NoOpAnimationScope extends AnimationScope {
         @Override void pushTransforms(float oX, float oY, float sX, float sY, float pX, float pY) {}
-        @Override public void applyPivotScale(float pX, float pY, float s) {}
         @Override public void suspend() {}
         @Override public void resume() {}
         @Override public void close() {}
