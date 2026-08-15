@@ -1,71 +1,52 @@
-![Minecraft GUI is now animated.](https://cdn.modrinth.com/data/cached_images/c31bc4f45e41d14cb3949049daec3450426fc03b.gif)
-
 <div align="center">
+  <h3>EaseGUI is a client-side mod that adds smooth, dynamic entry animations to Minecraft screens and interfaces!</h3>
 
-## EaseGUI is a client-side mod that adds smooth, dynamic entry [animations](https://modrinth.com/project/easegui/gallery) to Minecraft screens and interfaces!
-
-<img src="https://cdn.modrinth.com/data/zS8uflwP/images/47e1d2c7fc9a70215333c06f2e9c81b1653eb006.webp" alt="Showcase" width="90%">
-
+  [![License](https://img.shields.io/github/license/Weyne1/easegui.svg)](https://github.com/Weyne1/EaseGUI/blob/master/LICENSE)
+  [![MC Versions](https://cf.way2muchnoise.eu/versions/For%20MC_1584306_all.svg)](https://www.curseforge.com/minecraft/mc-mods/easegui)
+  [![CurseForge Downloads](https://cf.way2muchnoise.eu/full_1584306_downloads.svg)](https://www.curseforge.com/minecraft/mc-mods/easegui)
+  [![Modrinth Downloads](https://img.shields.io/modrinth/dt/zS8uflwP?label=Modrinth%20Downloads&color=00AF5C)](https://modrinth.com/mod/easegui)
 </div>
 
+<p align="center">
+  <img src="gallery/menus.webp" width="97%"/>
+  <img src="gallery/in-game.webp" width="32%"/>
+  <img src="gallery/containers.webp" width="32%"/>
+  <img src="gallery/customization.webp" width="32%"/>
+</p>
 
 ---
 
-### Animated GUI Elements:
-- Smooth background blur
-- Main menu titles & logos
-- Buttons
-- Text labels
-- Scrollable lists
-- Containers & inventory screens
-
-## Deep Customization
-The mod offers extensive customization options for every element category. You can configure animations globally for all screens or fine-tune them individually for specific menus to suit your taste.
-
-> [!IMPORTANT]
-> (For Fabric) To customize your animations easily in-game without editing config files manually, it is highly recommended to install [Mod Menu](https://modrinth.com/mod/modmenu).
-
-<details>
-<summary>⚙ Configuration Parameters Explained</summary>
-
-- **Animation [ON/OFF]** — Toggles animations for the selected element category.
-- **Duration** — Controls how long the animation lasts (in milliseconds).
-- **Offset [X/Y]** — Sets the starting position of the element relative to its final layout position.
-- **Initial Scale [X/Y]** — Controls the scale of the element at the beginning of the animation.
-- **Initial Alpha** — Adjusts the starting opacity (transparency) of the element.
-- **Cascade Delay** — The time delay between animating consecutive elements of the same type (creates a beautiful staggered entry effect).
-- **Cascade Order** — The direction of the staggered sequence: Top-to-Bottom or Bottom-to-Top.
-- **Pivot Point** — The anchor point used for scaling transformations (e.g., scaling from the center, top-left, etc.).
-- **Easing (Interpolation)** — The mathematical curve that defines the acceleration profile and overall feel of the animation.
-
-</details>
-
-By default, a clean and simplified global animation preset is applied. However, you can craft **completely unique transitions** for each screen or disable them entirely where they aren't needed.
-
 <div align="center">
+  <h2>Animated Elements</h2>
+  <b>Background Blur • Minecraft Logo • Buttons • Text Labels • Scrollable Lists • Containers</b>
 
-<img src="https://cdn.modrinth.com/data/zS8uflwP/images/d1c3bc54e85e91ce8a84a332abf0a325bfd0bd5d.webp" alt="Container Animations Showcase" width="90%">
-
+  <h2>Fabric Requirements</h2>
 </div>
 
-## 🧪 Beta Status & Feedback
+<p align="center">
+  <a href="https://modrinth.com/mod/fabric-api" target="_blank">
+    <img src="gallery/fabric-api.png" alt="Fabric API" width="200" style="margin: 0 4px;">
+  </a>
+  <a href="https://modrinth.com/mod/modmenu" target="_blank">
+    <img src="gallery/mod-menu.png" alt="Mod Menu" width="200" style="margin: 0 4px;">
+  </a>
+</p>
 
-EaseGUI is currently in **Beta**. While the core features are stable and fully functional on both Fabric and NeoForge, there is still a massive world of third-party mods with unique interfaces out there.
+## Building
 
-As the developer, **I would be incredibly grateful for your bug reports!** If you run into compatibility issues with other mods, please let me know.
-
-## Compatibility & Known Issues
-**While EaseGUI is engineered to inject animations as cleanly as possible without conflicting with other mods, unforeseen edge cases can happen:**
-
-- Some custom screens (especially complex ones from third-party mods) might **not support animations** due to their unique rendering implementations. This mod specifically targets standard, vanilla-aligned GUI components.
-- Mods that implement entirely custom GUI rendering systems outside of the standard pipeline (such as Sodium's video options menu) will not be animated.
-
-If you encounter visual glitches or rendering issues with third-party screens, you don't have to turn off the whole mod! You can easily disable animations for all custom interfaces at once in the config (under the **"Other Screens"** tab) while keeping the smooth transitions across all vanilla menus.
-
-## Gradle commands
+JDK version depends on the MC version
 
 Build: `./gradlew build`  
 Build for a specific platform:
-* Fabric: `./gradlew :fabric:build`
-* NeoForge:  `./gradlew :neoforge:build`
 
+* Fabric: `./gradlew :fabric:build`
+* (Neo)Forge:  `./gradlew :neoforge:build`
+
+## Contributing
+
+### 🌐 Translations
+
+> You can help by adding a translation of EaseGUI into your language!
+> - Just add a new `.json` file in `src/main/resources/assets/easegui/lang/` folder (e.g., `ru_ru.json`, `es_es.json`)
+> - You can copy `en_us.json` as a template (make sure it's copied from the latest version branch)
+> - Open a PR or just send the file in a GitHub Issues, and I'll add it!
