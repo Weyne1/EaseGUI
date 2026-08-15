@@ -46,7 +46,7 @@ Build for a specific platform:
 
 ### 🌐 Translations
 
-> You can help by adding a translation of EaseGUI into your language!
-> - Just add a new `.json` file in `src/main/resources/assets/easegui/lang/` folder (e.g., `ru_ru.json`, `es_es.json`)
-> - You can copy `en_us.json` as a template (make sure it's copied from the latest version branch)
-> - Open a PR or just send the file in a GitHub Issues, and I'll add it!
+You can help by adding a translation of EaseGUI into your language!
+- Just add a new `.json` file in `src/main/resources/assets/easegui/lang/` folder (e.g., `ru_ru.json`, `es_es.json`)
+- You can copy `en_us.json` as a template (make sure it's copied from the latest version branch)
+- Open a PR or just send the file in a GitHub Issues, and I'll add it!
