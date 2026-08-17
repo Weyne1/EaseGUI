@@ -77,7 +77,7 @@ public abstract class EaseGUIAbstractSplitScreen extends Screen {
 
     protected abstract Component getRightSubtitle();
 
-    protected void renderOverlay(GuiGraphicsExtractor gg, int mouseX, int mouseY, float partialTick) {}
+    protected void extractOverlay(GuiGraphicsExtractor gg, int mouseX, int mouseY, float partialTick) {}
 
     @Override
     public void extractRenderState(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
@@ -86,7 +86,7 @@ public abstract class EaseGUIAbstractSplitScreen extends Screen {
         // Вертикальный разделитель по центру экрана
         graphics.fill(halfWidth - 1, 50, halfWidth + 1, this.height - 45, LINE_COLOR);
 
-        renderOverlay(graphics, mouseX, mouseY, partialTick);
+        extractOverlay(graphics, mouseX, mouseY, partialTick);
     }
 
     protected void addCategoryOverrideRow(

@@ -13,7 +13,7 @@ import net.weyne1.easegui.api.animation.PivotPoint;
 import net.weyne1.easegui.client.config.ProfileFeature;
 import net.weyne1.easegui.client.gui.components.FieldValidator;
 import net.weyne1.easegui.client.gui.components.SettingsScrollList;
-import net.weyne1.easegui.client.gui.preview.ProfilePreviewRenderer;
+import net.weyne1.easegui.client.gui.preview.ProfilePreviewExtractor;
 import net.weyne1.easegui.client.util.StringUtils;
 
 import java.util.EnumSet;
@@ -166,7 +166,7 @@ public class ProfileEditorScreen extends EaseGUIAbstractSplitScreen {
     }
 
     @Override
-    protected void renderOverlay(GuiGraphicsExtractor gg, int mouseX, int mouseY, float partialTick) {
-        ProfilePreviewRenderer.render(gg, this.font, this.width, this.height, this.workingCopy, this.activeFeatures);
+    protected void extractOverlay(GuiGraphicsExtractor gg, int mouseX, int mouseY, float partialTick) {
+        ProfilePreviewExtractor.extractRenderState(gg, this.font, this.workingCopy, this.activeFeatures, this.width, this.height);
     }
 }
