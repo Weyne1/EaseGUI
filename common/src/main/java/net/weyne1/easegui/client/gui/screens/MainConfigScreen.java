@@ -151,7 +151,7 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
                         this,
                         config.global.elementProfiles.getOrDefault(category, new AnimationProfile()),
                         finalCleanDefault,
-                        category.getAllowedFeatures(),
+                        category,
                         updated -> {
                             config.global.elementProfiles.put(category, updated);
                             ConfigManager.save();

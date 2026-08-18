@@ -3,6 +3,7 @@ package net.weyne1.easegui.client.gui.preview;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
+import net.weyne1.easegui.api.WidgetCategory;
 import net.weyne1.easegui.api.animation.AnimationProfile;
 import net.weyne1.easegui.api.animation.CascadeDirection;
 import net.weyne1.easegui.client.animation.AnimationScope;
@@ -13,7 +14,6 @@ import net.weyne1.easegui.client.config.ProfileFeature;
 import java.util.EnumSet;
 
 public class ProfilePreviewExtractor {
-    private static final int BOX_HEIGHT = 24;
     private static final long LOOP_PADDING_MS = 700L;
     private static final Component DISABLED_BADGE = Component.translatable("easegui.editor.preview.disabled");
     private static final Component DISABLED_GLOBALLY_BADGE = Component.translatable("easegui.editor.preview.disabled_globally");
@@ -22,14 +22,23 @@ public class ProfilePreviewExtractor {
             GuiGraphicsExtractor graphics,
             Font font,
             AnimationProfile profile,
+            WidgetCategory widgetCategory,
             EnumSet<ProfileFeature> activeFeatures,
             int screenWidth,
             int screenHeight
     ) {
-        PreviewLayout layout = PreviewLayout.of(profile, activeFeatures, screenWidth, screenHeight, BOX_HEIGHT);
         boolean isEnabled = profile.isEnabled() && ConfigManager.getConfig().global.enabled;
 
-        PreviewContentRenderer contentRenderer = new AbstractElementPreview(layout.isCascade(), layout.isHorizontal());
+        boolean isCascade = activeFeatures.contains(ProfileFeature.CASCADE_DELAY);
+        boolean isHorizontal = profile.getCascadeDirection() == CascadeDirection.LEFT_TO_RIGHT
+                || profile.getCascadeDirection() == CascadeDirection.RIGHT_TO_LEFT;
+
+        PreviewContentRenderer contentRenderer = switch (widgetCategory) {
+            case CONTAINERS -> new AbstractContainerPreview();
+            default -> new AbstractElementPreview(isCascade, isHorizontal);
+        };
+
+        PreviewLayout layout = PreviewLayout.of(profile, activeFeatures, contentRenderer, screenWidth, screenHeight);
 
         extractStaticBounds(graphics, layout, isEnabled);
         extractAnimatedElements(graphics, font, profile, layout, contentRenderer, isEnabled);

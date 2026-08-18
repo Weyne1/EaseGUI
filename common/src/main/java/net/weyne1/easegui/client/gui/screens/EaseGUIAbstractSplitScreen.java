@@ -12,11 +12,8 @@ import net.weyne1.easegui.api.animation.AnimationProfile;
 import net.weyne1.easegui.client.config.ConfigManager;
 import net.weyne1.easegui.client.config.EaseGUIConfig;
 import net.weyne1.easegui.client.config.EaseGUIConfigFactory;
-import net.weyne1.easegui.client.config.ProfileFeature;
 import net.weyne1.easegui.client.gui.components.SettingsScrollList;
 import org.jspecify.annotations.NonNull;
-
-import java.util.EnumSet;
 
 public abstract class EaseGUIAbstractSplitScreen extends Screen {
     private static final int LINE_COLOR = 0x33FFFFFF;
@@ -77,7 +74,7 @@ public abstract class EaseGUIAbstractSplitScreen extends Screen {
 
     protected abstract Component getRightSubtitle();
 
-    protected void extractOverlay(GuiGraphicsExtractor gg, int mouseX, int mouseY, float partialTick) {}
+    protected void extractOverlay(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {}
 
     @Override
     public void extractRenderState(@NonNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
@@ -108,9 +105,7 @@ public abstract class EaseGUIAbstractSplitScreen extends Screen {
         Button editBtn = Button.builder(Component.translatable("easegui.generic.edit"), _ -> {
             var profile = settings.customProfiles.getOrDefault(category, new AnimationProfile());
 
-            EnumSet<ProfileFeature> allowedFeatures = category.getAllowedFeatures();
-
-            Minecraft.getInstance().gui.setScreen(new ProfileEditorScreen(this, profile, finalCleanDefault, allowedFeatures, updated -> {
+            Minecraft.getInstance().gui.setScreen(new ProfileEditorScreen(this, profile, finalCleanDefault, category, updated -> {
                 settings.customProfiles.put(category, updated);
                 ConfigManager.save();
             }));

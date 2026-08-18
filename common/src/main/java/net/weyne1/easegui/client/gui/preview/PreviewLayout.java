@@ -30,16 +30,17 @@ final class PreviewLayout {
     static PreviewLayout of(
             AnimationProfile profile,
             EnumSet<ProfileFeature> activeFeatures,
+            PreviewContentRenderer renderer,
             int screenWidth,
-            int screenHeight,
-            int boxHeight
+            int screenHeight
     ) {
         int centerX = (screenWidth / 2) + (screenWidth / 4);
         int centerY = screenHeight / 2;
         boolean cascade = activeFeatures.contains(ProfileFeature.CASCADE_DELAY);
         boolean horizontal = profile.getCascadeDirection() == CascadeDirection.LEFT_TO_RIGHT
                 || profile.getCascadeDirection() == CascadeDirection.RIGHT_TO_LEFT;
-        int boxWidth = (horizontal && cascade) ? 40 : 120;
+        int boxWidth = renderer.getPreferredWidth(cascade, horizontal);
+        int boxHeight = renderer.getPreferredHeight();
         int itemCount = cascade ? 3 : 1;
         return new PreviewLayout(centerX, centerY, boxWidth, boxHeight, cascade, horizontal, itemCount);
     }
@@ -59,5 +60,4 @@ final class PreviewLayout {
     int centerX() { return centerX; }
     int itemCount() { return itemCount; }
     boolean isCascade() { return cascade; }
-    boolean isHorizontal() { return horizontal; }
 }
