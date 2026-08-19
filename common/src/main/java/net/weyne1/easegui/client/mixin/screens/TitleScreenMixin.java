@@ -18,6 +18,7 @@ public class TitleScreenMixin {
 
     @Shadow private boolean fading;
 
+
     @Inject(method = "extractRenderState", at = @At("HEAD"))
     private void easeGUI$disableVanillaFading(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, CallbackInfo ci) {
         var titleSettings = ConfigManager.getConfig().screens.get("title");

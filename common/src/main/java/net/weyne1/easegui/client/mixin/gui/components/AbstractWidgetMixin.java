@@ -18,6 +18,7 @@ public abstract class AbstractWidgetMixin implements WidgetExtension {
 
     @Unique private final WidgetAnimationState easeGUI$animationState = new WidgetAnimationState();
     @Unique private WidgetCategory easeGUI$cachedCategory = null;
+    @Unique private boolean easeGUI$excluded = false;
 
     @Override
     public WidgetCategory easeGUI$getCategory() {
@@ -27,17 +28,27 @@ public abstract class AbstractWidgetMixin implements WidgetExtension {
         return this.easeGUI$cachedCategory;
     }
 
+    @Override
+    public void easeGUI$setExcluded(boolean excluded) {
+        this.easeGUI$excluded = excluded;
+    }
+
+    @Override
+    public boolean easeGUI$isExcluded() {
+        return this.easeGUI$excluded;
+    }
+
     @WrapMethod(method = "extractRenderState")
     private void easeGUI$wrapWidgetRender(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, Operation<Void> original) {
         AbstractWidget widget = (AbstractWidget) (Object) this;
 
-        if (!widget.visible || AnimationContext.isAnimationDisabled()) {
+        if (!widget.visible || AnimationContext.isAnimationDisabled() || this.easeGUI$excluded) {
             original.call(graphics, mouseX, mouseY, a);
             return;
         }
 
         WidgetCategory category = this.easeGUI$getCategory();
-        if (category == WidgetCategory.UNKNOWN) {
+        if (category == WidgetCategory.UNKNOWN || category == WidgetCategory.EXCLUDED) {
             original.call(graphics, mouseX, mouseY, a);
             return;
         }
