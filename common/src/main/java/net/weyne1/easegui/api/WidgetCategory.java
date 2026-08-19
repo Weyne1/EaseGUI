@@ -27,6 +27,7 @@ public enum WidgetCategory {
 
     static {
         CUSTOM_MAPPINGS.put(PageButton.class, EXCLUDED);
+        CUSTOM_MAPPINGS.put(PlainTextButton.class, EXCLUDED);
     }
 
     private final EnumSet<ProfileFeature> allowedFeatures;
