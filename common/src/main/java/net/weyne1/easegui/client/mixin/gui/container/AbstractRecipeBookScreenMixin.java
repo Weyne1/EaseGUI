@@ -14,7 +14,7 @@ public abstract class AbstractRecipeBookScreenMixin implements RecipeBookScreenE
     @Shadow private RecipeBookComponent<?> recipeBookComponent;
 
     @Override
-    public RecipeBookComponent<?> easeGUI$getRecipeBookComponent() {
+    public RecipeBookComponent<?> easegui$getRecipeBookComponent() {
         return this.recipeBookComponent;
     }
 }

@@ -38,7 +38,7 @@ public class LogoAnimator {
         }
 
         float finalAlpha = keepLogoThroughFade ? 1.0f : transparency;
-        int startX = screenWidth / 2 - (LogoRendererAccessor.easeGUI$getLogoWidth() / 2);
+        int startX = screenWidth / 2 - (LogoRendererAccessor.easegui$getLogoWidth() / 2);
 
         Identifier logoTexture = showEasterEgg ? LogoRenderer.EASTER_EGG_LOGO : LogoRenderer.MINECRAFT_LOGO;
         if (logoConfig.animateWholeText) {
@@ -55,8 +55,8 @@ public class LogoAnimator {
     private static void renderWholeLogo(GuiGraphicsExtractor graphics, Identifier texture, AnimationProfile profile, int startX, int height, float finalAlpha) {
         long actualStartTime = ScreenStateTracker.getTitleActualStartTime();
         long elapsed = Util.getMillis() - actualStartTime;
-        int logoWidth = LogoRendererAccessor.easeGUI$getLogoWidth();
-        int logoHeight = LogoRendererAccessor.easeGUI$getLogoHeight();
+        int logoWidth = LogoRendererAccessor.easegui$getLogoWidth();
+        int logoHeight = LogoRendererAccessor.easegui$getLogoHeight();
 
         try (AnimationScope ignored = AnimationSystem.begin(graphics, profile, startX, height, logoWidth, logoHeight, elapsed, finalAlpha)) {
             drawLogoTexture(graphics, texture, startX, height);
@@ -66,8 +66,8 @@ public class LogoAnimator {
     private static void renderCascadedLetters(GuiGraphicsExtractor graphics, AnimationProfile profile, int startX, int height, float finalAlpha) {
         long now = Util.getMillis();
         long actualStartTime = ScreenStateTracker.getTitleActualStartTime();
-        int logoWidth = LogoRendererAccessor.easeGUI$getLogoWidth();
-        int logoHeight = LogoRendererAccessor.easeGUI$getLogoHeight();
+        int logoWidth = LogoRendererAccessor.easegui$getLogoWidth();
+        int logoHeight = LogoRendererAccessor.easegui$getLogoHeight();
 
         for (int i = 0; i < LETTER_TEXTURES.length; i++) {
             int logicalIndex = LOGICAL_INDICES[i];
@@ -83,9 +83,9 @@ public class LogoAnimator {
     }
 
     private static void renderEditionText(GuiGraphicsExtractor graphics, EaseGUIConfig.LogoSettings config, int screenWidth, int height, float finalAlpha) {
-        int editionWidth = LogoRendererAccessor.easeGUI$getEditionWidth();
-        int editionHeight = LogoRendererAccessor.easeGUI$getEditionHeight();
-        int logoHeight = LogoRendererAccessor.easeGUI$getLogoHeight();
+        int editionWidth = LogoRendererAccessor.easegui$getEditionWidth();
+        int editionHeight = LogoRendererAccessor.easegui$getEditionHeight();
+        int logoHeight = LogoRendererAccessor.easegui$getLogoHeight();
         int x = screenWidth / 2 - (editionWidth / 2);
         int y = height + logoHeight - 7;
 
@@ -137,17 +137,17 @@ public class LogoAnimator {
 
     private static void drawLogoTexture(GuiGraphicsExtractor graphics, Identifier texture, int x, int y) {
         graphics.blit(RenderPipelines.GUI_TEXTURED, texture, x, y, 0.0f, 0.0f,
-                LogoRendererAccessor.easeGUI$getLogoWidth(),
-                LogoRendererAccessor.easeGUI$getLogoHeight(),
-                LogoRendererAccessor.easeGUI$getLogoWidth(),
-                LogoRendererAccessor.easeGUI$getLogoTextureHeight());
+                LogoRendererAccessor.easegui$getLogoWidth(),
+                LogoRendererAccessor.easegui$getLogoHeight(),
+                LogoRendererAccessor.easegui$getLogoWidth(),
+                LogoRendererAccessor.easegui$getLogoTextureHeight());
     }
 
     private static void drawEditionTexture(GuiGraphicsExtractor graphics, int x, int y) {
         graphics.blit(RenderPipelines.GUI_TEXTURED, LogoRenderer.MINECRAFT_EDITION, x, y, 0.0f, 0.0f,
-                LogoRendererAccessor.easeGUI$getEditionWidth(),
-                LogoRendererAccessor.easeGUI$getEditionHeight(),
-                LogoRendererAccessor.easeGUI$getEditionWidth(),
-                LogoRendererAccessor.easeGUI$getEditionTextureHeight());
+                LogoRendererAccessor.easegui$getEditionWidth(),
+                LogoRendererAccessor.easegui$getEditionHeight(),
+                LogoRendererAccessor.easegui$getEditionWidth(),
+                LogoRendererAccessor.easegui$getEditionTextureHeight());
     }
 }

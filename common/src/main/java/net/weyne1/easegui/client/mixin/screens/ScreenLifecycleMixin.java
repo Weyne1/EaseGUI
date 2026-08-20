@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class ScreenLifecycleMixin {
 
     @Inject(method = "added()V", at = @At("HEAD"))
-    private void easeGUI$onScreenAdded(CallbackInfo ci) {
+    private void easegui$onScreenAdded(CallbackInfo ci) {
         Screen currentScreen = (Screen) (Object) this;
 
         if (currentScreen instanceof FriendsOverlayScreen) {

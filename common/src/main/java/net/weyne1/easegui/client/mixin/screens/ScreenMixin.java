@@ -32,7 +32,7 @@ public abstract class ScreenMixin {
 
     // Container lifecycle
     @WrapMethod(method = "extractRenderStateWithTooltipAndSubtitles")
-    private void easeGUI$wrapScreenRender(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, Operation<Void> original) {
+    private void easegui$wrapScreenRender(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, Operation<Void> original) {
         ScreenStateTracker.markScreenRendered((Screen) (Object) this);
 
         if (RenderSystem.isOnRenderThread()
@@ -53,7 +53,7 @@ public abstract class ScreenMixin {
 
     // Transparent background blur
     @WrapMethod(method = "extractTransparentBackground")
-    private void easeGUI$wrapTransparentBackground(GuiGraphicsExtractor graphics, Operation<Void> original) {
+    private void easegui$wrapTransparentBackground(GuiGraphicsExtractor graphics, Operation<Void> original) {
         AnimationScope currentScope = AnimationContext.getCurrentScope();
         if (currentScope.isAnimating()) {
             currentScope.suspend();
@@ -78,7 +78,7 @@ public abstract class ScreenMixin {
 
     // Menu background
     @WrapMethod(method = "extractMenuBackground(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V")
-    private void easeGUI$wrapMenuBackground(GuiGraphicsExtractor graphics, Operation<Void> original) {
+    private void easegui$wrapMenuBackground(GuiGraphicsExtractor graphics, Operation<Void> original) {
         AnimationScope currentScope = AnimationContext.getCurrentScope();
         if (currentScope.isAnimating()) {
             currentScope.suspend();
@@ -95,7 +95,7 @@ public abstract class ScreenMixin {
 
     // Blur tracking
     @Inject(method = "extractBlurredBackground", at = @At("HEAD"))
-    private void easeGUI$onExtractBlurredBackground(GuiGraphicsExtractor graphics, CallbackInfo ci) {
+    private void easegui$onExtractBlurredBackground(GuiGraphicsExtractor graphics, CallbackInfo ci) {
         ScreenStateTracker.markBlurredThisFrame();
     }
 
@@ -104,7 +104,7 @@ public abstract class ScreenMixin {
             method = "extractTransparentBackground(Lnet/minecraft/client/gui/GuiGraphicsExtractor;)V",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphicsExtractor;fillGradient(IIIIII)V")
     )
-    private void easeGUI$modifyTransparentBgColors(Args args) {
+    private void easegui$modifyTransparentBgColors(Args args) {
         Screen currentScreen = (Screen) (Object) this;
         if (!BackgroundAnimator.isBackgroundEffectAllowed(currentScreen)) {
             return;
@@ -112,15 +112,15 @@ public abstract class ScreenMixin {
 
         float intensity = ConfigManager.getConfig().global.backgroundDimmingIntensity;
 
-        int color1 = easeGUI$applyDimmingIntensity(args.get(4), intensity);
-        int color2 = easeGUI$applyDimmingIntensity(args.get(5), intensity);
+        int color1 = easegui$applyDimmingIntensity(args.get(4), intensity);
+        int color2 = easegui$applyDimmingIntensity(args.get(5), intensity);
 
         args.set(4, BackgroundAnimator.getAnimatedColor(currentScreen, color1));
         args.set(5, BackgroundAnimator.getAnimatedColor(currentScreen, color2));
     }
 
     @Unique
-    private static int easeGUI$applyDimmingIntensity(int color, float intensity) {
+    private static int easegui$applyDimmingIntensity(int color, float intensity) {
         int targetAlpha = Math.clamp(Math.round(intensity * 255.0f), 0, 255);
         return (targetAlpha << 24) | (color & 0x00FFFFFF);
     }

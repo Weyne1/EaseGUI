@@ -10,8 +10,8 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 public interface RecipeBookComponentMixin extends RecipeBookComponentExtension {
 
     @Invoker("getXOrigin")
-    int easeGUI$getXOrigin();
+    int easegui$getXOrigin();
 
     @Invoker("getYOrigin")
-    int easeGUI$getYOrigin();
+    int easegui$getYOrigin();
 }

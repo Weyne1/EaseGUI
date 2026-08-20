@@ -17,7 +17,7 @@ public class AdvancementsScreenMixin {
 
     // Main window animation
     @WrapMethod(method = "extractRenderState")
-    private void easeGUI$wrapRenderWindow(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, Operation<Void> original) {
+    private void easegui$wrapRenderWindow(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, Operation<Void> original) {
         AdvancementsScreen screen = (AdvancementsScreen) (Object) this;
 
         try (AnimationScope scope = AdvancementsAnimator.beginWindow(screen, graphics)) {
@@ -39,7 +39,7 @@ public class AdvancementsScreenMixin {
             method = "extractRenderState",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V")
     )
-    private void easeGUI$ignoreSuperWidgetsInWindowScope(AdvancementsScreen instance, GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, Operation<Void> original) {
+    private void easegui$ignoreSuperWidgetsInWindowScope(AdvancementsScreen instance, GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, Operation<Void> original) {
         AnimationScope currentScope = AnimationContext.getCurrentScope();
 
         if (currentScope.isAnimating()) {
@@ -68,7 +68,7 @@ public class AdvancementsScreenMixin {
             method = "extractWindow",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/advancements/AdvancementTab;extractTab(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIIIZ)V")
     )
-    private void easeGUI$wrapDrawTab(AdvancementTab tab, GuiGraphicsExtractor graphics, int xo, int yo, int mouseX, int mouseY, boolean selected, Operation<Void> original) {
+    private void easegui$wrapDrawTab(AdvancementTab tab, GuiGraphicsExtractor graphics, int xo, int yo, int mouseX, int mouseY, boolean selected, Operation<Void> original) {
         AdvancementsScreen screen = (AdvancementsScreen) (Object) this;
 
         try (AnimationScope ignored = AdvancementsAnimator.beginTab(screen, graphics, tab.getIndex())) {
@@ -81,7 +81,7 @@ public class AdvancementsScreenMixin {
             method = "extractWindow",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/advancements/AdvancementTab;extractIcon(Lnet/minecraft/client/gui/GuiGraphicsExtractor;II)V")
     )
-    private void easeGUI$wrapDrawIcon(AdvancementTab tab, GuiGraphicsExtractor graphics, int xo, int yo, Operation<Void> original) {
+    private void easegui$wrapDrawIcon(AdvancementTab tab, GuiGraphicsExtractor graphics, int xo, int yo, Operation<Void> original) {
         AdvancementsScreen screen = (AdvancementsScreen) (Object) this;
 
         try (AnimationScope ignored = AdvancementsAnimator.beginTab(screen, graphics, tab.getIndex())) {

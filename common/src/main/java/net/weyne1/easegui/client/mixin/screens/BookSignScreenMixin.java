@@ -16,9 +16,9 @@ public abstract class BookSignScreenMixin {
 
     // Marks the EditBox for text input as non-animable
     @Inject(method = "init", at = @At("TAIL"))
-    private void easeGUI$excludeTitleBox(CallbackInfo ci) {
+    private void easegui$excludeTitleBox(CallbackInfo ci) {
         if (this.titleBox != null) {
-            ((WidgetExtension) this.titleBox).easeGUI$setExcluded(true);
+            ((WidgetExtension) this.titleBox).easegui$setExcluded(true);
         }
     }
 }

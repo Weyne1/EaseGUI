@@ -21,7 +21,7 @@ public class SplashRendererMixin {
                     target = "Lnet/minecraft/client/gui/ActiveTextCollector;accept(Lnet/minecraft/client/gui/TextAlignment;IILnet/minecraft/client/gui/ActiveTextCollector$Parameters;Lnet/minecraft/network/chat/Component;)V"
             )
     )
-    private void easeGUI$animateSplash(
+    private void easegui$animateSplash(
             ActiveTextCollector collector,
             TextAlignment alignment,
             int anchorX,

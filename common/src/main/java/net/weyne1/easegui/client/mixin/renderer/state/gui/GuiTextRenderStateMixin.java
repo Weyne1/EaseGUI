@@ -11,13 +11,13 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 public class GuiTextRenderStateMixin {
 
     @ModifyVariable(method = "<init>", at = @At("HEAD"), argsOnly = true, name = "color")
-    private static int easeGUI$modifyTextStateColor(int color) {
+    private static int easegui$modifyTextStateColor(int color) {
         if (!AnimationContext.isActive()) return color;
         return ColorUtils.getAnimatedColor(color);
     }
 
     @ModifyVariable(method = "<init>", at = @At("HEAD"), argsOnly = true, name = "backgroundColor")
-    private static int easeGUI$modifyTextStateBackgroundColor(int backgroundColor) {
+    private static int easegui$modifyTextStateBackgroundColor(int backgroundColor) {
         if (!AnimationContext.isActive() || backgroundColor == 0) return backgroundColor;
         return ColorUtils.getAnimatedColor(backgroundColor);
     }

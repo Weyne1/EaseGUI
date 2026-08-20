@@ -18,8 +18,8 @@ public abstract class AbstractContainerScreenMixin extends Screen implements Con
 
     protected AbstractContainerScreenMixin(Component title) { super(title); }
 
-    @Override public int easeGUI$getLeftPos() { return leftPos; }
-    @Override public int easeGUI$getTopPos() { return topPos; }
-    @Override public int easeGUI$getImageWidth() { return imageWidth; }
-    @Override public int easeGUI$getImageHeight() { return imageHeight; }
+    @Override public int easegui$getLeftPos() { return leftPos; }
+    @Override public int easegui$getTopPos() { return topPos; }
+    @Override public int easegui$getImageWidth() { return imageWidth; }
+    @Override public int easegui$getImageHeight() { return imageHeight; }
 }

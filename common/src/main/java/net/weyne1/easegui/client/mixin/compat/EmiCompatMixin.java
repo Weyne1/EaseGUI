@@ -19,14 +19,14 @@ public class EmiCompatMixin {
 
     @Dynamic
     @Inject(method = {"render", "drawBackground", "drawForeground"}, at = @At("HEAD"), require = 0)
-    private static void easeGUI$onEmiRenderStart(CallbackInfo ci) {
+    private static void easegui$onEmiRenderStart(CallbackInfo ci) {
         AnimationScope scope = AnimationContext.getCurrentScope();
         if (scope.isAnimating()) scope.suspend();
     }
 
     @Dynamic
     @Inject(method = {"render", "drawBackground", "drawForeground"}, at = @At("RETURN"), require = 0)
-    private static void easeGUI$onEmiRenderEnd(CallbackInfo ci) {
+    private static void easegui$onEmiRenderEnd(CallbackInfo ci) {
         AnimationScope scope = AnimationContext.getCurrentScope();
         if (scope.isAnimating()) scope.resume();
     }

@@ -15,7 +15,7 @@ public class GuiMixin {
     @Shadow private Screen screen;
 
     @Inject(method = "setScreen", at = @At("HEAD"))
-    private void easeGUI$onScreenTransition(Screen screen, CallbackInfo ci) {
+    private void easegui$onScreenTransition(Screen screen, CallbackInfo ci) {
         Screen oldScreen = this.screen;
         ScreenStateTracker.onScreenChange();
 

@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class GameRendererMixin {
 
     @Inject(method = "render", at = @At("HEAD"))
-    private void easeGUI$onFrameStart(DeltaTracker deltaTracker, boolean advanceGameTime, CallbackInfo ci) {
+    private void easegui$onFrameStart(DeltaTracker deltaTracker, boolean advanceGameTime, CallbackInfo ci) {
         ScreenStateTracker.incrementFrame();
         AnimationContext.resetFrameState();
     }

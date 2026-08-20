@@ -15,7 +15,7 @@ public class GuiItemRenderStateMixin implements ItemExtension {
     private float easegui$alpha = 1.0f;
 
     @Inject(method = "<init>", at = @At("RETURN"))
-    private void easeGUI$captureAlphaOnCreation(CallbackInfo ci) {
+    private void easegui$captureAlphaOnCreation(CallbackInfo ci) {
         if (AnimationContext.isActive()) {
             this.easegui$alpha = AnimationContext.getCurrentAlpha();
         }

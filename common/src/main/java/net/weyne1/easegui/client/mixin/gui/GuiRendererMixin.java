@@ -22,7 +22,7 @@ public class GuiRendererMixin {
             method = "submitBlitFromItemAtlas",
             at = @At(value = "NEW", target = "Lnet/minecraft/client/renderer/state/gui/BlitRenderState;")
     )
-    private BlitRenderState easeGUI$applyStoredAlphaToItems(
+    private BlitRenderState easegui$applyStoredAlphaToItems(
             RenderPipeline pipeline, TextureSetup textureSetup, Matrix3x2fc pose,
             int x0, int y0, int x1, int y1, float u0, float u1, float v0, float v1, int color,
             ScreenRectangle scissorArea, ScreenRectangle bounds,

@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class OptionsMixin {
 
     @Inject(method = "getMenuBackgroundBlurriness", at = @At("RETURN"), cancellable = true)
-    private void easeGUI$animateMenuBlurriness(CallbackInfoReturnable<Integer> cir) {
+    private void easegui$animateMenuBlurriness(CallbackInfoReturnable<Integer> cir) {
         boolean animationDisabled = ConfigManager.getConfig().global.backgroundAnimationDuration <= 0;
 
         if (animationDisabled || BackgroundAnimator.isBackgroundAnimationSkipped()) {
