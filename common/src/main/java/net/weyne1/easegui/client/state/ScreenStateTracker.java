@@ -2,6 +2,7 @@ package net.weyne1.easegui.client.state;
 
 import net.minecraft.util.Util;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.friends.FriendsOverlayScreen;
 
 import java.lang.ref.WeakReference;
 
@@ -80,9 +81,11 @@ public class ScreenStateTracker {
     public static long getTitleActualStartTime() {
         long openTime = getScreenOpenTime();
 
-        if (lastTrackedSessionTime != openTime) {
-            lastTrackedSessionTime = openTime;
-            titleActualStartTime = Util.getMillis();
+        if (!(lastRenderedScreenRef.get() instanceof FriendsOverlayScreen)) {
+            if (lastTrackedSessionTime != openTime) {
+                lastTrackedSessionTime = openTime;
+                titleActualStartTime = Util.getMillis();
+            }
         }
 
         return titleActualStartTime;

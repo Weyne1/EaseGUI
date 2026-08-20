@@ -1,7 +1,6 @@
 package net.weyne1.easegui.client.mixin.screens;
 
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.friends.FriendsOverlayScreen;
 import net.weyne1.easegui.client.state.ScreenStateTracker;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -14,10 +13,6 @@ public class ScreenLifecycleMixin {
     @Inject(method = "added()V", at = @At("HEAD"))
     private void easegui$onScreenAdded(CallbackInfo ci) {
         Screen currentScreen = (Screen) (Object) this;
-
-        if (currentScreen instanceof FriendsOverlayScreen) {
-            return;
-        }
 
         if (ScreenStateTracker.checkAndTrackNewScreen(currentScreen)) {
             ScreenStateTracker.markScreenOpened();
