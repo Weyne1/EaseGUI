@@ -26,7 +26,7 @@ public abstract class AbstractSelectionListMixin {
                     target = "Lnet/minecraft/client/gui/components/AbstractSelectionList;extractItem(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIFLnet/minecraft/client/gui/components/AbstractSelectionList$Entry;)V"
             )
     )
-    private void easeGUI$wrapRenderItem(AbstractSelectionList<?> instance, GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, @Coerce Object entry, Operation<Void> original) {
+    private void easegui$wrapRenderItem(AbstractSelectionList<?> instance, GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, @Coerce Object entry, Operation<Void> original) {
         LayoutElement element = (LayoutElement) entry;
         int left = this.getRowLeft();
         int width = this.getRowWidth();

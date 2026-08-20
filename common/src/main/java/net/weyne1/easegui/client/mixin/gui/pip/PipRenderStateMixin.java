@@ -21,7 +21,7 @@ public abstract class PipRenderStateMixin implements PipExtension {
     @Unique private float easegui$alpha = 1.0f;
 
     @Inject(method = "<init>*", at = @At("RETURN"))
-    private void easeGUI$captureAlpha(CallbackInfo ci) {
+    private void easegui$captureAlpha(CallbackInfo ci) {
         if (AnimationContext.isActive()) {
             this.easegui$alpha = AnimationContext.getCurrentAlpha();
         }

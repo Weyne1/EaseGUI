@@ -20,22 +20,22 @@ public class ContainerAnimator {
             return AnimationScope.NO_OP;
         }
 
-        int minX = container.easeGUI$getLeftPos();
-        int minY = container.easeGUI$getTopPos();
-        int width = container.easeGUI$getImageWidth();
-        int height = container.easeGUI$getImageHeight();
+        int minX = container.easegui$getLeftPos();
+        int minY = container.easegui$getTopPos();
+        int width = container.easegui$getImageWidth();
+        int height = container.easegui$getImageHeight();
 
         int maxX = minX + width;
         int maxY = minY + height;
 
         if (screen instanceof RecipeBookScreenExtension recipeScreen) {
-            RecipeBookComponent<?> book = recipeScreen.easeGUI$getRecipeBookComponent();
+            RecipeBookComponent<?> book = recipeScreen.easegui$getRecipeBookComponent();
             if (book != null && book.isVisible()) {
                 RecipeBookComponentExtension accessor = (RecipeBookComponentExtension) book;
-                minX = Math.min(minX, accessor.easeGUI$getXOrigin());
-                minY = Math.min(minY, accessor.easeGUI$getYOrigin());
-                maxX = Math.max(maxX, accessor.easeGUI$getXOrigin() + RecipeBookComponent.IMAGE_WIDTH);
-                maxY = Math.max(maxY, accessor.easeGUI$getYOrigin() + RecipeBookComponent.IMAGE_HEIGHT);
+                minX = Math.min(minX, accessor.easegui$getXOrigin());
+                minY = Math.min(minY, accessor.easegui$getYOrigin());
+                maxX = Math.max(maxX, accessor.easegui$getXOrigin() + RecipeBookComponent.IMAGE_WIDTH);
+                maxY = Math.max(maxY, accessor.easegui$getYOrigin() + RecipeBookComponent.IMAGE_HEIGHT);
             }
         }
 

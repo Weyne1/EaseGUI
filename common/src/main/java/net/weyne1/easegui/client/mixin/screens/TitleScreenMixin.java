@@ -20,7 +20,7 @@ public class TitleScreenMixin {
 
 
     @Inject(method = "extractRenderState", at = @At("HEAD"))
-    private void easeGUI$disableVanillaFading(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, CallbackInfo ci) {
+    private void easegui$disableVanillaFading(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, CallbackInfo ci) {
         var titleSettings = ConfigManager.getConfig().screens.get("title");
 
         if (titleSettings != null && titleSettings.enabled) {
@@ -35,7 +35,7 @@ public class TitleScreenMixin {
                     target = "Lnet/minecraft/client/gui/components/LogoRenderer;extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IF)V"
             )
     )
-    private void easeGUI$conditionallyFadeLogo(LogoRenderer instance, GuiGraphicsExtractor graphics, int width, float alpha, Operation<Void> original) {
+    private void easegui$conditionallyFadeLogo(LogoRenderer instance, GuiGraphicsExtractor graphics, int width, float alpha, Operation<Void> original) {
         var titleSettings = ConfigManager.getConfig().screens.get("title");
 
         if (titleSettings != null && titleSettings.enabled) {
@@ -56,7 +56,7 @@ public class TitleScreenMixin {
                     target = "Lcom/mojang/realmsclient/gui/screens/RealmsNotificationsScreen;extractRenderState(Lnet/minecraft/client/gui/GuiGraphicsExtractor;IIF)V"
             )
     )
-    private void easeGUI$suppressRealmsNotifications(RealmsNotificationsScreen instance, GuiGraphicsExtractor graphics, int xm, int ym, float a, Operation<Void> original
+    private void easegui$suppressRealmsNotifications(RealmsNotificationsScreen instance, GuiGraphicsExtractor graphics, int xm, int ym, float a, Operation<Void> original
     ) {
         var titleSettings = ConfigManager.getConfig().screens.get("title");
 

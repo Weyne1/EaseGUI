@@ -17,13 +17,13 @@ public class WatutCompatMixin {
 
     @Dynamic
     @Inject(method = {"renderWithTooltipEnd", "guiRender"}, at = @At("HEAD"), require = 0)
-    private static void easeGUI$disableStart(CallbackInfo ci) {
+    private static void easegui$disableStart(CallbackInfo ci) {
         AnimationContext.beginManualDisable();
     }
 
     @Dynamic
     @Inject(method = {"renderWithTooltipEnd", "guiRender"}, at = @At("RETURN"), require = 0)
-    private static void easeGUI$disableEnd(CallbackInfo ci) {
+    private static void easegui$disableEnd(CallbackInfo ci) {
         AnimationContext.endManualDisable();
     }
 }

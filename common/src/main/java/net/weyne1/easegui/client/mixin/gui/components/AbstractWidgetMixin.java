@@ -16,44 +16,44 @@ import org.spongepowered.asm.mixin.Unique;
 @Mixin(AbstractWidget.class)
 public abstract class AbstractWidgetMixin implements WidgetExtension {
 
-    @Unique private final WidgetAnimationState easeGUI$animationState = new WidgetAnimationState();
-    @Unique private WidgetCategory easeGUI$cachedCategory = null;
-    @Unique private boolean easeGUI$excluded = false;
+    @Unique private final WidgetAnimationState easegui$animationState = new WidgetAnimationState();
+    @Unique private WidgetCategory easegui$cachedCategory = null;
+    @Unique private boolean easegui$excluded = false;
 
     @Override
-    public WidgetCategory easeGUI$getCategory() {
-        if (this.easeGUI$cachedCategory == null) {
-            this.easeGUI$cachedCategory = WidgetCategory.fromClass(this.getClass());
+    public WidgetCategory easegui$getCategory() {
+        if (this.easegui$cachedCategory == null) {
+            this.easegui$cachedCategory = WidgetCategory.fromClass(this.getClass());
         }
-        return this.easeGUI$cachedCategory;
+        return this.easegui$cachedCategory;
     }
 
     @Override
-    public void easeGUI$setExcluded(boolean excluded) {
-        this.easeGUI$excluded = excluded;
+    public void easegui$setExcluded(boolean excluded) {
+        this.easegui$excluded = excluded;
     }
 
     @Override
-    public boolean easeGUI$isExcluded() {
-        return this.easeGUI$excluded;
+    public boolean easegui$isExcluded() {
+        return this.easegui$excluded;
     }
 
     @WrapMethod(method = "extractRenderState")
-    private void easeGUI$wrapWidgetRender(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, Operation<Void> original) {
+    private void easegui$wrapWidgetRender(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, Operation<Void> original) {
         AbstractWidget widget = (AbstractWidget) (Object) this;
 
-        if (!widget.visible || AnimationContext.isAnimationDisabled() || this.easeGUI$excluded) {
+        if (!widget.visible || AnimationContext.isAnimationDisabled() || this.easegui$excluded) {
             original.call(graphics, mouseX, mouseY, a);
             return;
         }
 
-        WidgetCategory category = this.easeGUI$getCategory();
+        WidgetCategory category = this.easegui$getCategory();
         if (category == WidgetCategory.UNKNOWN || category == WidgetCategory.EXCLUDED) {
             original.call(graphics, mouseX, mouseY, a);
             return;
         }
 
-        try (AnimationScope ignored = WidgetAnimator.beginWidget(widget, graphics, category, this.easeGUI$animationState)) {
+        try (AnimationScope ignored = WidgetAnimator.beginWidget(widget, graphics, category, this.easegui$animationState)) {
             original.call(graphics, mouseX, mouseY, a);
         }
     }

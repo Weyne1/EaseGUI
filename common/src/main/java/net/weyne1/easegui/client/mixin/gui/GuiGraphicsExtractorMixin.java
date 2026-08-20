@@ -28,7 +28,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 public class GuiGraphicsExtractorMixin {
 
     @ModifyVariable(method = "innerFill", at = @At("HEAD"), argsOnly = true, name = "color1")
-    private int easeGUI$modifyFillColor(int color1) {
+    private int easegui$modifyFillColor(int color1) {
         if (!AnimationContext.isActive()) return color1;
         return ColorUtils.getAnimatedColor(color1);
     }
@@ -37,13 +37,13 @@ public class GuiGraphicsExtractorMixin {
             method = "innerBlit(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lcom/mojang/blaze3d/textures/GpuTextureView;Lcom/mojang/blaze3d/textures/GpuSampler;IIIIFFFFI)V",
             at = @At("HEAD"), argsOnly = true, name = "color"
     )
-    private int easeGUI$modifyBlitColor(int color) {
+    private int easegui$modifyBlitColor(int color) {
         if (!AnimationContext.isActive()) return color;
         return ColorUtils.getAnimatedColor(color);
     }
 
     @ModifyVariable(method = "innerTiledBlit", at = @At("HEAD"), argsOnly = true, name = "color")
-    private int easeGUI$modifyTiledBlitColor(int color) {
+    private int easegui$modifyTiledBlitColor(int color) {
         if (!AnimationContext.isActive()) return color;
         return ColorUtils.getAnimatedColor(color);
     }
@@ -52,7 +52,7 @@ public class GuiGraphicsExtractorMixin {
             method = "entity",
             at = @At(value = "NEW", target = "Lnet/minecraft/client/renderer/state/gui/pip/GuiEntityRenderState;")
     )
-    private GuiEntityRenderState easeGUI$transformEntity(
+    private GuiEntityRenderState easegui$transformEntity(
             EntityRenderState renderState, Vector3fc translation, Quaternionfc rotation, Quaternionfc overrideCameraAngle,
             int x0, int y0, int x1, int y1, float scale, ScreenRectangle scissorArea, Operation<GuiEntityRenderState> original) {
 
@@ -69,7 +69,7 @@ public class GuiGraphicsExtractorMixin {
             method = "book",
             at = @At(value = "NEW", target = "Lnet/minecraft/client/renderer/state/gui/pip/GuiBookModelRenderState;")
     )
-    private GuiBookModelRenderState easeGUI$transformBook(
+    private GuiBookModelRenderState easegui$transformBook(
             BookModel bookModel, Identifier texture, float _open, float flip,
             int x0, int y0, int x1, int y1, float scale, ScreenRectangle scissorArea, Operation<GuiBookModelRenderState> original) {
 
@@ -86,7 +86,7 @@ public class GuiGraphicsExtractorMixin {
             method = "skin",
             at = @At(value = "NEW", target = "Lnet/minecraft/client/renderer/state/gui/pip/GuiSkinRenderState;")
     )
-    private GuiSkinRenderState easeGUI$transformSkin(
+    private GuiSkinRenderState easegui$transformSkin(
             Model.Simple playerModel, Identifier texture, float rotationX, float rotationY, float pivotY,
             int x0, int y0, int x1, int y1, float scale, ScreenRectangle scissorArea, Operation<GuiSkinRenderState> original) {
 
@@ -103,7 +103,7 @@ public class GuiGraphicsExtractorMixin {
             method = "bannerPattern",
             at = @At(value = "NEW", target = "Lnet/minecraft/client/renderer/state/gui/pip/GuiBannerResultRenderState;")
     )
-    private GuiBannerResultRenderState easeGUI$transformBanner(
+    private GuiBannerResultRenderState easegui$transformBanner(
             BannerFlagModel flag, DyeColor baseColor, BannerPatternLayers resultBannerPatterns,
             int x0, int y0, int x1, int y1, ScreenRectangle scissorArea,
             Operation<GuiBannerResultRenderState> original) {

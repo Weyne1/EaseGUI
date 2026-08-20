@@ -3,8 +3,8 @@ package net.weyne1.easegui.client.extension;
 import net.weyne1.easegui.api.WidgetCategory;
 
 public interface WidgetExtension {
-    WidgetCategory easeGUI$getCategory();
+    WidgetCategory easegui$getCategory();
 
-    void easeGUI$setExcluded(boolean excluded);
-    boolean easeGUI$isExcluded();
+    void easegui$setExcluded(boolean excluded);
+    boolean easegui$isExcluded();
 }
