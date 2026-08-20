@@ -94,8 +94,8 @@ public class GuiGraphicsExtractorMixin {
         int[] ys = PipTransform.transformRangeY(y0, y1);
 
         return original.call(
-                playerModel, texture, rotationY, pivotY,
-                (float) xs[0], ys[0], xs[1], ys[1], Math.round(PipTransform.scale(scale)), rotationX, scissorArea
+                playerModel, texture, rotationX, rotationY, pivotY,
+                xs[0], ys[0], xs[1], ys[1], PipTransform.scale(scale), scissorArea
         );
     }
 
