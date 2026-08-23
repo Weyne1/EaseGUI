@@ -24,7 +24,6 @@
     "renderer.state.gui.GuiTextRenderStateMixin",
     "screens.AdvancementsScreenMixin",
     "screens.BookSignScreenMixin",
-    "screens.ScreenLifecycleMixin",
     "screens.ScreenMixin",
     "screens.TitleScreenMixin"
   ],

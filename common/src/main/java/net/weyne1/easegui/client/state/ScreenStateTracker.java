@@ -1,8 +1,10 @@
 package net.weyne1.easegui.client.state;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.Util;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.friends.FriendsOverlayScreen;
+import net.weyne1.easegui.client.extension.ContainerScreenExtension;
 
 import java.lang.ref.WeakReference;
 
@@ -14,22 +16,26 @@ public class ScreenStateTracker {
     private static int resizeGraceFrames = 0;
     private static int lastWidth = -1;
     private static int lastHeight = -1;
-    private static boolean blurredInCurrentFrame = false;
-    private static boolean lastScreenWasBlurred = false;
+    private static boolean skipContainerAnimation;
 
     private static WeakReference<Screen> lastScreenRef = new WeakReference<>(null);
     private static WeakReference<Screen> lastRenderedScreenRef = new WeakReference<>(null);
+    private static WeakReference<Screen> lastBlurredScreenRef = new WeakReference<>(null);
 
-    public static boolean checkAndTrackNewScreen(Screen screen) {
-        Screen lastScreen = lastScreenRef.get();
-        if (lastScreen == screen) {
-            return false;
+    public static void onScreenTransition(Screen oldScreen, Screen newScreen) {
+        if (oldScreen == newScreen) {
+            return;
         }
-        lastScreenRef = new WeakReference<>(screen);
-        return true;
+
+        skipContainerAnimation = wasScreenRendered(oldScreen) && oldScreen instanceof ContainerScreenExtension;
+        lastScreenRef = new WeakReference<>(oldScreen);
+
+        if (newScreen != null) {
+            markScreenOpened();
+        }
     }
 
-    public static void markScreenOpened() {
+    private static void markScreenOpened() {
         screenOpenTime = -1;
         resizeGraceFrames = 0;
     }
@@ -42,27 +48,32 @@ public class ScreenStateTracker {
         return screen != null && lastRenderedScreenRef.get() == screen;
     }
 
-    public static void markBlurredThisFrame() {
-        blurredInCurrentFrame = true;
+    public static void markScreenBlurred(Screen screen) {
+        lastBlurredScreenRef = new WeakReference<>(screen);
     }
 
-    public static void onScreenChange() {
-        lastScreenWasBlurred = blurredInCurrentFrame;
-        blurredInCurrentFrame = false;
-    }
+    public static boolean wasPreviousScreenBlurred() {
+        Screen previousScreen = lastScreenRef.get();
+        Screen renderedScreen = lastRenderedScreenRef.get();
+        Screen blurredScreen = lastBlurredScreenRef.get();
 
-    public static boolean wasLastScreenBlurred() {
-        return lastScreenWasBlurred;
+        if (previousScreen == null) {
+            return false;
+        } else return previousScreen == renderedScreen && renderedScreen == blurredScreen;
     }
 
     public static boolean isResizeFrame() {
         return resizeGraceFrames > 0;
     }
 
+    public static boolean shouldSkipContainerAnimation() {
+        return skipContainerAnimation;
+    }
+
     public static void incrementFrame() {
         currentFrameId++;
 
-        var minecraft = net.minecraft.client.Minecraft.getInstance();
+        var minecraft = Minecraft.getInstance();
         int width = minecraft.getWindow().getGuiScaledWidth();
         int height = minecraft.getWindow().getGuiScaledHeight();
 

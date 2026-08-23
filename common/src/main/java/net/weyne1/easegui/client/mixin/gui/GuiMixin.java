@@ -17,16 +17,14 @@ public class GuiMixin {
     @Inject(method = "setScreen", at = @At("HEAD"))
     private void easegui$onScreenTransition(Screen screen, CallbackInfo ci) {
         Screen oldScreen = this.screen;
-        ScreenStateTracker.onScreenChange();
+
+        ScreenStateTracker.onScreenTransition(oldScreen, screen);
 
         if (!BackgroundAnimator.isBackgroundEffectAllowed(screen)) {
             BackgroundAnimator.setSkipBackgroundAnimation(true);
             return;
         }
 
-        boolean oldScreenWasActuallyShown = ScreenStateTracker.wasScreenRendered(oldScreen);
-        boolean wasBlurred = oldScreenWasActuallyShown && ScreenStateTracker.wasLastScreenBlurred();
-
-        BackgroundAnimator.setSkipBackgroundAnimation(wasBlurred);
+        BackgroundAnimator.setSkipBackgroundAnimation(ScreenStateTracker.wasPreviousScreenBlurred());
     }
 }
