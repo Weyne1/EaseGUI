@@ -2,7 +2,6 @@ package net.weyne1.easegui.client.mixin.screens;
 
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
@@ -30,15 +29,16 @@ public abstract class ScreenMixin {
     @Final @Shadow protected Minecraft minecraft;
     @Shadow protected abstract void extractBlurredBackground(GuiGraphicsExtractor graphics);
 
-    // Container lifecycle
     @WrapMethod(method = "extractRenderStateWithTooltipAndSubtitles")
     private void easegui$wrapScreenRender(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a, Operation<Void> original) {
-        ScreenStateTracker.markScreenRendered((Screen) (Object) this);
+        Screen currentScreen = (Screen) (Object) this;
+        ScreenStateTracker.markScreenRendered(currentScreen);
 
-        if (RenderSystem.isOnRenderThread()
-                && this instanceof ContainerScreenExtension
+        // Container lifecycle
+        if (currentScreen instanceof ContainerScreenExtension
+                && !ScreenStateTracker.shouldSkipContainerAnimation()
                 && !AnimationContext.isAnimationDisabled()) {
-            try (AnimationScope ignored = ContainerAnimator.beginContainer((Screen) (Object) this, graphics)) {
+            try (AnimationScope ignored = ContainerAnimator.beginContainer(currentScreen, graphics)) {
                 AnimationContext.pushParentAnimation();
                 try {
                     original.call(graphics, mouseX, mouseY, a);
@@ -96,7 +96,7 @@ public abstract class ScreenMixin {
     // Blur tracking
     @Inject(method = "extractBlurredBackground", at = @At("HEAD"))
     private void easegui$onExtractBlurredBackground(GuiGraphicsExtractor graphics, CallbackInfo ci) {
-        ScreenStateTracker.markBlurredThisFrame();
+        ScreenStateTracker.markScreenBlurred((Screen) (Object) this);
     }
 
     // Background dimming intensity
