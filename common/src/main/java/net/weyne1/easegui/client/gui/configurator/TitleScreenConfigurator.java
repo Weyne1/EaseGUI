@@ -33,7 +33,7 @@ public class TitleScreenConfigurator implements IScreenConfigurator {
 
             // Настройка анимации букв
             list.addWidget(Button.builder(Component.translatable("easegui.config.title.logo.edit_anim"), _ ->
-                    mc.gui.setScreen(new ProfileEditorScreen(parentScreen, logo.logoProfile, defaultLogo, EnumSet.allOf(ProfileFeature.class), updated -> {
+                    mc.setScreen(new ProfileEditorScreen(parentScreen, logo.logoProfile, defaultLogo, EnumSet.allOf(ProfileFeature.class), updated -> {
                         logo.logoProfile = updated; ConfigManager.save();
                     }))
             ).build());
@@ -49,7 +49,7 @@ public class TitleScreenConfigurator implements IScreenConfigurator {
 
             // Настройка профиля Edition
             list.addWidget(Button.builder(Component.translatable("easegui.config.title.edition.edit_anim"), _ ->
-                    mc.gui.setScreen(new ProfileEditorScreen(parentScreen, logo.editionProfile, defaultEdition, EnumSet.of(ProfileFeature.OFFSET, ProfileFeature.SCALE, ProfileFeature.ALPHA, ProfileFeature.PIVOT), updated -> {
+                    mc.setScreen(new ProfileEditorScreen(parentScreen, logo.editionProfile, defaultEdition, EnumSet.of(ProfileFeature.OFFSET, ProfileFeature.SCALE, ProfileFeature.ALPHA, ProfileFeature.PIVOT), updated -> {
                         logo.editionProfile = updated; ConfigManager.save();
                     }))
             ).build());

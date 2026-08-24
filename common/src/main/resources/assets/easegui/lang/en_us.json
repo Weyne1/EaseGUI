@@ -160,6 +160,7 @@
   "easegui.screen_type.world_options": "World Options",
   "easegui.screen_type.warning": "Warnings & Notifications",
   "easegui.screen_type.pause": "Pause Menu",
+  "easegui.screen_type.share_to_lan": "LAN World",
   "easegui.screen_type.multiplayer_options": "Multiplayer Options",
   "easegui.screen_type.death": "Death Screen",
   "easegui.screen_type.chat": "Chat",

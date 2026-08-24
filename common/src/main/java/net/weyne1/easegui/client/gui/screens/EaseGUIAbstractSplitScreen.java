@@ -105,7 +105,7 @@ public abstract class EaseGUIAbstractSplitScreen extends Screen {
         Button editBtn = Button.builder(Component.translatable("easegui.generic.edit"), _ -> {
             var profile = settings.customProfiles.getOrDefault(category, new AnimationProfile());
 
-            Minecraft.getInstance().gui.setScreen(new ProfileEditorScreen(this, profile, finalCleanDefault, category, updated -> {
+            Minecraft.getInstance().setScreen(new ProfileEditorScreen(this, profile, finalCleanDefault, category, updated -> {
                 settings.customProfiles.put(category, updated);
                 ConfigManager.save();
             }));
@@ -157,6 +157,6 @@ public abstract class EaseGUIAbstractSplitScreen extends Screen {
 
     @Override
     public void onClose() {
-        Minecraft.getInstance().gui.setScreen(this.parent);
+        Minecraft.getInstance().setScreen(this.parent);
     }
 }

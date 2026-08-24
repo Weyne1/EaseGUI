@@ -14,7 +14,7 @@ import net.weyne1.easegui.client.state.ScreenStateTracker;
 public class WidgetAnimator {
 
     public static AnimationScope beginWidget(AbstractWidget widget, GuiGraphicsExtractor graphics, WidgetCategory category, WidgetAnimationState state) {
-        if (Minecraft.getInstance().gui.screen() instanceof AbstractContainerScreen) {
+        if (Minecraft.getInstance().screen instanceof AbstractContainerScreen) {
             return AnimationScope.NO_OP;
         }
 

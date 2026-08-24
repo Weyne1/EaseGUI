@@ -35,7 +35,7 @@ public class ScreenSpecificConfigScreen extends EaseGUIAbstractSplitScreen {
         EaseGUIConfig.ScreenSettings settings = config.screens.get(screenType.getId());
 
         if (settings == null) {
-            Minecraft.getInstance().gui.setScreen(this.parent);
+            Minecraft.getInstance().setScreen(this.parent);
             return;
         }
 

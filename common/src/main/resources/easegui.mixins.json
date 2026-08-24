@@ -7,7 +7,7 @@
     "OptionsMixin",
     "accessor.LogoRendererAccessor",
     "gui.GuiGraphicsExtractorMixin",
-    "gui.GuiMixin",
+    "MinecraftMixin",
     "gui.GuiRendererMixin",
     "gui.components.AbstractSelectionListMixin",
     "gui.components.AbstractWidgetMixin",

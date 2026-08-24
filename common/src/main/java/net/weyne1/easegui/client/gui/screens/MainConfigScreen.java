@@ -147,7 +147,7 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
 
         Button settingsButton = Button.builder(
                 Component.translatable("easegui.generic.edit"),
-                _ -> mc.gui.setScreen(new ProfileEditorScreen(
+                _ -> mc.setScreen(new ProfileEditorScreen(
                         this,
                         config.global.elementProfiles.getOrDefault(category, new AnimationProfile()),
                         finalCleanDefault,
@@ -191,7 +191,7 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
                     } else {
                         Button settingsBtn = Button.builder(
                                 Component.translatable("easegui.generic.edit"),
-                                _ -> this.minecraft.gui.setScreen(new ScreenSpecificConfigScreen(this, type))
+                                _ -> this.minecraft.setScreen(new ScreenSpecificConfigScreen(this, type))
                         ).build();
 
                         this.dynamicList.addLabelAndButton(type.getDisplayName().getString(), settingsBtn);
@@ -204,7 +204,7 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
         if (otherName.toLowerCase().contains(lowerQuery)) {
             Button settingsBtn = Button.builder(
                     Component.translatable("easegui.generic.edit"),
-                    _ -> this.minecraft.gui.setScreen(new ScreenSpecificConfigScreen(this, EaseGUIScreenRegistry.OTHER))
+                    _ -> this.minecraft.setScreen(new ScreenSpecificConfigScreen(this, EaseGUIScreenRegistry.OTHER))
             ).build();
             this.dynamicList.addLabelAndButton(otherName, settingsBtn);
         }

@@ -61,7 +61,7 @@ public abstract class ScreenMixin {
 
         try {
             Screen currentScreen = (Screen) (Object) this;
-            boolean isRealFrame = this.minecraft.level != null && this.minecraft.gui.screen() == currentScreen;
+            boolean isRealFrame = this.minecraft.level != null && this.minecraft.screen == currentScreen;
             boolean blurEnabled = ConfigManager.getConfig().global.blurAllTransparentScreens;
 
             if (isRealFrame && blurEnabled && BackgroundAnimator.isBackgroundEffectAllowed(currentScreen)) {

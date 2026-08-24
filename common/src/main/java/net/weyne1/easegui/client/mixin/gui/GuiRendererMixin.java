@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.state.gui.BlitRenderState;
 import net.minecraft.client.renderer.state.gui.GuiItemRenderState;
 import net.weyne1.easegui.client.extension.ItemExtension;
 import net.weyne1.easegui.client.util.ColorUtils;
-import org.joml.Matrix3x2fc;
+import org.joml.Matrix3x2f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 
@@ -23,7 +23,7 @@ public class GuiRendererMixin {
             at = @At(value = "NEW", target = "Lnet/minecraft/client/renderer/state/gui/BlitRenderState;")
     )
     private BlitRenderState easegui$applyStoredAlphaToItems(
-            RenderPipeline pipeline, TextureSetup textureSetup, Matrix3x2fc pose,
+            RenderPipeline pipeline, TextureSetup textureSetup, Matrix3x2f pose,
             int x0, int y0, int x1, int y1, float u0, float u1, float v0, float v1, int color,
             ScreenRectangle scissorArea, ScreenRectangle bounds,
             Operation<BlitRenderState> original,

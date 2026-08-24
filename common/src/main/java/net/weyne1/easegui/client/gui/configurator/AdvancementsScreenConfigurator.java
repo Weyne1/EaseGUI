@@ -27,7 +27,7 @@ public class AdvancementsScreenConfigurator implements IScreenConfigurator {
         AnimationProfile defaultTabs = defaultSettings != null ? defaultSettings.tabsProfile : null;
 
         list.addWidget(Button.builder(Component.translatable("easegui.config.advancements.window.edit_anim"), _ ->
-                mc.gui.setScreen(new ProfileEditorScreen(parentScreen, settings.windowProfile, defaultWindow, EnumSet.of(ProfileFeature.OFFSET, ProfileFeature.SCALE, ProfileFeature.ALPHA, ProfileFeature.PIVOT), updated -> {
+                mc.setScreen(new ProfileEditorScreen(parentScreen, settings.windowProfile, defaultWindow, EnumSet.of(ProfileFeature.OFFSET, ProfileFeature.SCALE, ProfileFeature.ALPHA, ProfileFeature.PIVOT), updated -> {
                     settings.windowProfile = updated; ConfigManager.save();
                 }))
         ).build());
@@ -35,7 +35,7 @@ public class AdvancementsScreenConfigurator implements IScreenConfigurator {
         list.addHeader(Component.translatable("easegui.config.advancements.tabs.header").getString());
 
         list.addWidget(Button.builder(Component.translatable("easegui.config.advancements.tabs.edit_anim"), _ ->
-                mc.gui.setScreen(new ProfileEditorScreen(parentScreen, settings.tabsProfile, defaultTabs, EnumSet.allOf(ProfileFeature.class), updated -> {
+                mc.setScreen(new ProfileEditorScreen(parentScreen, settings.tabsProfile, defaultTabs, EnumSet.allOf(ProfileFeature.class), updated -> {
                     settings.tabsProfile = updated; ConfigManager.save();
                 }))
         ).build());
