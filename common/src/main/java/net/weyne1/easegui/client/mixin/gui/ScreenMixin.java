@@ -2,7 +2,6 @@ package net.weyne1.easegui.client.mixin.gui;
 
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -33,11 +32,14 @@ public abstract class ScreenMixin {
     // Container lifecycle
     @WrapMethod(method = "renderWithTooltip")
     private void easegui$wrapScreenRender(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, Operation<Void> original) {
-        ScreenStateTracker.markScreenRendered((Screen) (Object) this);
-        if (RenderSystem.isOnRenderThread()
-                && this instanceof ContainerScreenExtension
+        Screen currentScreen = (Screen) (Object) this;
+        ScreenStateTracker.markScreenRendered(currentScreen);
+
+        // Container lifecycle
+        if (currentScreen instanceof ContainerScreenExtension
+                && !ScreenStateTracker.shouldSkipContainerAnimation()
                 && !AnimationContext.isAnimationDisabled()) {
-            try (AnimationScope ignored = ContainerAnimator.beginContainer((Screen) (Object) this, graphics)) {
+            try (AnimationScope ignored = ContainerAnimator.beginContainer(currentScreen, graphics)) {
                 AnimationContext.pushParentAnimation();
                 try {
                     original.call(graphics, mouseX, mouseY, partialTick);
@@ -88,7 +90,7 @@ public abstract class ScreenMixin {
     // Blur tracking
     @Inject(method = "renderBlurredBackground", at = @At("HEAD"))
     private void easegui$onRenderBlurredBackground(float partialTick, CallbackInfo ci) {
-        ScreenStateTracker.markBlurredThisFrame();
+        ScreenStateTracker.markScreenBlurred((Screen) (Object) this);
     }
 
     // Background dimming intensity
