@@ -12,16 +12,16 @@ import net.weyne1.easegui.client.state.ScreenStateTracker;
 
 public class SplashAnimator {
 
-    public static AnimationScope beginRender(GuiGraphics graphics, int x, int y, int color) {
+    public static AnimationScope beginSplash(GuiGraphics graphics, int x, int y, int color) {
         EaseGUIConfig config = ConfigManager.getConfig();
 
         if (!config.global.enabled) {
-            return null;
+            return AnimationScope.NO_OP;
         }
 
         var screenConfig = config.screens.get("title");
         if (screenConfig == null || !screenConfig.enabled || screenConfig.splash == null || !screenConfig.splash.enabled) {
-            return null;
+            return AnimationScope.NO_OP;
         }
 
         var splashConfig = screenConfig.splash;
@@ -30,10 +30,8 @@ public class SplashAnimator {
 
         if (elapsed <= 0) {
             return AnimationSystem.beginAlphaOnly(graphics, 0.0f);
-        }
-
-        if (elapsed >= splashConfig.splashDuration) {
-            return null;
+        } else if (elapsed >= splashConfig.splashDuration) {
+            return AnimationScope.NO_OP;
         }
 
         float progress = AnimationMath.calculateProgress(elapsed, splashConfig.splashDuration, splashConfig.splashEasing);

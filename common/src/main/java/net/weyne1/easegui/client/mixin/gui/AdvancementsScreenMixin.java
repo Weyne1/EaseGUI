@@ -8,7 +8,6 @@ import net.minecraft.client.gui.screens.advancements.AdvancementsScreen;
 import net.weyne1.easegui.client.animation.AnimationContext;
 import net.weyne1.easegui.client.animation.AnimationScope;
 import net.weyne1.easegui.client.animator.AdvancementsAnimator;
-import net.weyne1.easegui.client.mixin.accessor.AdvancementTabAccessor;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -29,8 +28,8 @@ public class AdvancementsScreenMixin {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/advancements/AdvancementsScreen;renderInside(Lnet/minecraft/client/gui/GuiGraphics;IIII)V")
     )
     private void easegui$wrapWindowScope(AdvancementsScreen instance, GuiGraphics graphics, int mouseX, int mouseY, int x, int y, Operation<Void> original) {
-        try (AnimationScope scope = AdvancementsAnimator.beginRenderWindow(instance, graphics)) {
-            boolean hasParent = (scope != null);
+        try (AnimationScope scope = AdvancementsAnimator.beginWindow(instance, graphics)) {
+            boolean hasParent = (scope.isAnimating());
             if (hasParent) {
                 AnimationContext.pushParentAnimation();
             }
@@ -67,9 +66,9 @@ public class AdvancementsScreenMixin {
     )
     private void easegui$wrapDrawTab(AdvancementTab tab, GuiGraphics graphics, int offsetX, int offsetY, boolean isSelected, Operation<Void> original) {
         AdvancementsScreen screen = (AdvancementsScreen) (Object) this;
-        int index = ((AdvancementTabAccessor) tab).easegui$getIndex();
+        int index = tab.getIndex();
 
-        try (AnimationScope ignored = AdvancementsAnimator.beginRenderTab(screen, graphics, index)) {
+        try (AnimationScope ignored = AdvancementsAnimator.beginTab(screen, graphics, index)) {
             original.call(tab, graphics, offsetX, offsetY, isSelected);
         }
     }
@@ -81,9 +80,9 @@ public class AdvancementsScreenMixin {
     )
     private void easegui$wrapDrawIcon(AdvancementTab tab, GuiGraphics graphics, int offsetX, int offsetY, Operation<Void> original) {
         AdvancementsScreen screen = (AdvancementsScreen) (Object) this;
-        int index = ((AdvancementTabAccessor) tab).easegui$getIndex();
+        int index = tab.getIndex();
 
-        try (AnimationScope ignored = AdvancementsAnimator.beginRenderTab(screen, graphics, index)) {
+        try (AnimationScope ignored = AdvancementsAnimator.beginTab(screen, graphics, index)) {
             original.call(tab, graphics, offsetX, offsetY);
         }
     }

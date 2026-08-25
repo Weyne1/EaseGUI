@@ -6,7 +6,6 @@
   "client": [
     "GameRendererMixin",
     "MinecraftMixin",
-    "accessor.AdvancementTabAccessor",
     "accessor.LogoRendererAccessor",
     "blaze3d.VertexBufferMixin",
     "gui.AbstractSelectionListMixin",

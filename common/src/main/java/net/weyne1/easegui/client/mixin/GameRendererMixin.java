@@ -32,7 +32,7 @@ public class GameRendererMixin {
     }
 
     @Inject(method = "render", at = @At("HEAD"))
-    private void easegui$onFrameStart(DeltaTracker deltaTracker, boolean renderLevel, CallbackInfo ci) {
+    private void easegui$onFrameStart(CallbackInfo ci) {
         ScreenStateTracker.incrementFrame();
         AnimationContext.resetFrameState();
     }

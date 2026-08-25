@@ -14,25 +14,24 @@ import net.weyne1.easegui.client.state.ScreenStateTracker;
 
 public class WidgetAnimator {
 
-    public static AnimationScope beginRender(AbstractWidget widget, GuiGraphics graphics, WidgetCategory category, WidgetAnimationState state) {
+    public static AnimationScope beginWidget(AbstractWidget widget, GuiGraphics graphics, WidgetCategory category, WidgetAnimationState state) {
         if (Minecraft.getInstance().screen instanceof AbstractContainerScreen) {
-            return null;
+            return AnimationScope.NO_OP;
         }
 
         if (!ConfigManager.getConfig().global.enabled) {
             return null;
         }
 
-        var profile = ConfigManager.getProfileForCurrentContext(category);
-        if (profile == null || !profile.isEnabled()) return null;
-
+        AnimationProfile profile = ConfigManager.getProfileForCurrentContext(category);
         long now = Util.getMillis();
 
-        updateAnimationState(widget, state, now, profile);
+        if (profile != null) {
+            updateAnimationState(widget, state, now, profile);
 
-        if (ScreenStateTracker.isResizeFrame() || AnimationContext.hasParentAnimation()) {
-            state.startTime = now - profile.getDuration() - state.delay;
-            return null;
+            if (ScreenStateTracker.isResizeFrame() || AnimationContext.hasParentAnimation()) {
+                state.startTime = now - profile.getDuration() - state.delay;
+            }
         }
 
         return AnimationSystem.begin(graphics, profile, widget.getX(), widget.getY(), widget.getWidth(), widget.getHeight(),
@@ -51,7 +50,6 @@ public class WidgetAnimator {
             state.startTime = now;
 
             float distance = getDistance(widget, profile);
-
             float delayMultiplier = profile.getCascadeDelay() / 100.0f;
             state.delay = (long) (distance * delayMultiplier);
         }

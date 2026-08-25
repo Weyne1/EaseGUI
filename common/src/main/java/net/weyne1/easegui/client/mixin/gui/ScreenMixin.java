@@ -37,7 +37,7 @@ public abstract class ScreenMixin {
         if (RenderSystem.isOnRenderThread()
                 && this instanceof ContainerScreenExtension
                 && !AnimationContext.isAnimationDisabled()) {
-            try (AnimationScope ignored = ContainerAnimator.beginAnimation((Screen) (Object) this, graphics)) {
+            try (AnimationScope ignored = ContainerAnimator.beginContainer((Screen) (Object) this, graphics)) {
                 AnimationContext.pushParentAnimation();
                 try {
                     original.call(graphics, mouseX, mouseY, partialTick);

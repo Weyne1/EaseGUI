@@ -52,7 +52,7 @@ public abstract class AbstractWidgetMixin implements WidgetExtension {
             return;
         }
 
-        try (AnimationScope ignored = WidgetAnimator.beginRender(widget, graphics, category, this.easegui$animationState)) {
+        try (AnimationScope ignored = WidgetAnimator.beginWidget(widget, graphics, category, this.easegui$animationState)) {
             original.call(graphics, mouseX, mouseY, partialTick);
         }
     }

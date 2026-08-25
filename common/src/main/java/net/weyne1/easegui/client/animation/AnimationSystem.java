@@ -4,6 +4,10 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.Util;
 import net.weyne1.easegui.api.animation.AnimationProfile;
 import net.weyne1.easegui.api.animation.EasingType;
+import net.weyne1.easegui.client.config.ConfigManager;
+import net.weyne1.easegui.client.config.EaseGUIConfig;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public final class AnimationSystem {
 
@@ -15,11 +19,12 @@ public final class AnimationSystem {
      *
      * @param startTime time in milliseconds when the screen/animation sequence started
      * @param delay delay in milliseconds before this specific element begins animating
-     * @return active {@link AnimationScope}, or {@code null} if the duration has elapsed
+     * @return active {@link AnimationScope}, or {@link AnimationScope#NO_OP} if animations are disabled or duration has elapsed.
      */
+    @NotNull
     public static AnimationScope begin(
             GuiGraphics graphics,
-            AnimationProfile profile,
+            @Nullable AnimationProfile profile,
             int x,
             int y,
             int width,
@@ -37,11 +42,12 @@ public final class AnimationSystem {
      * Preferred when elapsed time is already calculated or adjusted for cascade delays.
      *
      * @param elapsed time passed since the element's animation start, in milliseconds
-     * @return active {@link AnimationScope}, or {@code null} if the duration has elapsed
+     * @return active {@link AnimationScope}, or {@link AnimationScope#NO_OP} if duration has elapsed.
      */
+    @NotNull
     public static AnimationScope begin(
             GuiGraphics graphics,
-            AnimationProfile profile,
+            @Nullable AnimationProfile profile,
             int x,
             int y,
             int width,
@@ -49,7 +55,9 @@ public final class AnimationSystem {
             long elapsed,
             float baseAlpha
     ) {
-        if (elapsed >= profile.getDuration()) return null;
+        if (profile == null || elapsed >= profile.getDuration()) {
+            return AnimationScope.NO_OP;
+        }
 
         float rawProgress = elapsed <= 0 ? 0.0f : Math.min(1.0f, elapsed / (float) profile.getDuration());
         return begin(graphics, profile, x, y, width, height, rawProgress, baseAlpha);
@@ -60,11 +68,12 @@ public final class AnimationSystem {
      * Use this overload when driving animations from looped UI timers (e.g. editor preview).
      *
      * @param rawProgress linear progress between 0.0f and 1.0f. Do NOT pre-apply easing functions!
-     * @return active {@link AnimationScope} context
+     * @return active {@link AnimationScope}, or {@link AnimationScope#NO_OP} if animations are disabled
      */
+    @NotNull
     public static AnimationScope begin(
             GuiGraphics graphics,
-            AnimationProfile profile,
+            @Nullable AnimationProfile profile,
             int x,
             int y,
             int width,
@@ -72,7 +81,11 @@ public final class AnimationSystem {
             float rawProgress,
             float baseAlpha
     ) {
-        if (AnimationContext.isAnimationDisabled()) {
+        EaseGUIConfig config = ConfigManager.getConfig();
+        if (!config.global.enabled
+                || profile == null
+                || !profile.isEnabled()
+                || AnimationContext.isAnimationDisabled()) {
             return AnimationScope.NO_OP;
         }
 
@@ -99,8 +112,9 @@ public final class AnimationSystem {
      * Begins an animation scope applying pivot scaling and custom alpha.
      * Useful for isolated custom animated elements like splash text.
      *
-     * @return active {@link AnimationScope} context
+     * @return active {@link AnimationScope}, or {@link AnimationScope#NO_OP} if animations are disabled
      */
+    @NotNull
     public static AnimationScope beginPivotScale(
             GuiGraphics graphics,
             float pivotX,
@@ -117,6 +131,12 @@ public final class AnimationSystem {
         return scope;
     }
 
+    /**
+     * Begins an animation scope applying custom alpha only.
+     *
+     * @return active {@link AnimationScope}, or {@link AnimationScope#NO_OP} if animations are disabled
+     */
+    @NotNull
     public static AnimationScope beginAlphaOnly(GuiGraphics graphics, float alpha) {
         if (AnimationContext.isAnimationDisabled()) {
             return AnimationScope.NO_OP;
