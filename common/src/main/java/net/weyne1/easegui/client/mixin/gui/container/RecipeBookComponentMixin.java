@@ -12,18 +12,32 @@ public abstract class RecipeBookComponentMixin implements RecipeBookExtension {
     @Shadow private int xOffset;
 
     @Accessor("IMAGE_WIDTH")
-    public static int easeGUI$getVanillaWidth() {
+    public static int easegui$getVanillaWidth() {
         throw new AssertionError();
     }
 
     @Accessor("IMAGE_HEIGHT")
-    public static int easeGUI$getVanillaHeight() {
+    public static int easegui$getVanillaHeight() {
         throw new AssertionError();
     }
 
-    @Override public boolean easeGUI$isVisible() { return this.visible; }
-    @Override public int easeGUI$getXOffset() { return this.xOffset; }
+    @Override
+    public boolean easegui$isVisible() {
+        return this.visible;
+    }
 
-    @Override public int easeGUI$getBookWidth() { return easeGUI$getVanillaWidth(); }
-    @Override public int easeGUI$getBookHeight() { return easeGUI$getVanillaHeight(); }
+    @Override
+    public int easegui$getXOffset() {
+        return this.xOffset;
+    }
+
+    @Override
+    public int easegui$getBookWidth() {
+        return easegui$getVanillaWidth();
+    }
+
+    @Override
+    public int easegui$getBookHeight() {
+        return easegui$getVanillaHeight();
+    }
 }

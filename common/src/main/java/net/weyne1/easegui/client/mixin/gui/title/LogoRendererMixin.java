@@ -22,7 +22,7 @@ public class LogoRendererMixin {
             at = @At("HEAD"),
             cancellable = true
     )
-    private void easeGUI$overrideLogo(GuiGraphics graphics, int screenWidth, float transparency, int height, CallbackInfo ci) {
+    private void easegui$overrideLogo(GuiGraphics graphics, int screenWidth, float transparency, int height, CallbackInfo ci) {
         if (LogoAnimator.render(graphics, screenWidth, height, showEasterEgg)) {
             ci.cancel();
         }

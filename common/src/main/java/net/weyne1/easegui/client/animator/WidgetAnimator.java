@@ -36,7 +36,7 @@ public class WidgetAnimator {
         }
 
         return AnimationSystem.begin(graphics, profile, widget.getX(), widget.getY(), widget.getWidth(), widget.getHeight(),
-                state.startTime, state.delay, ((WidgetExtension) widget).easeGUI$getAlpha());
+                state.startTime, state.delay, ((WidgetExtension) widget).easegui$getAlpha());
     }
 
     private static void updateAnimationState(AbstractWidget widget, WidgetAnimationState state, long now, AnimationProfile profile) {

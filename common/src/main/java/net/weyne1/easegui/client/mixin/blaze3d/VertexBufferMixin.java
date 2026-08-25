@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.Mixin;
 public class VertexBufferMixin {
 
     @WrapMethod(method = "_drawWithShader")
-    private void easeGUI$wrapDrawWithShader(Matrix4f modelViewMatrix, Matrix4f projectionMatrix, ShaderInstance shader, Operation<Void> original) {
+    private void easegui$wrapDrawWithShader(Matrix4f modelViewMatrix, Matrix4f projectionMatrix, ShaderInstance shader, Operation<Void> original) {
         if (!AnimationContext.isActive()) {
             original.call(modelViewMatrix, projectionMatrix, shader);
             return;

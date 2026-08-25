@@ -15,7 +15,7 @@ public class MinecraftMixin {
     @Shadow public Screen screen;
 
     @Inject(method = "setScreen", at = @At("HEAD"))
-    private void easeGUI$onScreenTransition(Screen guiScreen, CallbackInfo ci) {
+    private void easegui$onScreenTransition(Screen guiScreen, CallbackInfo ci) {
         Screen oldScreen = this.screen;
 
         ScreenStateTracker.onScreenChange();

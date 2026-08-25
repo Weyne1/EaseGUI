@@ -28,7 +28,7 @@ public class AdvancementsScreenMixin {
             method = "render",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/advancements/AdvancementsScreen;renderInside(Lnet/minecraft/client/gui/GuiGraphics;IIII)V")
     )
-    private void easeGUI$wrapWindowScope(AdvancementsScreen instance, GuiGraphics graphics, int mouseX, int mouseY, int x, int y, Operation<Void> original) {
+    private void easegui$wrapWindowScope(AdvancementsScreen instance, GuiGraphics graphics, int mouseX, int mouseY, int x, int y, Operation<Void> original) {
         try (AnimationScope scope = AdvancementsAnimator.beginRenderWindow(instance, graphics)) {
             boolean hasParent = (scope != null);
             if (hasParent) {
@@ -50,22 +50,24 @@ public class AdvancementsScreenMixin {
             method = "render",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/advancements/AdvancementsScreen;renderWindow(Lnet/minecraft/client/gui/GuiGraphics;II)V")
     )
-    private void easeGUI$skipRenderWindow(AdvancementsScreen instance, GuiGraphics graphics, int offsetX, int offsetY, Operation<Void> original) { }
+    private void easegui$skipRenderWindow(AdvancementsScreen instance, GuiGraphics graphics, int offsetX, int offsetY, Operation<Void> original) {
+    }
 
     @WrapOperation(
             method = "render",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/advancements/AdvancementsScreen;renderTooltips(Lnet/minecraft/client/gui/GuiGraphics;IIII)V")
     )
-    private void easeGUI$skipRenderTooltips(AdvancementsScreen instance, GuiGraphics graphics, int mouseX, int mouseY, int offsetX, int offsetY, Operation<Void> original) { }
+    private void easegui$skipRenderTooltips(AdvancementsScreen instance, GuiGraphics graphics, int mouseX, int mouseY, int offsetX, int offsetY, Operation<Void> original) {
+    }
 
     // Tab animation (bg)
     @WrapOperation(
             method = "renderWindow",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/advancements/AdvancementTab;drawTab(Lnet/minecraft/client/gui/GuiGraphics;IIZ)V")
     )
-    private void easeGUI$wrapDrawTab(AdvancementTab tab, GuiGraphics graphics, int offsetX, int offsetY, boolean isSelected, Operation<Void> original) {
+    private void easegui$wrapDrawTab(AdvancementTab tab, GuiGraphics graphics, int offsetX, int offsetY, boolean isSelected, Operation<Void> original) {
         AdvancementsScreen screen = (AdvancementsScreen) (Object) this;
-        int index = ((AdvancementTabAccessor) tab).easeGUI$getIndex();
+        int index = ((AdvancementTabAccessor) tab).easegui$getIndex();
 
         try (AnimationScope ignored = AdvancementsAnimator.beginRenderTab(screen, graphics, index)) {
             original.call(tab, graphics, offsetX, offsetY, isSelected);
@@ -77,9 +79,9 @@ public class AdvancementsScreenMixin {
             method = "renderWindow",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/advancements/AdvancementTab;drawIcon(Lnet/minecraft/client/gui/GuiGraphics;II)V")
     )
-    private void easeGUI$wrapDrawIcon(AdvancementTab tab, GuiGraphics graphics, int offsetX, int offsetY, Operation<Void> original) {
+    private void easegui$wrapDrawIcon(AdvancementTab tab, GuiGraphics graphics, int offsetX, int offsetY, Operation<Void> original) {
         AdvancementsScreen screen = (AdvancementsScreen) (Object) this;
-        int index = ((AdvancementTabAccessor) tab).easeGUI$getIndex();
+        int index = ((AdvancementTabAccessor) tab).easegui$getIndex();
 
         try (AnimationScope ignored = AdvancementsAnimator.beginRenderTab(screen, graphics, index)) {
             original.call(tab, graphics, offsetX, offsetY);

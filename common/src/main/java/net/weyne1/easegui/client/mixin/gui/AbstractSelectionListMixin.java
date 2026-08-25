@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.Mixin;
 public class AbstractSelectionListMixin {
 
     @WrapMethod(method = "renderItem")
-    private void easeGUI$wrapRenderItem(GuiGraphics graphics, int mouseX, int mouseY, float partialTick,
+    private void easegui$wrapRenderItem(GuiGraphics graphics, int mouseX, int mouseY, float partialTick,
                                         int index, int left, int top, int width, int height, Operation<Void> original) {
         try (AnimationScope ignored = ListItemAnimator.beginRender(graphics, top, left, width, height)) {
             AnimationContext.pushParentAnimation();

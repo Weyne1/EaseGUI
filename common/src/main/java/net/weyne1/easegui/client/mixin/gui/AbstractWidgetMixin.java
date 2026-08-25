@@ -19,24 +19,26 @@ public abstract class AbstractWidgetMixin implements WidgetExtension {
 
     @Shadow protected float alpha;
 
-    @Unique private final WidgetAnimationState easeGUI$animationState = new WidgetAnimationState();
-    @Unique private WidgetCategory easeGUI$cachedCategory = null;
+    @Unique
+    private final WidgetAnimationState easegui$animationState = new WidgetAnimationState();
+    @Unique
+    private WidgetCategory easegui$cachedCategory = null;
 
     @Override
-    public float easeGUI$getAlpha() {
+    public float easegui$getAlpha() {
         return this.alpha;
     }
 
     @Override
-    public WidgetCategory easeGUI$getCategory() {
-        if (this.easeGUI$cachedCategory == null) {
-            this.easeGUI$cachedCategory = WidgetCategory.fromClass(this.getClass());
+    public WidgetCategory easegui$getCategory() {
+        if (this.easegui$cachedCategory == null) {
+            this.easegui$cachedCategory = WidgetCategory.fromClass(this.getClass());
         }
-        return this.easeGUI$cachedCategory;
+        return this.easegui$cachedCategory;
     }
 
     @WrapMethod(method = "render")
-    private void easeGUI$wrapWidgetRender(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, Operation<Void> original) {
+    private void easegui$wrapWidgetRender(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, Operation<Void> original) {
         AbstractWidget widget = (AbstractWidget) (Object) this;
 
         if (!widget.visible) {
@@ -44,13 +46,13 @@ public abstract class AbstractWidgetMixin implements WidgetExtension {
             return;
         }
 
-        var category = this.easeGUI$getCategory();
+        var category = this.easegui$getCategory();
         if (category == null || category == WidgetCategory.UNKNOWN) {
             original.call(graphics, mouseX, mouseY, partialTick);
             return;
         }
 
-        try (AnimationScope ignored = WidgetAnimator.beginRender(widget, graphics, category, this.easeGUI$animationState)) {
+        try (AnimationScope ignored = WidgetAnimator.beginRender(widget, graphics, category, this.easegui$animationState)) {
             original.call(graphics, mouseX, mouseY, partialTick);
         }
     }

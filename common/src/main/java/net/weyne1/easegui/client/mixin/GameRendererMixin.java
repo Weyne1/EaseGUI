@@ -21,7 +21,7 @@ public class GameRendererMixin {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/PostChain;setUniform(Ljava/lang/String;F)V"),
             index = 1
     )
-    private float easeGUI$animateBlurRadiusArg(float originalRadius) {
+    private float easegui$animateBlurRadiusArg(float originalRadius) {
         boolean smoothBlurEnabled = ConfigManager.getConfig().global.backgroundAnimationDuration > 0;
 
         if (!smoothBlurEnabled || BackgroundAnimator.isBackgroundAnimationSkipped()) {
@@ -32,7 +32,7 @@ public class GameRendererMixin {
     }
 
     @Inject(method = "render", at = @At("HEAD"))
-    private void easeGUI$onFrameStart(DeltaTracker deltaTracker, boolean renderLevel, CallbackInfo ci) {
+    private void easegui$onFrameStart(DeltaTracker deltaTracker, boolean renderLevel, CallbackInfo ci) {
         ScreenStateTracker.incrementFrame();
         AnimationContext.resetFrameState();
     }
