@@ -6,6 +6,7 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.weyne1.easegui.api.WidgetCategory;
 import net.weyne1.easegui.api.animation.AnimationProfile;
 import net.weyne1.easegui.api.animation.CascadeDirection;
 import net.weyne1.easegui.api.animation.EasingType;
@@ -24,7 +25,12 @@ public class ProfileEditorScreen extends EaseGUIAbstractSplitScreen {
     private final AnimationProfile defaultProfile;
     private final Consumer<AnimationProfile> onSave;
     private final EnumSet<ProfileFeature> activeFeatures;
+    private WidgetCategory widgetCategory = WidgetCategory.UNKNOWN;
 
+    /**
+     * Constructor for cases where the widget category is unknown or unimportant.
+     * Uses the default abstract preview.
+     */
     public ProfileEditorScreen(
             Screen parent,
             AnimationProfile originalProfile,
@@ -35,6 +41,24 @@ public class ProfileEditorScreen extends EaseGUIAbstractSplitScreen {
         super(Component.translatable("easegui.editor.title"), parent);
         this.onSave = onSave;
         this.activeFeatures = features;
+        this.defaultProfile = defaultProfile;
+        this.workingCopy = cloneProfile(originalProfile);
+    }
+
+    /**
+     * Constructor with an explicit category. Allows to display a specific preview.
+     */
+    public ProfileEditorScreen(
+            Screen parent,
+            AnimationProfile originalProfile,
+            AnimationProfile defaultProfile,
+            WidgetCategory category,
+            Consumer<AnimationProfile> onSave
+    ) {
+        super(Component.translatable("easegui.editor.title"), parent);
+        this.onSave = onSave;
+        this.widgetCategory = category;
+        this.activeFeatures = category.getAllowedFeatures();
         this.defaultProfile = defaultProfile;
         this.workingCopy = cloneProfile(originalProfile);
     }
@@ -176,6 +200,6 @@ public class ProfileEditorScreen extends EaseGUIAbstractSplitScreen {
 
     @Override
     protected void renderOverlay(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        ProfilePreviewRenderer.render(graphics, this.font, this.workingCopy, this.activeFeatures, this.width, this.height);
+        ProfilePreviewRenderer.render(graphics, this.font, this.workingCopy, this.widgetCategory, this.activeFeatures, this.width, this.height);
     }
 }
