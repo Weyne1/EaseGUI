@@ -2,6 +2,7 @@ package net.weyne1.easegui.api;
 
 import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.PageButton;
 import net.weyne1.easegui.client.config.ProfileFeature;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,9 +20,14 @@ public enum WidgetCategory {
     SCROLLABLE(EnumSet.of(ProfileFeature.OFFSET, ProfileFeature.SCALE, ProfileFeature.ALPHA)),
     LIST_ENTRY(EnumSet.allOf(ProfileFeature.class)),
     CONTAINERS(EnumSet.of(ProfileFeature.OFFSET, ProfileFeature.SCALE, ProfileFeature.ALPHA, ProfileFeature.PIVOT)),
+    EXCLUDED(EnumSet.noneOf(ProfileFeature.class)),
     UNKNOWN(EnumSet.noneOf(ProfileFeature.class));
 
     private static final Map<Class<?>, WidgetCategory> CUSTOM_MAPPINGS = new ConcurrentHashMap<>();
+
+    static {
+        CUSTOM_MAPPINGS.put(PageButton.class, EXCLUDED);
+    }
 
     private final EnumSet<ProfileFeature> allowedFeatures;
 
