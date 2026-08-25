@@ -176,6 +176,6 @@ public class ProfileEditorScreen extends EaseGUIAbstractSplitScreen {
 
     @Override
     protected void renderOverlay(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        ProfilePreviewRenderer.render(graphics, this.font, this.width, this.height, this.workingCopy, this.activeFeatures);
+        ProfilePreviewRenderer.render(graphics, this.font, this.workingCopy, this.activeFeatures, this.width, this.height);
     }
 }

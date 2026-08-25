@@ -64,6 +64,7 @@
   "easegui.editor.button.easing.tooltip": "Smoothness function that dictates the movement curve of the animation.",
 
   "easegui.editor.preview.disabled": "Animation disabled",
+  "easegui.editor.preview.disabled_globally": "Animation disabled globally",
   "easegui.editor.preview.element": "GUI Element",
   "easegui.editor.preview.element_idx": "GUI Element #%d",
 
