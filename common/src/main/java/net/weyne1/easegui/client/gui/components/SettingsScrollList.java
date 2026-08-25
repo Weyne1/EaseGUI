@@ -4,10 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.ContainerObjectSelectionList;
-import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.network.chat.Component;
@@ -270,7 +267,10 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
 
     public static class LabelAndButtonEntry extends Entry {
         private static final int LABEL_PADDING = 4;
-        private final Component label;
+        private static final int LABEL_GAP = 4;
+        private static final Component ELLIPSIS = Component.literal("…");
+
+        private final StringWidget labelWidget;
         private final Button button;
         private final int availWidth;
         private final int buttonWidth;
@@ -279,17 +279,40 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
 
         public LabelAndButtonEntry(int listWidth, String labelText, Button button, float buttonRatio) {
             this.availWidth = listWidth - SCROLLBAR_WIDTH_GAP;
-            this.buttonWidth = (int)(availWidth * buttonRatio);
+            this.buttonWidth = (int) (availWidth * buttonRatio);
+            int labelAreaWidth = availWidth - buttonWidth;
 
-            this.label = Component.literal(labelText);
             this.button = button;
             this.button.setWidth(buttonWidth);
             this.button.setHeight(WIDGET_HEIGHT);
+
+            Font font = Minecraft.getInstance().font;
+            Component fullText = Component.literal(labelText);
+            int maxLabelWidth = Math.max(0, labelAreaWidth - LABEL_PADDING - LABEL_GAP);
+
+            Component displayText;
+            boolean truncated = font.width(fullText) > maxLabelWidth;
+            if (truncated) {
+                int ellipsisWidth = font.width(ELLIPSIS);
+                String cut = font.plainSubstrByWidth(labelText, Math.max(0, maxLabelWidth - ellipsisWidth));
+                displayText = Component.literal(cut).append(ELLIPSIS);
+            } else {
+                displayText = fullText;
+            }
+
+            this.labelWidget = new StringWidget(displayText, font);
+            this.labelWidget.setWidth(labelAreaWidth - LABEL_PADDING);
+            this.labelWidget.setHeight(WIDGET_HEIGHT);
+            this.labelWidget.alignLeft();
+
+            if (truncated) {
+                this.labelWidget.setTooltip(Tooltip.create(fullText));
+            }
         }
 
         @Override
-        public void render(GuiGraphics graphics, int index, int top, int left, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean isHovered, float partialTick) {
-            Font font = Minecraft.getInstance().font;
+        public void render(GuiGraphics graphics, int index, int top, int left, int entryWidth, int entryHeight,
+                           int mouseX, int mouseY, boolean isHovered, float partialTick) {
             long now = Util.getMillis();
 
             final float TARGET_ALPHA = 0.15f;
@@ -318,9 +341,9 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
                 }
             }
 
-            int labelX = startX + LABEL_PADDING;
-            int labelY = top + (WIDGET_HEIGHT - font.lineHeight) / 2;
-            graphics.drawString(font, this.label, labelX, labelY, 0xFFFFFFFF);
+            labelWidget.setX(startX + LABEL_PADDING);
+            labelWidget.setY(top);
+            labelWidget.render(graphics, mouseX, mouseY, partialTick);
 
             int buttonX = startX + availWidth - buttonWidth;
             button.setX(buttonX);
@@ -330,12 +353,12 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
 
         @Override
         public @NotNull List<? extends GuiEventListener> children() {
-            return List.of(button);
+            return List.of(labelWidget, button);
         }
 
         @Override
         public @NotNull List<? extends NarratableEntry> narratables() {
-            return List.of(button);
+            return List.of(labelWidget, button);
         }
     }
 }
