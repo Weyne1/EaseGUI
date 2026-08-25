@@ -7,29 +7,28 @@ assignees: ''
 
 ---
 
-**Bug Description**
-A clear and concise description of what the bug is.
+### Bug Description
+A clear and concise description of what the bug is. If this is a compatibility issue with another mod, please include its name and version (or link to Modrinth/CurseForge).
 
-**Environment**
+### Environment
 - Minecraft Version: [e.g. 1.21.1]
 - Mod Loader: [Fabric / NeoForge]
-- EaseGUI Version: [e.g. 0.1.0-beta]
-- Other relevant mods installed: [e.g. Mod Menu, Sodium, Smooth Scrolling - if applicable]
+- EaseGUI Version: [e.g. 0.3.2]
 
-**Steps to Reproduce**
+### Steps to Reproduce
 Steps to reproduce the behavior:
 1. Go to '...'
 2. Click on '....'
 3. Scroll down to '....'
 4. See error
 
-**Expected Behavior**
+### Expected Behavior
 A clear and concise description of what you expected to happen.
 
-**Screenshots or Video**
+### Screenshots or Video
 If applicable, add screenshots or a short video clip to help explain your problem.
 
-**Logs or Crash Report**
+### Logs or Crash Report
 Please paste the contents of your `logs/latest.log` or the crash report inside the dropdown section below.
 
 <details>
@@ -37,3 +36,4 @@ Please paste the contents of your `logs/latest.log` or the crash report inside t
 
 ```text
 Paste your log text here
+```
