@@ -35,6 +35,9 @@
 		"java": ">=21",
 		"fabric-api": ">=${fabric_api_version}"
 	},
+	"breaks": {
+		"vulkanmod": "*"
+	},
 	"suggests": {
 		"modmenu": ">=${mod_menu_version}"
 	}
