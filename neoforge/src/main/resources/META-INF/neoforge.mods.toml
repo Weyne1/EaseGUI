@@ -10,7 +10,7 @@ displayName = "EaseGUI"
 authors = "Weyne1"
 description = "Smoothly animates all GUI screens!"
 displayURL = "https://modrinth.com/mod/easegui"
-logoFile = "icon.png"
+iconFile = "icon.png"
 
 [[dependencies.easegui]]
 modId = "neoforge"
