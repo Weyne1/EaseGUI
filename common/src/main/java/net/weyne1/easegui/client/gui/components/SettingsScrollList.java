@@ -1,5 +1,6 @@
 package net.weyne1.easegui.client.gui.components;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -83,20 +84,20 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
 
     public static class HeaderEntry extends Entry {
         private final Component text;
-        private static final int HEADER_COLOR = 0xFFAAAAAA;
+        private static final int HEADER_COLOR = 0xFFFFFFFF;
         private static final int HEADER_PADDING = 6;
         private static final int HEADER_HEIGHT = 24;
 
         public HeaderEntry(String text) {
-            this.text = Component.literal(text);
+            this.text = Component.literal(text)
+                    .withStyle(ChatFormatting.BOLD, ChatFormatting.UNDERLINE);
         }
 
         @Override
         public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean isHovered, float partialTick) {
             Font font = Minecraft.getInstance().font;
             int startY = this.getContentY() + HEADER_HEIGHT - font.lineHeight - HEADER_PADDING;
-            String textStr = this.text.getString();
-            graphics.centeredText(font, Component.literal(textStr), this.getContentXMiddle(), startY, HEADER_COLOR);
+            graphics.centeredText(font, this.text, this.getContentXMiddle(), startY, HEADER_COLOR);
         }
 
         @Override
