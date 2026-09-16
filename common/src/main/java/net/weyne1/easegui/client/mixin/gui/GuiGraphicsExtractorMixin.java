@@ -34,7 +34,7 @@ public class GuiGraphicsExtractorMixin {
     }
 
     @ModifyVariable(
-            method = "innerBlit(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lcom/mojang/blaze3d/textures/GpuTextureView;Lcom/mojang/blaze3d/textures/GpuSampler;IIIIFFFFI)V",
+            method = "innerBlit(Lcom/mojang/renderpearl/api/pipeline/RenderPipeline;Lcom/mojang/renderpearl/api/textures/GpuTextureView;Lcom/mojang/renderpearl/api/textures/GpuSampler;IIIIFFFFI)V",
             at = @At("HEAD"), argsOnly = true, name = "color"
     )
     private int easegui$modifyBlitColor(int color) {
