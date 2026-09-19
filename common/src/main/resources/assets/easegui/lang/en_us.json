@@ -5,6 +5,7 @@
   "easegui.generic.off": "§cOFF§r",
   "easegui.generic.back": "Back",
   "easegui.generic.configure": "Configure",
+  "easegui.generic.edit": "Edit",
   "easegui.generic.global": "global",
   "easegui.generic.custom": "custom",
   "easegui.generic.save": "Save",

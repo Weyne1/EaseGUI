@@ -21,15 +21,11 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
     private static final int ELEMENT_SPACING = 4;
     private static final int WIDGET_HEIGHT = 20;
     private static final float LABEL_WIDTH_RATIO = 0.55f;
-    private static final int MAX_ROW_WIDTH = 310;
+    private static final int MAX_ROW_WIDTH = 350;
 
     public SettingsScrollList(Minecraft mc, int width, int height, int top, int bottom, int itemHeight) {
         super(mc, width, height, top, bottom, itemHeight);
         this.setRenderTopAndBottom(false);
-    }
-
-    public SettingsScrollList(Minecraft mc, int width, int height, int top, int itemHeight) {
-        this(mc, width, height, top, top + height, itemHeight);
     }
 
     @Override
@@ -51,7 +47,7 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
     }
 
     public void addTwoButtons(Button btn1, Button btn2) {
-        this.addTwoButtons(btn1, btn2, 0.60f);
+        this.addTwoButtons(btn1, btn2, 0.75f);
     }
 
     public void addTwoButtons(Button btn1, Button btn2, float firstButtonRatio) {
