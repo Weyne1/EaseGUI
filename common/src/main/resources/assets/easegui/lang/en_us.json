@@ -13,6 +13,8 @@
   "easegui.generic.done": "Done",
   "easegui.generic.reset": "§cReset§r",
   "easegui.generic.toggle_format": "%s: %s",
+  "easegui.search.placeholder": "Search",
+  "easegui.search.hint": "Search screens...",
 
   "easegui.main.title": "EaseGUI Configuration",
   "easegui.main.subtitle.global": "Global Settings",

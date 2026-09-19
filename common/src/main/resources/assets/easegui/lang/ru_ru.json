@@ -13,6 +13,8 @@
   "easegui.generic.done": "Готово",
   "easegui.generic.reset": "§cСбросить§r",
   "easegui.generic.toggle_format": "%s: %s",
+  "easegui.search.placeholder": "Поиск",
+  "easegui.search.hint": "Поиск экранов...",
 
   "easegui.main.title": "Конфигурация EaseGUI",
   "easegui.main.subtitle.global": "Глобальные настройки",

@@ -16,6 +16,7 @@ import net.weyne1.easegui.client.gui.components.SettingsScrollList;
 import java.util.EnumSet;
 
 public abstract class EaseGUIAbstractSplitScreen extends Screen {
+    private static final int LINE_COLOR = 0x33FFFFFF;
     protected final Screen parent;
     protected int halfWidth;
     protected int listWidth;
@@ -23,8 +24,7 @@ public abstract class EaseGUIAbstractSplitScreen extends Screen {
     protected int leftX;
     protected int rightX;
     protected int stringColor;
-
-    private static final int LINE_COLOR = 0x33FFFFFF;
+    protected SettingsScrollList dynamicList;
 
     public EaseGUIAbstractSplitScreen(Component title, Screen parent) {
         super(title);
@@ -34,20 +34,15 @@ public abstract class EaseGUIAbstractSplitScreen extends Screen {
     @Override
     protected void init() {
         this.halfWidth = this.width / 2;
-
         this.listWidth = halfWidth;
         this.listHeight = this.height - 50 - 45;
-
         this.leftX = 0;
         this.rightX = halfWidth;
 
         this.stringColor = 0xAAAAAA;
 
-        initScreen();
-
-        // Главный заголовок экрана (в самом верху по центру)
+        // Главный заголовок
         StringWidget titleWidget = new StringWidget(this.title, this.font);
-
         titleWidget.setX(this.halfWidth - titleWidget.getWidth() / 2);
         titleWidget.setY(15);
         titleWidget.setColor(0xFFFFFF);
@@ -72,6 +67,8 @@ public abstract class EaseGUIAbstractSplitScreen extends Screen {
             rightSubWidget.setColor(this.stringColor);
             this.addRenderableWidget(rightSubWidget);
         }
+
+        initScreen();
     }
 
     protected abstract void initScreen();
