@@ -14,7 +14,7 @@ import net.weyne1.easegui.client.state.ScreenStateTracker;
 
 public class WidgetAnimator {
 
-    public static AnimationScope beginRender(AbstractWidget widget, GuiGraphics gg, WidgetCategory category, AnimationState state) {
+    public static AnimationScope beginRender(AbstractWidget widget, GuiGraphics graphics, WidgetCategory category, AnimationState state) {
         if (Minecraft.getInstance().screen instanceof AbstractContainerScreen) {
             return null;
         }
@@ -35,7 +35,7 @@ public class WidgetAnimator {
             return null;
         }
 
-        return AnimationSystem.begin(gg, widget.getX(), widget.getY(), widget.getWidth(), widget.getHeight(), profile,
+        return AnimationSystem.begin(graphics, widget.getX(), widget.getY(), widget.getWidth(), widget.getHeight(), profile,
                 state.startTime, state.delay, ((WidgetExtension) widget).easeGUI$getAlpha());
     }
 

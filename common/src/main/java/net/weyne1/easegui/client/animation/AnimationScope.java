@@ -7,7 +7,7 @@ public class AnimationScope implements AutoCloseable {
     public static final AnimationScope NO_OP = new NoOpAnimationScope();
     private static final float MIN_SCALE = 0.001f;
 
-    private final GuiGraphics guiGraphics;
+    private final GuiGraphics graphics;
     private final float alpha;
 
     private boolean isClosed = false;
@@ -18,17 +18,17 @@ public class AnimationScope implements AutoCloseable {
     private float pivotX, pivotY;
 
     protected AnimationScope() {
-        this.guiGraphics = null;
+        this.graphics = null;
         this.alpha = 1.0f;
     }
 
-    AnimationScope(GuiGraphics guiGraphics, float alpha) {
-        this.guiGraphics = guiGraphics;
+    AnimationScope(GuiGraphics graphics, float alpha) {
+        this.graphics = graphics;
         this.alpha = alpha;
 
-        this.guiGraphics.flush();
+        this.graphics.flush();
         AnimationContext.pushScope(this);
-        this.guiGraphics.pose().pushPose();
+        this.graphics.pose().pushPose();
     }
 
     void setTransformParams(float offsetX, float offsetY, float scaleX, float scaleY, float pivotX, float pivotY) {
@@ -40,40 +40,40 @@ public class AnimationScope implements AutoCloseable {
         this.pivotY = pivotY;
 
         if (this.scaleX != 1.0f || this.scaleY != 1.0f) {
-            guiGraphics.pose().translate(offsetX + pivotX, offsetY + pivotY, 0.0f);
-            guiGraphics.pose().scale(this.scaleX, this.scaleY, 1.0f);
-            guiGraphics.pose().translate(-pivotX, -pivotY, 0.0f);
+            graphics.pose().translate(offsetX + pivotX, offsetY + pivotY, 0.0f);
+            graphics.pose().scale(this.scaleX, this.scaleY, 1.0f);
+            graphics.pose().translate(-pivotX, -pivotY, 0.0f);
         } else {
-            guiGraphics.pose().translate(offsetX, offsetY, 0.0f);
+            graphics.pose().translate(offsetX, offsetY, 0.0f);
         }
     }
 
     public void applyPivotScale(float pivotX, float pivotY, float scale) {
-        if (this.guiGraphics == null) return;
+        if (this.graphics == null) return;
 
         this.scaleX = clampScale(scale);
         this.scaleY = clampScale(scale);
         this.pivotX = pivotX;
         this.pivotY = pivotY;
 
-        guiGraphics.pose().translate(pivotX, pivotY, 0.0f);
-        guiGraphics.pose().scale(this.scaleX, this.scaleY, 1.0f);
-        guiGraphics.pose().translate(-pivotX, -pivotY, 0.0f);
+        graphics.pose().translate(pivotX, pivotY, 0.0f);
+        graphics.pose().scale(this.scaleX, this.scaleY, 1.0f);
+        graphics.pose().translate(-pivotX, -pivotY, 0.0f);
     }
 
     public void suspend() {
         if (isClosed) return;
 
         if (suspendDepth == 0) {
-            this.guiGraphics.flush();
-            guiGraphics.pose().pushPose();
+            this.graphics.flush();
+            graphics.pose().pushPose();
 
             if (scaleX != 1.0f || scaleY != 1.0f) {
-                guiGraphics.pose().translate(pivotX, pivotY, 0.0f);
-                guiGraphics.pose().scale(1.0f / scaleX, 1.0f / scaleY, 1.0f);
-                guiGraphics.pose().translate(-(offsetX + pivotX), -(offsetY + pivotY), 0.0f);
+                graphics.pose().translate(pivotX, pivotY, 0.0f);
+                graphics.pose().scale(1.0f / scaleX, 1.0f / scaleY, 1.0f);
+                graphics.pose().translate(-(offsetX + pivotX), -(offsetY + pivotY), 0.0f);
             } else {
-                guiGraphics.pose().translate(-offsetX, -offsetY, 0.0f);
+                graphics.pose().translate(-offsetX, -offsetY, 0.0f);
             }
         }
 
@@ -90,8 +90,8 @@ public class AnimationScope implements AutoCloseable {
         suspendDepth--;
 
         if (suspendDepth == 0) {
-            this.guiGraphics.flush();
-            guiGraphics.pose().popPose();
+            this.graphics.flush();
+            graphics.pose().popPose();
         }
     }
 
@@ -100,18 +100,18 @@ public class AnimationScope implements AutoCloseable {
         if (isClosed) return;
         isClosed = true;
 
-        this.guiGraphics.flush();
+        this.graphics.flush();
 
         if (suspendDepth > 0) {
             EaseGUIDebug.reportError("scope_closed_while_suspended",
                     () -> "AnimationScope closed while still suspended (depth=" + suspendDepth + ")! " +
                             "A layer likely leaked a suspend() without a matching resume().");
-            guiGraphics.pose().popPose();
+            graphics.pose().popPose();
             suspendDepth = 0;
         }
 
         try {
-            guiGraphics.pose().popPose();
+            graphics.pose().popPose();
         } catch (IllegalStateException e) {
             EaseGUIDebug.reportError("pose_stack_underflow", () -> "PoseStack underflow inside AnimationScope close!");
         }

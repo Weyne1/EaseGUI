@@ -23,21 +23,21 @@ public class AbstractSelectionListMixin {
     @Shadow protected int y0;
 
     @WrapMethod(method = "render")
-    private void easeGUI$wrapListRender(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, Operation<Void> original) {
-        try (AnimationScope ignored = ScrollableListAnimator.beginRender(guiGraphics, this.x0, this.y0, this.width, this.height, this.easeGUI$scrollAnimationState)) {
-            original.call(guiGraphics, mouseX, mouseY, partialTick);
+    private void easeGUI$wrapListRender(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, Operation<Void> original) {
+        try (AnimationScope ignored = ScrollableListAnimator.beginRender(graphics, this.x0, this.y0, this.width, this.height, this.easeGUI$scrollAnimationState)) {
+            original.call(graphics, mouseX, mouseY, partialTick);
         }
     }
 
     @WrapMethod(method = "renderItem")
-    private void easeGUI$wrapRenderItem(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick,
+    private void easeGUI$wrapRenderItem(GuiGraphics graphics, int mouseX, int mouseY, float partialTick,
                                         int index, int left, int top, int width, int height, Operation<Void> original) {
         try (AnimationScope ignored = ListItemAnimator.beginRender(
-                guiGraphics, top, left, width, height
+                graphics, top, left, width, height
         )) {
             AnimationContext.pushParentAnimation();
             try {
-                original.call(guiGraphics, mouseX, mouseY, partialTick, index, left, top, width, height);
+                original.call(graphics, mouseX, mouseY, partialTick, index, left, top, width, height);
             } finally {
                 AnimationContext.popParentAnimation();
             }

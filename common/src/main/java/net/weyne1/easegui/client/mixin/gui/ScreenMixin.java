@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
 @Mixin(Screen.class)
-@SuppressWarnings("ConstantConditions")
+@SuppressWarnings({"ConstantConditions", "NameDoesntMatchTargetClass"})
 public abstract class ScreenMixin {
 
     @Shadow @Nullable protected Minecraft minecraft;
@@ -29,27 +29,27 @@ public abstract class ScreenMixin {
     // Container lifecycle
 
     @WrapMethod(method = "renderWithTooltip")
-    private void easeGUI$wrapScreenRender(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, Operation<Void> original) {
+    private void easeGUI$wrapScreenRender(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, Operation<Void> original) {
         if (RenderSystem.isOnRenderThread()
                 && this instanceof ContainerScreenExtension
                 && !AnimationContext.isAnimationDisabled()) {
-            try (AnimationScope ignored = ContainerAnimator.beginAnimation((Screen) (Object) this, guiGraphics)) {
+            try (AnimationScope ignored = ContainerAnimator.beginAnimation((Screen) (Object) this, graphics)) {
                 AnimationContext.pushParentAnimation();
                 try {
-                    original.call(guiGraphics, mouseX, mouseY, partialTick);
+                    original.call(graphics, mouseX, mouseY, partialTick);
                 } finally {
                     AnimationContext.popParentAnimation();
                 }
             }
         } else {
-            original.call(guiGraphics, mouseX, mouseY, partialTick);
+            original.call(graphics, mouseX, mouseY, partialTick);
         }
     }
 
     // Menu background
 
     @WrapMethod(method = "renderBackground")
-    private void easeGUI$wrapBackground(GuiGraphics guiGraphics, Operation<Void> original) {
+    private void easeGUI$wrapBackground(GuiGraphics graphics, Operation<Void> original) {
         AnimationScope currentScope = AnimationContext.getCurrentScope();
         if (currentScope != null) currentScope.suspend();
 
@@ -63,7 +63,7 @@ public abstract class ScreenMixin {
 
             if (isRealScreenFrame && blurBackground) {
                 try {
-                    guiGraphics.flush();
+                    graphics.flush();
                     float progress = enableSmoothBlur && BackgroundAnimator.shouldAnimateBackground(currentScreen) ? ScreenAnimationTracker.getProgress() : 1.0f;
                     float partialTick = this.minecraft.getFrameTime();
 
@@ -72,8 +72,8 @@ public abstract class ScreenMixin {
                 }
             }
 
-            try (AnimationScope ignored = BackgroundAnimator.beginRenderMenu(currentScreen, guiGraphics)) {
-                original.call(guiGraphics);
+            try (AnimationScope ignored = BackgroundAnimator.beginRenderMenu(currentScreen, graphics)) {
+                original.call(graphics);
             }
         } finally {
             if (currentScope != null) currentScope.resume();

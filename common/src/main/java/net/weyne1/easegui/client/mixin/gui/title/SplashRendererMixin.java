@@ -17,20 +17,20 @@ public class SplashRendererMixin {
             method = "render",
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;drawCenteredString(Lnet/minecraft/client/gui/Font;Ljava/lang/String;III)V")
     )
-    private void easeGUI$wrapSplash(GuiGraphics gg, Font font, String text, int x, int y, int color, Operation<Void> original) {
+    private void easeGUI$wrapSplash(GuiGraphics graphics, Font font, String text, int x, int y, int color, Operation<Void> original) {
         if (text == null || text.isBlank()) {
-            original.call(gg, font, text, x, y, color);
+            original.call(graphics, font, text, x, y, color);
             return;
         }
 
-        AnimationScope scope = SplashAnimator.beginRender(gg, x, y, color);
+        AnimationScope scope = SplashAnimator.beginRender(graphics, x, y, color);
 
         if (scope != null) {
             try (scope) {
-                original.call(gg, font, text, x, y, color);
+                original.call(graphics, font, text, x, y, color);
             }
         } else {
-            original.call(gg, font, text, x, y, color);
+            original.call(graphics, font, text, x, y, color);
         }
     }
 }

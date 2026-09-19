@@ -21,7 +21,7 @@ public final class ScrollableListAnimator {
     private ScrollableListAnimator() {
     }
 
-    public static AnimationScope beginRender(GuiGraphics gg, int x, int y, int width, int height, AnimationState state) {
+    public static AnimationScope beginRender(GuiGraphics graphics, int x, int y, int width, int height, AnimationState state) {
         if (Minecraft.getInstance().screen instanceof AbstractContainerScreen) {
             return null;
         }
@@ -43,7 +43,7 @@ public final class ScrollableListAnimator {
             return null;
         }
 
-        return AnimationSystem.begin(gg, x, y, width, height, profile, state.startTime, state.delay, 1.0f);
+        return AnimationSystem.begin(graphics, x, y, width, height, profile, state.startTime, state.delay, 1.0f);
     }
 
     private static void updateAnimationState(int x, int y, AnimationState state, long now, AnimationProfile profile) {

@@ -33,7 +33,7 @@ public class ProfilePreviewRenderer {
 
     private static final Component DISABLED_BADGE = Component.translatable("easegui.editor.preview.disabled");
 
-    public static void render(GuiGraphics gg, Font font, int screenWidth, int screenHeight, AnimationProfile profile, EnumSet<ProfileFeature> activeFeatures) {
+    public static void render(GuiGraphics graphics, Font font, int screenWidth, int screenHeight, AnimationProfile profile, EnumSet<ProfileFeature> activeFeatures) {
         int rightCenterX = (screenWidth / 2) + (screenWidth / 4);
         int rightCenterY = screenHeight / 2;
 
@@ -46,24 +46,24 @@ public class ProfilePreviewRenderer {
 
         int boxWidth = (isHorizontal && isCascadeActive) ? 40 : 120;
 
-        renderStaticBounds(gg, rightCenterX, rightCenterY, isCascadeActive, itemCount, isEnabled, isHorizontal, boxWidth);
-        renderAnimatedElements(gg, font, rightCenterX, rightCenterY, profile, isCascadeActive, itemCount, isHorizontal, boxWidth);
+        renderStaticBounds(graphics, rightCenterX, rightCenterY, isCascadeActive, itemCount, isEnabled, isHorizontal, boxWidth);
+        renderAnimatedElements(graphics, font, rightCenterX, rightCenterY, profile, isCascadeActive, itemCount, isHorizontal, boxWidth);
 
         if (!isEnabled) {
-            renderDisabledStatus(gg, font, rightCenterX, rightCenterY, isCascadeActive, itemCount, isHorizontal);
+            renderDisabledStatus(graphics, font, rightCenterX, rightCenterY, isCascadeActive, itemCount, isHorizontal);
         }
     }
 
-    private static void renderStaticBounds(GuiGraphics gg, int centerX, int centerY, boolean isCascade, int count, boolean isEnabled, boolean isHorizontal, int boxWidth) {
+    private static void renderStaticBounds(GuiGraphics graphics, int centerX, int centerY, boolean isCascade, int count, boolean isEnabled, boolean isHorizontal, int boxWidth) {
         int color = isEnabled ? 0xFF555555 : 0xCCAA3333;
         for (int i = 0; i < count; i++) {
             int targetX = getTargetX(centerX, isCascade, isHorizontal, i);
             int targetY = getTargetY(centerY, isCascade, isHorizontal, i);
-            drawBoxOutline(gg, targetX, targetY, boxWidth, color);
+            drawBoxOutline(graphics, targetX, targetY, boxWidth, color);
         }
     }
 
-    private static void renderAnimatedElements(GuiGraphics gg, Font font, int centerX, int centerY, AnimationProfile profile, boolean isCascade, int count, boolean isHorizontal, int boxWidth) {
+    private static void renderAnimatedElements(GuiGraphics graphics, Font font, int centerX, int centerY, AnimationProfile profile, boolean isCascade, int count, boolean isHorizontal, int boxWidth) {
         boolean isEnabled = profile.isEnabled();
         long duration = Math.max(profile.getDuration(), 50L);
         long totalLoopTime = duration + (isCascade ? (2 * profile.getCascadeDelay()) : 0L) + LOOP_PADDING_MS;
@@ -89,24 +89,24 @@ public class ProfilePreviewRenderer {
             int x = targetX - halfW;
             int y = targetY - halfH;
 
-            try (AnimationScope scope = AnimationSystem.begin(gg, x, y, boxWidth, BOX_HEIGHT, profile, rawProgress, 1.0f)) {
+            try (AnimationScope scope = AnimationSystem.begin(graphics, x, y, boxWidth, BOX_HEIGHT, profile, rawProgress, 1.0f)) {
                 float currentAlpha = scope.getAlpha();
                 int bgAlpha = (int) (currentAlpha * 255.0f);
 
                 int boxColor = isEnabled ? 0x353535 : 0x222222;
-                gg.fill(x, y, x + boxWidth, y + BOX_HEIGHT, (bgAlpha << 24) | boxColor);
+                graphics.fill(x, y, x + boxWidth, y + BOX_HEIGHT, (bgAlpha << 24) | boxColor);
 
                 Component label = isCascade
                         ? (isHorizontal ? CASCADE_SHORT_LABELS[i] : CASCADE_LABELS[i])
                         : STATIC_LABEL;
 
                 int textColor = isEnabled ? 0xE0E0E0 : 0x888888;
-                gg.drawCenteredString(font, label, targetX, targetY - 4, (bgAlpha << 24) | textColor);
+                graphics.drawCenteredString(font, label, targetX, targetY - 4, (bgAlpha << 24) | textColor);
             }
         }
     }
 
-    private static void renderDisabledStatus(GuiGraphics gg, Font font, int centerX, int centerY, boolean isCascade, int count, boolean isHorizontal) {
+    private static void renderDisabledStatus(GuiGraphics graphics, Font font, int centerX, int centerY, boolean isCascade, int count, boolean isHorizontal) {
         int lastElementY = getTargetY(centerY, isCascade, isHorizontal, count - 1);
         int badgeY = lastElementY + (BOX_HEIGHT / 2) + 12;
 
@@ -114,9 +114,9 @@ public class ProfilePreviewRenderer {
         int paddingX = 6;
         int paddingY = 3;
 
-        gg.fill(centerX - (textWidth / 2) - paddingX, badgeY - paddingY,
+        graphics.fill(centerX - (textWidth / 2) - paddingX, badgeY - paddingY,
                 centerX + (textWidth / 2) + paddingX, badgeY + 9 + paddingY, 0x55FF5555);
-        gg.drawCenteredString(font, DISABLED_BADGE, centerX, badgeY, 0xFFFF5555);
+        graphics.drawCenteredString(font, DISABLED_BADGE, centerX, badgeY, 0xFFFF5555);
     }
 
     private static int getTargetX(int centerX, boolean isCascade, boolean isHorizontal, int index) {
@@ -129,7 +129,7 @@ public class ProfilePreviewRenderer {
         return centerY + (index - 1) * SPACING_Y;
     }
 
-    private static void drawBoxOutline(GuiGraphics gg, int centerX, int targetY, int boxWidth, int color) {
+    private static void drawBoxOutline(GuiGraphics graphics, int centerX, int targetY, int boxWidth, int color) {
         int halfW = boxWidth / 2;
         int halfH = BOX_HEIGHT / 2;
 
@@ -143,25 +143,25 @@ public class ProfilePreviewRenderer {
         // Upper face
         for (int x = x1; x < x2; x += step) {
             int endX = Math.min(x + dashLength, x2);
-            gg.fill(x, y1, endX, y1 + 1, color);
+            graphics.fill(x, y1, endX, y1 + 1, color);
         }
 
         // Bottom face
         for (int x = x1; x < x2; x += step) {
             int endX = Math.min(x + dashLength, x2);
-            gg.fill(x, y2 - 1, endX, y2, color);
+            graphics.fill(x, y2 - 1, endX, y2, color);
         }
 
         // Left face
         for (int y = y1 + 1; y < y2 - 1; y += step) {
             int endY = Math.min(y + dashLength, y2 - 1);
-            gg.fill(x1, y, x1 + 1, endY, color);
+            graphics.fill(x1, y, x1 + 1, endY, color);
         }
 
         // Right face
         for (int y = y1 + 1; y < y2 - 1; y += step) {
             int endY = Math.min(y + dashLength, y2 - 1);
-            gg.fill(x2 - 1, y, x2, endY, color);
+            graphics.fill(x2 - 1, y, x2, endY, color);
         }
     }
 
