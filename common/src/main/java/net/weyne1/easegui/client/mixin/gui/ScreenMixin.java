@@ -17,6 +17,7 @@ import net.weyne1.easegui.client.util.Blur;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 
@@ -55,7 +56,7 @@ public abstract class ScreenMixin {
 
         try {
             Screen currentScreen = (Screen) (Object) this;
-            boolean blurBackground = ConfigManager.getConfig().global.blurBackground;
+            boolean blurBackground = ConfigManager.getConfig().global.blurContainers;
             boolean enableSmoothBlur = ConfigManager.getConfig().global.enableSmoothBlur;
 
             boolean isRealScreenFrame = this.minecraft != null && this.minecraft.level != null
@@ -92,7 +93,7 @@ public abstract class ScreenMixin {
         if (!BackgroundAnimator.shouldAnimateBackground(currentScreen)) {
             return startColor;
         }
-        return BackgroundAnimator.getAnimatedColor(currentScreen, startColor);
+        return BackgroundAnimator.getAnimatedColor(currentScreen, easeGUI$applyDimmingIntensity(startColor));
     }
 
     @ModifyArg(
@@ -105,6 +106,15 @@ public abstract class ScreenMixin {
         if (!BackgroundAnimator.shouldAnimateBackground(currentScreen)) {
             return endColor;
         }
-        return BackgroundAnimator.getAnimatedColor(currentScreen, endColor);
+        return BackgroundAnimator.getAnimatedColor(currentScreen, easeGUI$applyDimmingIntensity(endColor));
+    }
+
+    @Unique
+    private static int easeGUI$applyDimmingIntensity(int color) {
+        float multiplier = ConfigManager.getConfig().global.dimmingIntensity / 0.50f;
+
+        int alpha = (color >> 24) & 0xFF;
+        int targetAlpha = Math.min(Math.max(Math.round(alpha * multiplier), 0), 255);
+        return (targetAlpha << 24) | (color & 0x00FFFFFF);
     }
 }
