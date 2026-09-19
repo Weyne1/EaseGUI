@@ -56,7 +56,7 @@ public abstract class ScreenMixin {
         try {
             Screen currentScreen = (Screen) (Object) this;
             boolean blurBackground = ConfigManager.getConfig().global.blurBackground;
-            boolean enableSmoothBlur = ConfigManager.getConfig().global.enableSmoothFade;
+            boolean enableSmoothBlur = ConfigManager.getConfig().global.enableSmoothBlur;
 
             boolean isRealScreenFrame = this.minecraft != null && this.minecraft.level != null
                     && this.minecraft.screen == (Object) this;
