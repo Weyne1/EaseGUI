@@ -4,7 +4,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
-import net.weyne1.easegui.client.config.EaseGUIConfig;
 import net.weyne1.easegui.client.extension.ContainerScreenExtension;
 import net.weyne1.easegui.client.extension.RecipeBookExtension;
 import net.weyne1.easegui.client.animation.AnimationScope;
@@ -52,6 +51,6 @@ public class ContainerAnimator {
         if (profile == null || !profile.isEnabled()) return null;
 
         long startTime = ScreenStateTracker.getScreenOpenTime();
-        return AnimationSystem.begin(graphics, minX, minY, maxX - minX, maxY - minY, profile, startTime, 0L, 1.0f);
+        return AnimationSystem.begin(graphics, profile, minX, minY, maxX - minX, maxY - minY, startTime, 0L, 1.0f);
     }
 }

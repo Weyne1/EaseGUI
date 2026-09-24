@@ -22,7 +22,7 @@ public class ListItemAnimator {
         long delay = getDelay(top, left, profile);
         long startTime = ScreenStateTracker.getScreenOpenTime();
 
-        return AnimationSystem.begin(graphics, left, top, width, height, profile, startTime, delay, 1.0f);
+        return AnimationSystem.begin(graphics, profile, left, top, width, height, startTime, delay, 1.0f);
     }
 
     private static long getDelay(int top, int left, AnimationProfile profile) {

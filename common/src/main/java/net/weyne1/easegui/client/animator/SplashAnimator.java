@@ -46,8 +46,6 @@ public class SplashAnimator {
 
         float finalAlpha = AnimationMath.clamp(baseAlpha * progress * parentAlpha, 0.0f, 1.0f);
 
-        AnimationScope scope = AnimationSystem.beginAlphaOnly(graphics, finalAlpha);
-        scope.applyPivotScale(x, y, progress);
-        return scope;
+        return AnimationSystem.beginPivotScale(graphics, x, y, progress, finalAlpha);
     }
 }

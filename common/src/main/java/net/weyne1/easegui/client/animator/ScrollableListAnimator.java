@@ -43,7 +43,7 @@ public final class ScrollableListAnimator {
             return null;
         }
 
-        return AnimationSystem.begin(graphics, x, y, width, height, profile, state.startTime, state.delay, 1.0f);
+        return AnimationSystem.begin(graphics, profile, x, y, width, height, state.startTime, state.delay, 1.0f);
     }
 
     private static void updateAnimationState(int x, int y, WidgetAnimationState state, long now, AnimationProfile profile) {

@@ -89,7 +89,7 @@ public class ProfilePreviewRenderer {
             int x = targetX - halfW;
             int y = targetY - halfH;
 
-            try (AnimationScope scope = AnimationSystem.begin(graphics, x, y, boxWidth, BOX_HEIGHT, profile, rawProgress, 1.0f)) {
+            try (AnimationScope scope = AnimationSystem.begin(graphics, profile, x, y, boxWidth, BOX_HEIGHT, rawProgress, 1.0f)) {
                 float currentAlpha = scope.getAlpha();
                 int bgAlpha = (int) (currentAlpha * 255.0f);
 
