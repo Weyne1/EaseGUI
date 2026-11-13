@@ -1,5 +1,6 @@
 package net.weyne1.easegui.client.gui.components;
 
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.weyne1.easegui.client.config.EaseGUIConfig;
 
@@ -10,6 +11,7 @@ public class BlurDurationSlider extends EaseGUISlider {
         super(x, y, width, height, Component.empty(), calculateInitialValue(config));
         this.config = config;
         this.updateMessage();
+        this.setTooltip(Tooltip.create(Component.translatable("easegui.main.smooth_blur.tooltip")));
     }
 
     private static double calculateInitialValue(EaseGUIConfig config) {
