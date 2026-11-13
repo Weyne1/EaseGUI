@@ -6,9 +6,10 @@ import net.minecraft.client.gui.components.MultiLineTextWidget;
 import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.weyne1.easegui.api.WidgetCategory;
 import net.weyne1.easegui.api.EaseGUIScreenType;
-import net.weyne1.easegui.client.config.*;
+import net.weyne1.easegui.api.WidgetCategory;
+import net.weyne1.easegui.client.config.ConfigManager;
+import net.weyne1.easegui.client.config.EaseGUIConfig;
 import net.weyne1.easegui.client.gui.components.SettingsScrollList;
 import net.weyne1.easegui.client.gui.configurator.IScreenConfigurator;
 import org.jetbrains.annotations.NotNull;
@@ -108,7 +109,9 @@ public class ScreenSpecificConfigScreen extends EaseGUIAbstractSplitScreen {
     }
 
     private void setupCategoryButtons(SettingsScrollList rightScrollList, EaseGUIConfig.ScreenSettings settings, EaseGUIConfig config) {
-        EnumSet<WidgetCategory> overridableCategories = EnumSet.complementOf(EnumSet.of(WidgetCategory.UNKNOWN, WidgetCategory.CONTAINERS));
+        EnumSet<WidgetCategory> overridableCategories = EnumSet.complementOf(
+                EnumSet.of(WidgetCategory.UNKNOWN, WidgetCategory.CONTAINERS, WidgetCategory.EXCLUDED)
+        );
 
         for (WidgetCategory category : overridableCategories) {
             Component categoryLabel = Component.translatable("easegui.category." + category.name().toLowerCase());

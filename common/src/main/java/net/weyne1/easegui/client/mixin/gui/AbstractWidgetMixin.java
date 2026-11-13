@@ -5,6 +5,7 @@ import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.weyne1.easegui.api.WidgetCategory;
+import net.weyne1.easegui.client.animation.AnimationContext;
 import net.weyne1.easegui.client.animation.AnimationScope;
 import net.weyne1.easegui.client.animation.WidgetAnimationState;
 import net.weyne1.easegui.client.animator.WidgetAnimator;
@@ -20,6 +21,7 @@ public abstract class AbstractWidgetMixin implements WidgetExtension {
 
     @Unique private final WidgetAnimationState easegui$animationState = new WidgetAnimationState();
     @Unique private WidgetCategory easegui$cachedCategory = null;
+    @Unique private boolean easegui$excluded = false;
 
     @Override
     public float easegui$getAlpha() {
@@ -34,17 +36,27 @@ public abstract class AbstractWidgetMixin implements WidgetExtension {
         return this.easegui$cachedCategory;
     }
 
+    @Override
+    public void easegui$setExcluded(boolean excluded) {
+        this.easegui$excluded = excluded;
+    }
+
+    @Override
+    public boolean easegui$isExcluded() {
+        return this.easegui$excluded;
+    }
+
     @WrapMethod(method = "render")
     private void easegui$wrapWidgetRender(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, Operation<Void> original) {
         AbstractWidget widget = (AbstractWidget) (Object) this;
 
-        if (!widget.visible) {
+        if (!widget.visible || AnimationContext.isAnimationDisabled() || this.easegui$excluded) {
             original.call(graphics, mouseX, mouseY, partialTick);
             return;
         }
 
-        var category = this.easegui$getCategory();
-        if (category == null || category == WidgetCategory.UNKNOWN) {
+        WidgetCategory category = this.easegui$getCategory();
+        if (category == WidgetCategory.UNKNOWN || category == WidgetCategory.EXCLUDED) {
             original.call(graphics, mouseX, mouseY, partialTick);
             return;
         }
