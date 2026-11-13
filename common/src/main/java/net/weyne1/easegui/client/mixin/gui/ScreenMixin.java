@@ -90,9 +90,7 @@ public abstract class ScreenMixin {
     )
     private int easeGUI$modifyTransparentBgStartColor(int startColor) {
         Screen currentScreen = (Screen) (Object) this;
-        if (!BackgroundAnimator.shouldAnimateBackground(currentScreen)) {
-            return startColor;
-        }
+
         return BackgroundAnimator.getAnimatedColor(currentScreen, easeGUI$applyDimmingIntensity(startColor));
     }
 
@@ -103,9 +101,7 @@ public abstract class ScreenMixin {
     )
     private int easeGUI$modifyTransparentBgEndColor(int endColor) {
         Screen currentScreen = (Screen) (Object) this;
-        if (!BackgroundAnimator.shouldAnimateBackground(currentScreen)) {
-            return endColor;
-        }
+
         return BackgroundAnimator.getAnimatedColor(currentScreen, easeGUI$applyDimmingIntensity(endColor));
     }
 
