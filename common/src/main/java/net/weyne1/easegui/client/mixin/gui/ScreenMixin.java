@@ -56,16 +56,16 @@ public abstract class ScreenMixin {
 
         try {
             Screen currentScreen = (Screen) (Object) this;
-            boolean blurBackground = ConfigManager.getConfig().global.blurContainers;
-            boolean enableSmoothBlur = ConfigManager.getConfig().global.enableSmoothBlur;
+            boolean blurBackground = ConfigManager.getConfig().global.blurBackground;
+            boolean smoothBlurEnabled = ConfigManager.getConfig().global.blurDuration > 0;
 
             boolean isRealScreenFrame = this.minecraft != null && this.minecraft.level != null
                     && this.minecraft.screen == (Object) this;
 
-            if (isRealScreenFrame && blurBackground) {
+            if (isRealScreenFrame && blurBackground && smoothBlurEnabled) {
                 try {
                     graphics.flush();
-                    float progress = enableSmoothBlur && BackgroundAnimator.shouldAnimateBackground(currentScreen) ? ScreenAnimationTracker.getProgress() : 1.0f;
+                    float progress = BackgroundAnimator.shouldAnimateBackground(currentScreen) ? ScreenAnimationTracker.getProgress() : 1.0f;
                     float partialTick = this.minecraft.getFrameTime();
 
                     Blur.renderBlur(progress, partialTick);

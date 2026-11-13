@@ -2,15 +2,16 @@ package net.weyne1.easegui.client.animator;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.*;
+import net.weyne1.easegui.api.EaseGUIScreenRegistry;
+import net.weyne1.easegui.api.EaseGUIScreenType;
 import net.weyne1.easegui.client.animation.AnimationContext;
 import net.weyne1.easegui.client.animation.AnimationScope;
 import net.weyne1.easegui.client.animation.AnimationSystem;
 import net.weyne1.easegui.client.config.ConfigManager;
 import net.weyne1.easegui.client.config.EaseGUIConfig;
-import net.weyne1.easegui.api.EaseGUIScreenRegistry;
-import net.weyne1.easegui.api.EaseGUIScreenType;
 import net.weyne1.easegui.client.state.ScreenAnimationTracker;
 import net.weyne1.easegui.client.state.ScreenStateTracker;
+
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -43,7 +44,7 @@ public class BackgroundAnimator {
         }
 
         EaseGUIConfig config = ConfigManager.getConfig();
-        if (!config.global.enableSmoothBlur) return false;
+        if (config.global.blurDuration <= 0) return false;
 
         try {
             EaseGUIScreenType screenType = EaseGUIScreenRegistry.from(screen);
