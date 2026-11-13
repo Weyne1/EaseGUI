@@ -107,10 +107,9 @@ public abstract class ScreenMixin {
 
     @Unique
     private static int easeGUI$applyDimmingIntensity(int color) {
-        float multiplier = ConfigManager.getConfig().global.dimmingIntensity / 0.50f;
+        float intensity = ConfigManager.getConfig().global.dimmingIntensity;
 
-        int alpha = (color >> 24) & 0xFF;
-        int targetAlpha = Math.min(Math.max(Math.round(alpha * multiplier), 0), 255);
+        int targetAlpha = Math.min(255, Math.max(0, Math.round(intensity * 255.0f)));
         return (targetAlpha << 24) | (color & 0x00FFFFFF);
     }
 }
