@@ -1,6 +1,7 @@
 package net.weyne1.easegui.client.gui.components;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -11,7 +12,6 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.network.chat.Component;
-import net.minecraft.Util;
 import net.weyne1.easegui.api.animation.EasingType;
 import net.weyne1.easegui.client.animation.AnimationScope;
 import net.weyne1.easegui.client.animation.AnimationSystem;
@@ -27,7 +27,7 @@ public class SettingsScrollList extends ContainerObjectSelectionList<SettingsScr
     private static final int ELEMENT_SPACING = 4;
     private static final int WIDGET_HEIGHT = 20;
     private static final float LABEL_WIDTH_RATIO = 0.55f;
-    private static final int MAX_ROW_WIDTH = 350;
+    private static final int MAX_ROW_WIDTH = 400;
     private IntConsumer scrollListener;
 
     public SettingsScrollList(Minecraft mc, int width, int height, int top, int bottom, int itemHeight) {
