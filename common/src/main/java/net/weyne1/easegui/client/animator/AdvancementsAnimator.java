@@ -4,12 +4,12 @@ import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.advancements.AdvancementsScreen;
+import net.weyne1.easegui.api.EaseGUIScreenRegistry;
+import net.weyne1.easegui.api.EaseGUIScreenType;
 import net.weyne1.easegui.client.animation.AnimationContext;
 import net.weyne1.easegui.client.animation.AnimationScope;
 import net.weyne1.easegui.client.animation.AnimationSystem;
 import net.weyne1.easegui.client.config.ConfigManager;
-import net.weyne1.easegui.api.EaseGUIScreenRegistry;
-import net.weyne1.easegui.api.EaseGUIScreenType;
 import net.weyne1.easegui.client.config.EaseGUIConfig;
 import net.weyne1.easegui.client.state.ScreenStateTracker;
 
@@ -23,13 +23,13 @@ public class AdvancementsAnimator {
             return null;
         }
 
-        var titleSettings = config.screens.get(type.getId());
+        var settings = config.screens.get(type.getId());
 
-        if (titleSettings == null || !titleSettings.enabled || titleSettings.advancements == null || !titleSettings.advancements.windowProfile.isEnabled()) {
+        if (settings == null || !settings.enabled || settings.windowProfile == null || !settings.windowProfile.isEnabled()) {
             return null;
         }
 
-        var profile = titleSettings.advancements.windowProfile;
+        var profile = settings.windowProfile;
         long startTime = ScreenStateTracker.getScreenOpenTime();
         long elapsed = Util.getMillis() - startTime;
 
@@ -46,9 +46,9 @@ public class AdvancementsAnimator {
             return null;
         }
 
-        var titleSettings = config.screens.get(type.getId());
+        var settings = config.screens.get(type.getId());
 
-        if (titleSettings == null || !titleSettings.enabled || titleSettings.advancements == null || !titleSettings.advancements.tabsProfile.isEnabled()) {
+        if (settings == null || !settings.enabled || settings.tabsProfile == null || !settings.tabsProfile.isEnabled()) {
             return null;
         }
 
@@ -58,7 +58,7 @@ public class AdvancementsAnimator {
             return AnimationSystem.beginAlphaOnly(graphics, parentAlpha);
         }
 
-        var profile = titleSettings.advancements.tabsProfile;
+        var profile = settings.tabsProfile;
         long startTime = ScreenStateTracker.getScreenOpenTime();
         long tabDelay = tabIndex * profile.getCascadeDelay();
 

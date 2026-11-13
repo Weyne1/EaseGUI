@@ -11,7 +11,7 @@ import java.util.Map;
 import static net.weyne1.easegui.api.animation.EasingType.EASE_OUT_CUBIC;
 
 public class EaseGUIConfig {
-    public static final int CURRENT_SCHEMA_VERSION = 2;
+    public static final int CURRENT_SCHEMA_VERSION = 3;
 
     public int schemaVersion = CURRENT_SCHEMA_VERSION;
     public GlobalSettings global = new GlobalSettings();
@@ -30,9 +30,13 @@ public class EaseGUIConfig {
         public boolean enabled = true;
         public Map<WidgetCategory, AnimationProfile> customProfiles = new EnumMap<>(WidgetCategory.class);
 
+        // Title Screen
         public LogoSettings logo = null;
         public SplashSettings splash = null;
-        public AdvancementsSettings advancements = null;
+
+        // Advancements screen
+        public AnimationProfile windowProfile;
+        public AnimationProfile tabsProfile;
     }
 
     public static class LogoSettings {
@@ -46,10 +50,5 @@ public class EaseGUIConfig {
         public long splashDelay = 500L;
         public long splashDuration = 500L;
         public EasingType splashEasing;
-    }
-
-    public static class AdvancementsSettings {
-        public AnimationProfile windowProfile;
-        public AnimationProfile tabsProfile;
     }
 }
