@@ -13,6 +13,7 @@ import net.weyne1.easegui.client.animator.ContainerAnimator;
 import net.weyne1.easegui.client.config.ConfigManager;
 import net.weyne1.easegui.client.extension.ContainerScreenExtension;
 import net.weyne1.easegui.client.state.ScreenAnimationTracker;
+import net.weyne1.easegui.client.state.ScreenStateTracker;
 import net.weyne1.easegui.client.util.Blur;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -31,6 +32,7 @@ public abstract class ScreenMixin {
 
     @WrapMethod(method = "renderWithTooltip")
     private void easeGUI$wrapScreenRender(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, Operation<Void> original) {
+        ScreenStateTracker.markScreenRendered((Screen) (Object) this);
         if (RenderSystem.isOnRenderThread()
                 && this instanceof ContainerScreenExtension
                 && !AnimationContext.isAnimationDisabled()) {

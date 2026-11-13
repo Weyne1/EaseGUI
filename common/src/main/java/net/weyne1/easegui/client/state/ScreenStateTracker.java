@@ -15,6 +15,7 @@ public class ScreenStateTracker {
     private static int lastHeight = -1;
 
     private static WeakReference<Screen> lastScreenRef = new WeakReference<>(null);
+    private static WeakReference<Screen> lastRenderedScreenRef = new WeakReference<>(null);
 
     public static boolean checkAndTrackNewScreen(Screen screen) {
         Screen lastScreen = lastScreenRef.get();
@@ -28,6 +29,14 @@ public class ScreenStateTracker {
     public static void markScreenOpened() {
         screenOpenTime = -1;
         resizeGraceFrames = 0;
+    }
+
+    public static void markScreenRendered(Screen screen) {
+        lastRenderedScreenRef = new WeakReference<>(screen);
+    }
+
+    public static boolean wasScreenRendered(Screen screen) {
+        return screen != null && lastRenderedScreenRef.get() == screen;
     }
 
     public static boolean isResizeFrame() {
