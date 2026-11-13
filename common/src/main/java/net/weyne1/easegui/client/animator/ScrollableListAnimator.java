@@ -8,8 +8,8 @@ import net.weyne1.easegui.api.WidgetCategory;
 import net.weyne1.easegui.api.animation.AnimationProfile;
 import net.weyne1.easegui.client.animation.AnimationContext;
 import net.weyne1.easegui.client.animation.AnimationScope;
-import net.weyne1.easegui.client.animation.WidgetAnimationState;
 import net.weyne1.easegui.client.animation.AnimationSystem;
+import net.weyne1.easegui.client.animation.WidgetAnimationState;
 import net.weyne1.easegui.client.config.ConfigManager;
 import net.weyne1.easegui.client.state.ScreenStateTracker;
 
@@ -21,26 +21,21 @@ public final class ScrollableListAnimator {
     private ScrollableListAnimator() {
     }
 
-    public static AnimationScope beginRender(GuiGraphics graphics, int x, int y, int width, int height, WidgetAnimationState state) {
+    public static AnimationScope beginList(GuiGraphics graphics, int x, int y, int width, int height, WidgetAnimationState state) {
         if (Minecraft.getInstance().screen instanceof AbstractContainerScreen) {
-            return null;
-        }
-
-        if (!ConfigManager.getConfig().global.enabled) {
-            return null;
+            return AnimationScope.NO_OP;
         }
 
         AnimationProfile profile = ConfigManager.getProfileForCurrentContext(WidgetCategory.SCROLLABLE);
-        if (profile == null || !profile.isEnabled()) {
-            return null;
-        }
-
         long now = Util.getMillis();
-        updateAnimationState(x, y, state, now, profile);
 
-        if (ScreenStateTracker.isResizeFrame() || AnimationContext.hasParentAnimation()) {
-            state.startTime = now - profile.getDuration() - state.delay;
-            return null;
+        if (profile != null) {
+            updateAnimationState(x, y, state, now, profile);
+
+            if (ScreenStateTracker.isResizeFrame() || AnimationContext.hasParentAnimation()) {
+                state.startTime = now - profile.getDuration() - state.delay;
+                return AnimationScope.NO_OP;
+            }
         }
 
         return AnimationSystem.begin(graphics, profile, x, y, width, height, state.startTime, state.delay, 1.0f);

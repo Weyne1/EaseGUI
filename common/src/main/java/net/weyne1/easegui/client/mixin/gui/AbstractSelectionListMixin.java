@@ -25,7 +25,7 @@ public class AbstractSelectionListMixin {
 
     @WrapMethod(method = "render")
     private void easegui$wrapListRender(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, Operation<Void> original) {
-        try (AnimationScope ignored = ScrollableListAnimator.beginRender(graphics, this.x0, this.y0, this.width, this.height, this.easegui$scrollAnimationState)) {
+        try (AnimationScope ignored = ScrollableListAnimator.beginList(graphics, this.x0, this.y0, this.width, this.height, this.easegui$scrollAnimationState)) {
             original.call(graphics, mouseX, mouseY, partialTick);
         }
     }
@@ -33,7 +33,7 @@ public class AbstractSelectionListMixin {
     @WrapMethod(method = "renderItem")
     private void easegui$wrapRenderItem(GuiGraphics graphics, int mouseX, int mouseY, float partialTick,
                                         int index, int left, int top, int width, int height, Operation<Void> original) {
-        try (AnimationScope ignored = ListItemAnimator.beginRender(
+        try (AnimationScope ignored = ListItemAnimator.beginListItems(
                 graphics, top, left, width, height
         )) {
             AnimationContext.pushParentAnimation();

@@ -3,6 +3,7 @@ package net.weyne1.easegui.client.animation;
 import net.minecraft.client.gui.GuiGraphics;
 import net.weyne1.easegui.client.EaseGUIDebug;
 
+@SuppressWarnings({"unused", "BooleanMethodIsAlwaysInverted"})
 public class AnimationScope implements AutoCloseable {
     public static final AnimationScope NO_OP = new NoOpAnimationScope();
     private static final float MIN_SCALE = 0.001f;
@@ -14,40 +15,23 @@ public class AnimationScope implements AutoCloseable {
     private float scaleX = 1.0f, scaleY = 1.0f;
     private float pivotX, pivotY;
 
-    public float getOffsetX() {
-        return offsetX;
-    }
+    public float getOffsetX() { return offsetX; }
+    public float getOffsetY() { return offsetY; }
+    public float getScaleX() { return scaleX; }
+    public float getScaleY() {return scaleY; }
+    public float getPivotX() {return pivotX; }
+    public float getPivotY() { return pivotY; }
+    public float getAlpha() { return alpha; }
+    public boolean isClosed() { return isClosed; }
+    public boolean isSuspended() { return suspendDepth > 0;}
 
-    public float getOffsetY() {
-        return offsetY;
-    }
-
-    public float getScaleX() {
-        return scaleX;
-    }
-
-    public float getScaleY() {
-        return scaleY;
-    }
-
-    public float getPivotX() {
-        return pivotX;
-    }
-
-    public float getPivotY() {
-        return pivotY;
-    }
-
-    public float getAlpha() {
-        return alpha;
-    }
-
-    public boolean isClosed() {
-        return isClosed;
-    }
-
-    public boolean isSuspended() {
-        return suspendDepth > 0;
+    /**
+     * Indicates whether this Scope is a real animation.
+     *
+     * @return {@code true} for real animations, {@code false} for {@link AnimationScope#NO_OP}.
+     */
+    public boolean isAnimating() {
+        return true;
     }
 
     protected AnimationScope() {
@@ -152,9 +136,8 @@ public class AnimationScope implements AutoCloseable {
     }
 
     private static final class NoOpAnimationScope extends AnimationScope {
-        @Override
-        void pushTransforms(float oX, float oY, float sX, float sY, float pX, float pY) {
-        }
+        @Override public boolean isAnimating() { return false; }
+        @Override void pushTransforms(float oX, float oY, float sX, float sY, float pX, float pY) { }
         @Override public void suspend() {}
         @Override public void resume() {}
         @Override public void close() {}
