@@ -15,4 +15,12 @@ public interface PreviewContentRenderer {
             int alpha,
             boolean enabled
     );
+
+    default int getPreferredWidth(boolean isCascade, boolean isHorizontal) {
+        return (isCascade && isHorizontal) ? 40 : 120;
+    }
+
+    default int getPreferredHeight() {
+        return 24;
+    }
 }
