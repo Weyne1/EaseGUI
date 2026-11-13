@@ -2,7 +2,6 @@ package net.weyne1.easegui.client.mixin.gui;
 
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -32,11 +31,14 @@ public abstract class ScreenMixin {
 
     @WrapMethod(method = "renderWithTooltip")
     private void easegui$wrapScreenRender(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, Operation<Void> original) {
-        ScreenStateTracker.markScreenRendered((Screen) (Object) this);
-        if (RenderSystem.isOnRenderThread()
-                && this instanceof ContainerScreenExtension
+        Screen currentScreen = (Screen) (Object) this;
+        ScreenStateTracker.markScreenRendered(currentScreen);
+
+        // Container lifecycle
+        if (currentScreen instanceof ContainerScreenExtension
+                && !ScreenStateTracker.shouldSkipContainerAnimation()
                 && !AnimationContext.isAnimationDisabled()) {
-            try (AnimationScope ignored = ContainerAnimator.beginContainer((Screen) (Object) this, graphics)) {
+            try (AnimationScope ignored = ContainerAnimator.beginContainer(currentScreen, graphics)) {
                 AnimationContext.pushParentAnimation();
                 try {
                     original.call(graphics, mouseX, mouseY, partialTick);
@@ -71,6 +73,7 @@ public abstract class ScreenMixin {
                     float partialTick = this.minecraft.getFrameTime();
 
                     Blur.renderBlur(progress, partialTick);
+                    ScreenStateTracker.markScreenBlurred((Screen) (Object) this);
                 } catch (Exception ignored) {
                 }
             }
