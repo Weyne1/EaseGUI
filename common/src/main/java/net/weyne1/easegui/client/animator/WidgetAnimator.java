@@ -5,11 +5,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.weyne1.easegui.api.animation.AnimationProfile;
-import net.weyne1.easegui.client.extension.WidgetExtension;
-import net.weyne1.easegui.client.animation.*;
-import net.weyne1.easegui.client.config.ConfigManager;
 import net.weyne1.easegui.api.WidgetCategory;
+import net.weyne1.easegui.api.animation.AnimationProfile;
+import net.weyne1.easegui.client.animation.AnimationContext;
+import net.weyne1.easegui.client.animation.AnimationScope;
+import net.weyne1.easegui.client.animation.AnimationSystem;
+import net.weyne1.easegui.client.animation.WidgetAnimationState;
+import net.weyne1.easegui.client.config.ConfigManager;
+import net.weyne1.easegui.client.extension.WidgetExtension;
 import net.weyne1.easegui.client.state.ScreenStateTracker;
 
 public class WidgetAnimator {
@@ -36,7 +39,7 @@ public class WidgetAnimator {
         }
 
         return AnimationSystem.begin(graphics, profile, widget.getX(), widget.getY(), widget.getWidth(), widget.getHeight(),
-                state.startTime, state.delay, ((WidgetExtension) widget).easeGUI$getAlpha());
+                state.startTime, state.delay, ((WidgetExtension) widget).easegui$getAlpha());
     }
 
     private static void updateAnimationState(AbstractWidget widget, WidgetAnimationState state, long now, AnimationProfile profile) {

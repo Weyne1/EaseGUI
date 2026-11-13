@@ -20,7 +20,7 @@ public abstract class GuiGraphicsMixin {
             method = "enableScissor",
             at = @At(value = "NEW", target = "Lnet/minecraft/client/gui/navigation/ScreenRectangle;")
     )
-    private ScreenRectangle easeGUI$transformScissorBounds(int x, int y, int width, int height, Operation<ScreenRectangle> original) {
+    private ScreenRectangle easegui$transformScissorBounds(int x, int y, int width, int height, Operation<ScreenRectangle> original) {
         if (!AnimationContext.isActive()) {
             return original.call(x, y, width, height);
         }

@@ -31,7 +31,7 @@ public abstract class ScreenMixin {
     // Container lifecycle
 
     @WrapMethod(method = "renderWithTooltip")
-    private void easeGUI$wrapScreenRender(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, Operation<Void> original) {
+    private void easegui$wrapScreenRender(GuiGraphics graphics, int mouseX, int mouseY, float partialTick, Operation<Void> original) {
         ScreenStateTracker.markScreenRendered((Screen) (Object) this);
         if (RenderSystem.isOnRenderThread()
                 && this instanceof ContainerScreenExtension
@@ -52,7 +52,7 @@ public abstract class ScreenMixin {
     // Menu background
 
     @WrapMethod(method = "renderBackground")
-    private void easeGUI$wrapBackground(GuiGraphics graphics, Operation<Void> original) {
+    private void easegui$wrapBackground(GuiGraphics graphics, Operation<Void> original) {
         AnimationScope currentScope = AnimationContext.getCurrentScope();
         if (currentScope != null) currentScope.suspend();
 
@@ -90,10 +90,10 @@ public abstract class ScreenMixin {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;fillGradient(IIIIII)V"),
             index = 4
     )
-    private int easeGUI$modifyTransparentBgStartColor(int startColor) {
+    private int easegui$modifyTransparentBgStartColor(int startColor) {
         Screen currentScreen = (Screen) (Object) this;
 
-        return BackgroundAnimator.getAnimatedColor(currentScreen, easeGUI$applyDimmingIntensity(startColor));
+        return BackgroundAnimator.getAnimatedColor(currentScreen, easegui$applyDimmingIntensity(startColor));
     }
 
     @ModifyArg(
@@ -101,14 +101,14 @@ public abstract class ScreenMixin {
             at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;fillGradient(IIIIII)V"),
             index = 5
     )
-    private int easeGUI$modifyTransparentBgEndColor(int endColor) {
+    private int easegui$modifyTransparentBgEndColor(int endColor) {
         Screen currentScreen = (Screen) (Object) this;
 
-        return BackgroundAnimator.getAnimatedColor(currentScreen, easeGUI$applyDimmingIntensity(endColor));
+        return BackgroundAnimator.getAnimatedColor(currentScreen, easegui$applyDimmingIntensity(endColor));
     }
 
     @Unique
-    private static int easeGUI$applyDimmingIntensity(int color) {
+    private static int easegui$applyDimmingIntensity(int color) {
         float intensity = ConfigManager.getConfig().global.backgroundDimmingIntensity;
 
         int targetAlpha = Math.min(255, Math.max(0, Math.round(intensity * 255.0f)));

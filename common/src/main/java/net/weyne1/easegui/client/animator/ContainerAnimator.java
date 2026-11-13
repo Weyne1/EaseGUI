@@ -4,12 +4,12 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.client.gui.screens.recipebook.RecipeUpdateListener;
-import net.weyne1.easegui.client.extension.ContainerScreenExtension;
-import net.weyne1.easegui.client.extension.RecipeBookExtension;
+import net.weyne1.easegui.api.WidgetCategory;
 import net.weyne1.easegui.client.animation.AnimationScope;
 import net.weyne1.easegui.client.animation.AnimationSystem;
 import net.weyne1.easegui.client.config.ConfigManager;
-import net.weyne1.easegui.api.WidgetCategory;
+import net.weyne1.easegui.client.extension.ContainerScreenExtension;
+import net.weyne1.easegui.client.extension.RecipeBookExtension;
 import net.weyne1.easegui.client.state.ScreenStateTracker;
 
 public class ContainerAnimator {
@@ -23,21 +23,21 @@ public class ContainerAnimator {
             return null;
         }
 
-        int minX = container.easeGUI$getLeftPos();
-        int minY = container.easeGUI$getTopPos();
-        int maxX = minX + container.easeGUI$getImageWidth();
-        int maxY = minY + container.easeGUI$getImageHeight();
+        int minX = container.easegui$getLeftPos();
+        int minY = container.easegui$getTopPos();
+        int maxX = minX + container.easegui$getImageWidth();
+        int maxY = minY + container.easegui$getImageHeight();
 
         if (screen instanceof RecipeUpdateListener listener) {
             RecipeBookComponent book = listener.getRecipeBookComponent();
 
-            if (((RecipeBookExtension) book).easeGUI$isVisible()) {
+            if (((RecipeBookExtension) book).easegui$isVisible()) {
                 RecipeBookExtension accessor = (RecipeBookExtension) book;
 
-                int bookWidth = accessor.easeGUI$getBookWidth();
-                int bookHeight = accessor.easeGUI$getBookHeight();
+                int bookWidth = accessor.easegui$getBookWidth();
+                int bookHeight = accessor.easegui$getBookHeight();
 
-                int bookX = (screen.width - bookWidth) / 2 - accessor.easeGUI$getXOffset();
+                int bookX = (screen.width - bookWidth) / 2 - accessor.easegui$getXOffset();
                 int bookY = (screen.height - bookHeight) / 2;
 
                 minX = Math.min(minX, bookX);

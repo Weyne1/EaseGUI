@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.At;
 public class TitleScreenMixin {
 
     @Unique
-    private static boolean easeGUI$usesCustomTitleAnimation() {
+    private static boolean easegui$usesCustomTitleAnimation() {
         EaseGUIConfig config = ConfigManager.getConfig();
         if (!config.global.enabled) {
             return false;
@@ -25,13 +25,13 @@ public class TitleScreenMixin {
     }
 
     @WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/Mth;clamp(FFF)F", ordinal = 2))
-    private float easeGUI$skipVanillaTitleElementFade(float value, float min, float max, Operation<Float> original) {
-        return easeGUI$usesCustomTitleAnimation() ? 1.0F : original.call(value, min, max);
+    private float easegui$skipVanillaTitleElementFade(float value, float min, float max, Operation<Float> original) {
+        return easegui$usesCustomTitleAnimation() ? 1.0F : original.call(value, min, max);
     }
 
     @WrapOperation(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/AbstractWidget;setAlpha(F)V"))
-    private void easeGUI$suppressVanillaWidgetFade(AbstractWidget widget, float alpha, Operation<Void> original) {
-        if (!easeGUI$usesCustomTitleAnimation()) {
+    private void easegui$suppressVanillaWidgetFade(AbstractWidget widget, float alpha, Operation<Void> original) {
+        if (!easegui$usesCustomTitleAnimation()) {
             original.call(widget, alpha);
         }
     }

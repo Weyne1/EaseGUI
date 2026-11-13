@@ -8,20 +8,20 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface LogoRendererAccessor {
 
     @Accessor("LOGO_WIDTH")
-    static int easeGUI$getLogoWidth() { throw new AssertionError(); }
+    static int easegui$getLogoWidth() { throw new AssertionError(); }
 
     @Accessor("LOGO_HEIGHT")
-    static int easeGUI$getLogoHeight() { throw new AssertionError(); }
+    static int easegui$getLogoHeight() { throw new AssertionError(); }
 
     @Accessor("LOGO_TEXTURE_HEIGHT")
-    static int easeGUI$getLogoTextureHeight() { throw new AssertionError(); }
+    static int easegui$getLogoTextureHeight() { throw new AssertionError(); }
 
     @Accessor("EDITION_WIDTH")
-    static int easeGUI$getEditionWidth() { throw new AssertionError(); }
+    static int easegui$getEditionWidth() { throw new AssertionError(); }
 
     @Accessor("EDITION_HEIGHT")
-    static int easeGUI$getEditionHeight() { throw new AssertionError(); }
+    static int easegui$getEditionHeight() { throw new AssertionError(); }
 
     @Accessor("EDITION_TEXTURE_HEIGHT")
-    static int easeGUI$getEditionTextureHeight() { throw new AssertionError(); }
+    static int easegui$getEditionTextureHeight() { throw new AssertionError(); }
 }
