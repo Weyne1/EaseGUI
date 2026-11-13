@@ -43,7 +43,11 @@ public class LogoAnimator {
         }
 
         var titleSettings = config.screens.get("title");
-        if (titleSettings == null || !titleSettings.enabled || titleSettings.logo == null) {
+        if (titleSettings == null
+                || !titleSettings.enabled
+                || titleSettings.logo == null
+                || !titleSettings.logo.logoProfile.isEnabled()
+        ) {
             return false;
         }
 
