@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.PostPass;
 import net.minecraft.resources.ResourceLocation;
 import net.weyne1.easegui.client.animation.AnimationContext;
 import net.weyne1.easegui.client.mixin.accessor.PostChainAccessor;
+import net.weyne1.easegui.client.state.ScreenStateTracker;
 import org.lwjgl.opengl.GL11;
 
 public class Blur {
@@ -39,6 +40,7 @@ public class Blur {
         }
 
         blurEffect.process(partialTick);
+        ScreenStateTracker.markBlurredThisFrame();
 
         mc.getMainRenderTarget().bindWrite(true);
         RenderSystem.clear(GL11.GL_DEPTH_BUFFER_BIT, Minecraft.ON_OSX);

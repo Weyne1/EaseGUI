@@ -78,12 +78,12 @@ public class MainConfigScreen extends EaseGUIAbstractSplitScreen {
         DimmingIntensitySlider dimmingSlider = new DimmingIntensitySlider(0, 0, 0, 20, config);
         leftList.addWidget(dimmingSlider);
 
-        Component containersBlurState = Component.translatable(config.global.blurBackground ? "easegui.generic.on" : "easegui.generic.off");
+        Component containersBlurState = Component.translatable(config.global.blurAllTransparentScreens ? "easegui.generic.on" : "easegui.generic.off");
         leftList.addWidget(Button.builder(
                 Component.translatable("easegui.main.blur_containers", containersBlurState),
                 button -> {
-                    config.global.blurBackground = !config.global.blurBackground;
-                    Component updatedContainersState = Component.translatable(config.global.blurBackground ? "easegui.generic.on" : "easegui.generic.off");
+                    config.global.blurAllTransparentScreens = !config.global.blurAllTransparentScreens;
+                    Component updatedContainersState = Component.translatable(config.global.blurAllTransparentScreens ? "easegui.generic.on" : "easegui.generic.off");
                     button.setMessage(Component.translatable("easegui.main.blur_containers", updatedContainersState));
                     ConfigManager.save();
                 }

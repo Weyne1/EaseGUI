@@ -12,7 +12,7 @@ import net.weyne1.easegui.client.animator.BackgroundAnimator;
 import net.weyne1.easegui.client.animator.ContainerAnimator;
 import net.weyne1.easegui.client.config.ConfigManager;
 import net.weyne1.easegui.client.extension.ContainerScreenExtension;
-import net.weyne1.easegui.client.state.ScreenAnimationTracker;
+import net.weyne1.easegui.client.state.BackgroundAnimationTracker;
 import net.weyne1.easegui.client.state.ScreenStateTracker;
 import net.weyne1.easegui.client.util.Blur;
 import org.jetbrains.annotations.Nullable;
@@ -58,16 +58,16 @@ public abstract class ScreenMixin {
 
         try {
             Screen currentScreen = (Screen) (Object) this;
-            boolean blurBackground = ConfigManager.getConfig().global.blurBackground;
-            boolean smoothBlurEnabled = ConfigManager.getConfig().global.blurDuration > 0;
+            boolean blurAllTransparentScreens = ConfigManager.getConfig().global.blurAllTransparentScreens;
+            boolean smoothBlurEnabled = ConfigManager.getConfig().global.backgroundAnimationDuration > 0;
 
             boolean isRealScreenFrame = this.minecraft != null && this.minecraft.level != null
                     && this.minecraft.screen == (Object) this;
 
-            if (isRealScreenFrame && blurBackground && smoothBlurEnabled) {
+            if (isRealScreenFrame && blurAllTransparentScreens && smoothBlurEnabled) {
                 try {
                     graphics.flush();
-                    float progress = BackgroundAnimator.shouldAnimateBackground(currentScreen) ? ScreenAnimationTracker.getProgress() : 1.0f;
+                    float progress = BackgroundAnimator.isBackgroundEffectAllowed(currentScreen) ? BackgroundAnimationTracker.getProgress() : 1.0f;
                     float partialTick = this.minecraft.getFrameTime();
 
                     Blur.renderBlur(progress, partialTick);
@@ -109,7 +109,7 @@ public abstract class ScreenMixin {
 
     @Unique
     private static int easeGUI$applyDimmingIntensity(int color) {
-        float intensity = ConfigManager.getConfig().global.dimmingIntensity;
+        float intensity = ConfigManager.getConfig().global.backgroundDimmingIntensity;
 
         int targetAlpha = Math.min(255, Math.max(0, Math.round(intensity * 255.0f)));
         return (targetAlpha << 24) | (color & 0x00FFFFFF);
