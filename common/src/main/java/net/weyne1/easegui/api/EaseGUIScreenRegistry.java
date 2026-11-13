@@ -7,8 +7,6 @@ import net.minecraft.client.gui.screens.advancements.AdvancementsScreen;
 import net.minecraft.client.gui.screens.inventory.*;
 import net.minecraft.client.gui.screens.multiplayer.JoinMultiplayerScreen;
 import net.minecraft.client.gui.screens.multiplayer.WarningScreen;
-import net.minecraft.client.gui.screens.OptionsScreen;
-import net.minecraft.client.gui.screens.OptionsSubScreen;
 import net.minecraft.client.gui.screens.packs.PackSelectionScreen;
 import net.minecraft.client.gui.screens.social.SocialInteractionsScreen;
 import net.minecraft.client.gui.screens.worldselection.*;
@@ -51,6 +49,7 @@ public final class EaseGUIScreenRegistry {
         register("statistics", StatsScreen.class, 1000, EaseGUIScreenGroup.BASIC);
         register("warning", WarningScreen.class, 1000, EaseGUIScreenGroup.BASIC);
         register("pause", PauseScreen.class, 1000, EaseGUIScreenGroup.BASIC);
+        register("confirm_link", ConfirmLinkScreen.class, 1000, EaseGUIScreenGroup.BASIC);
         register("share_to_lan", ShareToLanScreen.class, 1000, EaseGUIScreenGroup.BASIC);
         register("death", DeathScreen.class, 1000, EaseGUIScreenGroup.BASIC);
         register("social_interactions", SocialInteractionsScreen.class, 1000, EaseGUIScreenGroup.BASIC);
